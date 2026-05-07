@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{RELLIS-Dyn per-event selected cases.} Rows use the same selected episode within each event to make the timing mechanism visible; aggregate results are reported in Table~\ref{tab:rellis_dyn_material_aggregate}. False pre-activation is meaningful only for delayed escape, where the safer route is not available until after the event delay.}
+\label{tab:rellis_dyn_per_event}
+\begin{tabular}{llcccc}
+\toprule
+Event & Method & React. $\downarrow$ & Stale $\downarrow$ & CVaR $\downarrow$ & False pre-act. $\downarrow$ \\
+\midrule
+mud onset & DWA semantic & 12.0 & 6.486 & 0.881 & -- \\
+mud onset & Local A* & 15.0 & 7.516 & 0.887 & -- \\
+mud onset & \textbf{Route-aware S2} & 0.0 & 0.000 & 0.946 & -- \\
+\midrule
+corridor closes & DWA semantic & 20.0 & 6.654 & 1.466 & -- \\
+corridor closes & Local A* & 1.0 & 0.228 & 0.837 & -- \\
+corridor closes & \textbf{Route-aware S2} & 0.0 & 0.000 & 1.328 & -- \\
+\midrule
+corridor opens & DWA semantic & 7.0 & 1.689 & 0.550 & -- \\
+corridor opens & Local A* & 4.0 & 0.994 & 0.550 & -- \\
+corridor opens & \textbf{Route-aware S2} & 0.0 & 0.000 & 0.550 & -- \\
+\midrule
+delayed escape opens & DWA semantic & 2.0 & 0.950 & 0.950 & 1.000 \\
+delayed escape opens & Local A* & 15.0 & 5.957 & 0.947 & 0.000 \\
+delayed escape opens & \textbf{Route-aware S2} & 0.0 & 0.000 & 0.950 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

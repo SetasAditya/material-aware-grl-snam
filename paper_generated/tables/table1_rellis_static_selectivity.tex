@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{RELLIS static selectivity.} Route-aware Stage~2 has the highest correct activation and lowest false activation.}
+\label{tab:rellis_selectivity}
+\begin{tabular}{lccc}
+\toprule
+Method & CAR $\uparrow$ & FAR $\downarrow$ & SR $\uparrow$ \\
+\midrule
+Stage 1 & 0.000 & 0.000 & 0.000 \\
+Scalar Stage 2 & 0.378 & 0.752 & 1.031 \\
+Non-route directional Stage 2 & 0.135 & 0.178 & 1.165 \\
+\textbf{Route-aware Stage~2} & \textbf{0.727} & \textbf{0.214} & \textbf{1.858} \\
+\bottomrule
+\end{tabular}
+\end{table}

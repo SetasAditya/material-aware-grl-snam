@@ -1,0 +1,25 @@
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{RELLIS-Dyn material-event aggregate.} The three-event subset isolates dynamic material-risk changes without moving-obstacle confounds.}
+\label{tab:rellis_dyn_material_aggregate}
+\begin{tabular}{llcccccc}
+\toprule
+Method & Family & Succ. $\uparrow$ & Hard $\downarrow$ & Viol. CVaR $\downarrow$ & Stale $\downarrow$ & Replans $\downarrow$ & ms $\downarrow$ \\
+\midrule
+Stage 1 & scaffold & 1.000 & 0.447 & 0.794 & 2.538 & 0.0 & 0.0 \\
+Risk-loss-only & learned loss & 1.000 & 0.694 & 0.817 & 2.057 & 0.0 & 0.0 \\
+\midrule
+DWA semantic & reactive & 0.567 & 0.030 & 0.593 & 1.002 & 0.0 & 0.0 \\
+CBF-QP & safety filter & 0.890 & 0.018 & 0.676 & 2.272 & 0.0 & 0.0 \\
+\midrule
+Local A* & planner & 0.983 & 0.387 & 0.674 & 2.776 & 9.8 & 321.8 \\
+MPC & planner & 0.967 & 0.395 & 0.667 & 2.038 & 11.1 & 5068.4 \\
+\midrule
+\textbf{Route-aware S2} & learned field & \textbf{0.920} & \textbf{0.027} & \textbf{0.668} & \textbf{1.637} & \textbf{0.0} & \textbf{0.0} \\
+\midrule
+Oracle replanner & planner$^\dagger$ & 1.000 & 0.037 & 0.632 & 2.560 & 68.3 & 2330.3 \\
+\bottomrule
+\end{tabular}
+\vspace{0.35em}\footnotesize $^\dagger$Oracle replanner is a privileged reference, not a fair local-sensing competitor. Planner rows use the 20-episode planner sweep; zero-replan rows use the 100-episode fast sweep.
+\end{table}

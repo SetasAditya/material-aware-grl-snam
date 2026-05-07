@@ -1,0 +1,80 @@
+main:
+  description: "Pre-registered RELLIS material-risk ontology for oracle BEV traversal."
+  low_risk:
+    dirt: 0.05
+    asphalt: 0.05
+    concrete: 0.08
+  medium_risk:
+    grass: 0.25
+    bush: 0.45
+  high_soft_risk:
+    mud: 0.80
+    puddle: 0.85
+    rubble: 0.75
+  hard_hazard:
+    tree: 1.0
+    pole: 1.0
+    water: 1.0
+    vehicle: 1.0
+    object: 1.0
+    building: 1.0
+    log: 1.0
+    person: 1.0
+    fence: 1.0
+    barrier: 1.0
+  void_risk: 0.55
+  unknown_is_obstacle: false
+
+soft_vegetation:
+  description: "Sensitivity variant that treats grass/bush as more traversable."
+  low_risk:
+    dirt: 0.05
+    asphalt: 0.05
+    concrete: 0.08
+    grass: 0.15
+  medium_risk:
+    bush: 0.30
+  high_soft_risk:
+    mud: 0.80
+    puddle: 0.85
+    rubble: 0.75
+  hard_hazard:
+    tree: 1.0
+    pole: 1.0
+    water: 1.0
+    vehicle: 1.0
+    object: 1.0
+    building: 1.0
+    log: 1.0
+    person: 1.0
+    fence: 1.0
+    barrier: 1.0
+  void_risk: 0.55
+  unknown_is_obstacle: false
+
+strict_water_mud:
+  description: "Sensitivity variant that treats puddle/mud/water-like classes as especially severe."
+  low_risk:
+    dirt: 0.05
+    asphalt: 0.05
+    concrete: 0.08
+  medium_risk:
+    grass: 0.25
+    bush: 0.45
+  high_soft_risk:
+    mud: 0.95
+    puddle: 0.95
+    rubble: 0.75
+  hard_hazard:
+    tree: 1.0
+    pole: 1.0
+    water: 1.0
+    vehicle: 1.0
+    object: 1.0
+    building: 1.0
+    log: 1.0
+    person: 1.0
+    fence: 1.0
+    barrier: 1.0
+  void_risk: 0.60
+  unknown_is_obstacle: false

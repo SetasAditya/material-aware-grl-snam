@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Delayed-required-escape stress test.} The escape route is blocked before $t_{\rm escape}$; when it opens, the original scaffold becomes unsafe. Post-open activation is measured only on episodes without false pre-activation.}
+\label{tab:rellis_dyn_required_escape}
+\begin{tabular}{lccccccc}
+\toprule
+Method & Succ. $\uparrow$ & Hard $\downarrow$ & Stuck $\downarrow$ & False pre. $\downarrow$ & Post-open med. $\downarrow$ & $\leq 2$ steps $\uparrow$ & CVaR $\downarrow$ \\
+\midrule
+Stage 1 & 1.000 & 3.008 & 0.000 & 0.000 & 70.0 & 0.000 & 1.894 \\
+Risk-loss-only & 1.000 & 3.163 & 0.000 & 0.420 & 23.0 & 0.034 & 1.793 \\
+DWA semantic & 0.480 & 0.062 & 0.590 & 0.950 & 4.0 & 0.000 & 0.695 \\
+CBF-QP & 0.090 & 0.033 & 0.920 & 0.280 & 4.0 & 0.083 & 0.909 \\
+\textbf{Route-aware S2} & \textbf{0.610} & \textbf{0.059} & \textbf{0.480} & \textbf{0.380} & \textbf{2.0} & \textbf{0.645} & \textbf{0.840} \\
+\bottomrule
+\end{tabular}
+\end{table}
