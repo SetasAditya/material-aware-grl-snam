@@ -1,0 +1,13 @@
+{
+  "figure": "rq1_gate_exposure",
+  "inputs": [
+    {
+      "path": "rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv",
+      "sha256": "df3bf06dfb7bfed13b2e8dd5c4d921c7cc69b0efa23c836c4dea06d2ab8c883d"
+    },
+    {
+      "path": "rebuttal_experiments/results/exp1_gate_ablation_100/event_specs.csv",
+      "sha256": "2090bcff44eccaba96a932e3452dc166e05c1246664f75ac86e2caeb2376f526"
+    }
+  ]
+}

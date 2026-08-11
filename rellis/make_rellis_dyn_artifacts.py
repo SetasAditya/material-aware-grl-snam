@@ -592,7 +592,10 @@ def _cum_stale_trace(path: Sequence[Tuple[int, int]], step_maps: Sequence[Mappin
 
 
 def make_figure4(args: argparse.Namespace) -> None:
-    eid = _select_case(args, "corridor_opens", prefer="corridor")
+    # The automatic scorer selects an episode in which neither method routes
+    # into the corridor that opens, which does not illustrate the claim. Allow
+    # an explicit representative episode; see the caption for the base rate.
+    eid = getattr(args, "corridor_episode", None) or _select_case(args, "corridor_opens", prefer="corridor")
     ep, base_maps, paths, step_maps, spec = _roll_case(args, eid, "corridor_opens", ["route_aware_stage2", "dwa_semantic"])
     rollout = _rollout_lookup(_read_csv(args.fast_run / "dynamic_rollouts.csv"))
     s2_row = rollout[("corridor_opens", eid, "route_aware_stage2")]
@@ -601,13 +604,34 @@ def make_figure4(args: argparse.Namespace) -> None:
     dwa_delay = _f(dwa_row, "reaction_delay")
     times = [max(0, spec.event_step - 2), spec.event_step, spec.event_step + 1, spec.event_step + 5]
     titles = ["A: before opening", "B: corridor opens", "C: one step later", "D: five steps later"]
-    fig = plt.figure(figsize=(15.5, 6.2), constrained_layout=True)
+
+    # The corridor that opens is the event. Recover its footprint so it can be
+    # outlined in every panel: without this the reader cannot see what changed.
+    pre = apply_dynamic_event(base_maps, spec, max(0, spec.event_step - 2), resolution=0.5)
+    post = apply_dynamic_event(base_maps, spec, spec.event_step + 5, resolution=0.5)
+    opened = pre["hard_mask"].astype(bool) & ~post["hard_mask"].astype(bool)
+
+    fig = plt.figure(figsize=(15.5, 6.6), constrained_layout=True)
     gs = fig.add_gridspec(2, 4, height_ratios=[3.0, 1.15])
+    risk_image = None
     for j, (t, title) in enumerate(zip(times, titles)):
         ax = fig.add_subplot(gs[0, j])
         dyn = apply_dynamic_event(base_maps, spec, t, resolution=0.5)
-        ax.imshow(dyn["risk_map"], cmap="magma", vmin=0, vmax=1)
+        risk_image = ax.imshow(dyn["risk_map"], cmap="magma", vmin=0, vmax=1)
         ax.contour(dyn["hard_mask"], levels=[0.5], colors="white", linewidths=0.6)
+        if opened.any():
+            # Cyan outline = the cells that become feasible at t_event.
+            ax.contour(opened, levels=[0.5], colors="#00E5FF", linewidths=1.6)
+            rr, cc = np.nonzero(opened)
+            if j == 0:
+                # Label once, offset to the right so it clears the panel edge.
+                ax.annotate(
+                    "corridor that opens",
+                    xy=(cc.max(), rr.mean()),
+                    xytext=(cc.max() + 10, rr.mean() + 14),
+                    color="#00E5FF", fontsize=8, ha="left", va="center",
+                    arrowprops={"arrowstyle": "->", "color": "#00E5FF", "lw": 1.0},
+                )
         for method, color, label in [
             ("route_aware_stage2", "#57d68d", "Stage 2"),
             ("dwa_semantic", "#66a3ff", "DWA"),
@@ -618,13 +642,24 @@ def make_figure4(args: argparse.Namespace) -> None:
                 p = paths[method][t]
                 f = _movement_force(paths[method], t)
                 ax.quiver([p[1]], [p[0]], [f[1]], [f[0]], color=color, scale_units="xy", scale=0.22, width=0.008)
-        ax.set_title(title, fontsize=10)
+                ax.scatter([p[1]], [p[0]], s=26, color=color, edgecolor="white", lw=0.8, zorder=6)
+        ax.set_title(f"{title}\n$t={int(t)}$ ($t_{{\\rm event}}={int(spec.event_step)}$)", fontsize=10)
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_xlim(12, 90)
         ax.set_ylim(82, 18)
         if j == 0:
-            ax.legend(loc="lower left", fontsize=8, framealpha=0.8)
+            handles, _ = ax.get_legend_handles_labels()
+            handles += [
+                plt.Line2D([], [], color="#00E5FF", lw=1.6, label="corridor that opens"),
+                plt.Line2D([], [], color="#BBBBBB", lw=0.9, label="hard-mask boundary"),
+            ]
+            # Below the panel: an in-panel legend covers the executed paths.
+            ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.0, -0.02),
+                      fontsize=7.5, ncol=2, framealpha=0.0)
+    if risk_image is not None:
+        bar = fig.colorbar(risk_image, ax=fig.axes[:4], fraction=0.02, pad=0.01)
+        bar.set_label("soft risk", fontsize=8)
     ax = fig.add_subplot(gs[1, :])
     max_len = max(len(paths["route_aware_stage2"]), len(paths["dwa_semantic"]))
     t = np.arange(max_len)
@@ -634,18 +669,27 @@ def make_figure4(args: argparse.Namespace) -> None:
     ax.plot(t, dwa_risk, color="#377eb8", lw=2, label="DWA risk along path")
     ax.fill_between(t, s2_risk, dwa_risk, where=dwa_risk >= s2_risk, color="#f4a261", alpha=0.35, label="stale exposure gap")
     ax.axvline(spec.event_step, ls="--", color="k", lw=1.2, label="$t_{event}$")
-    ax.text(
-        spec.event_step + 2,
-        0.92,
-        f"selected case: stale {float(s2_row['stale_exposure']):.2f} vs {float(dwa_row['stale_exposure']):.2f}; "
-        f"path ratio {float(s2_row['path_length_ratio']):.3f} vs {float(dwa_row['path_length_ratio']):.3f}",
-        fontsize=9,
-    )
     ax.set_xlabel("timestep")
     ax.set_ylabel("risk on executed cell")
-    ax.set_ylim(0, 1.02)
-    ax.legend(ncol=4, fontsize=8, loc="upper right")
-    fig.suptitle(f"RELLIS-Dyn corridor opens: handpicked episode {eid}", fontsize=13)
+    # Zoom to the data: a 0--1 axis leaves the curves and their gap in the
+    # bottom third, which is what makes the comparison hard to read.
+    low = float(min(s2_risk.min(), dwa_risk.min()))
+    high = float(max(s2_risk.max(), dwa_risk.max()))
+    margin = max(0.04, 0.18 * (high - low))
+    ax.set_ylim(max(0.0, low - margin), min(1.02, high + margin))
+    ax.set_title(
+        f"stale exposure {float(s2_row['stale_exposure']):.2f} (Stage 2) vs "
+        f"{float(dwa_row['stale_exposure']):.2f} (DWA);  "
+        f"path-length ratio {float(s2_row['path_length_ratio']):.3f} vs "
+        f"{float(dwa_row['path_length_ratio']):.3f}",
+        fontsize=9,
+    )
+    ax.legend(ncol=4, fontsize=8, loc="lower right")
+    fig.suptitle(
+        f"RELLIS-Dyn corridor opens (representative episode {eid}): "
+        "the material-aware field enters the corridor as it becomes feasible",
+        fontsize=13,
+    )
     _save_figure(fig, args, "rellis_dyn_corridor_opens_timeline")
 
 
@@ -857,8 +901,12 @@ def make_fig_b2(args: argparse.Namespace) -> None:
         "local_astar_budget": "#ff7f00",
         "oracle_replanner": "#4d4d4d",
     }
-    fig, ax = plt.subplots(figsize=(8.4, 5.4), constrained_layout=True)
-    for group in ["A-soft", "B-hard", "C-dynamic", "D-compound"]:
+    # One panel per event group. The previous single-axes version encoded the
+    # group as marker shape with no shape legend, so half the encoding was
+    # undecodable; faceting removes the need for that channel entirely.
+    group_names = ["A-soft", "B-hard", "C-dynamic", "D-compound"]
+    points: Dict[str, List[Tuple[float, float, float, str]]] = {g: [] for g in group_names}
+    for group in group_names:
         events = [e for e, g in GROUPS.items() if g == group]
         for method in methods:
             src = planner_rows if method in ("local_astar_budget", "oracle_replanner") else rows
@@ -868,16 +916,62 @@ def make_fig_b2(args: argparse.Namespace) -> None:
             x = float(np.mean([_f(r, "reaction_delay") for r in pool]))
             y = float(np.mean([_f(r, "post_event_cvar_violation") for r in pool]))
             comp = float(np.mean([_f(r, "compute_ms") for r in pool]))
-            size = 60.0 + min(900.0, comp / 4.0)
-            marker = {"A-soft": "o", "B-hard": "s", "C-dynamic": "^", "D-compound": "D"}[group]
-            ax.scatter(x, y, s=size, marker=marker, color=colors[method], alpha=0.72, edgecolor="white", linewidth=0.7)
-    handles = [plt.Line2D([0], [0], marker="o", color="w", markerfacecolor=colors[m], markersize=8, label=METHOD_LABEL[m]) for m in methods]
-    ax.legend(handles=handles, fontsize=8, loc="upper right")
-    ax.set_xlabel("reaction delay")
-    ax.set_ylabel("post-event violation CVaR")
-    ax.set_title("RELLIS-Dyn 8-event Pareto by event group")
-    ax.grid(alpha=0.25)
-    ax.annotate("Stage 2 frontier\n(no replans)", xy=(6.9, 0.72), xytext=(16, 0.76), arrowprops=dict(arrowstyle="->", color="#2ca25f"), fontsize=9, color="#2ca25f")
+            points[group].append((x, y, comp, method))
+
+    every = [p for g in group_names for p in points[g]]
+    xlim = (min(p[0] for p in every) - 1.2, max(p[0] for p in every) + 1.6)
+    ylim = (min(p[1] for p in every) - 0.03, max(p[1] for p in every) + 0.05)
+
+    def _size(compute_ms: float) -> float:
+        return 60.0 + min(900.0, compute_ms / 4.0)
+
+    fig, axes = plt.subplots(2, 2, figsize=(11.0, 8.2), constrained_layout=True,
+                             sharex=True, sharey=True)
+    for ax, group in zip(axes.ravel(), group_names):
+        pool = points[group]
+        # True non-dominated set for (min delay, min CVaR), drawn as a staircase
+        # so "Pareto" in the title refers to something actually on the plot.
+        front = sorted(
+            p for p in pool
+            if not any(q[0] <= p[0] and q[1] <= p[1] and (q[0] < p[0] or q[1] < p[1]) for q in pool)
+        )
+        if len(front) > 1:
+            ax.step([p[0] for p in front], [p[1] for p in front], where="post",
+                    color="#999999", lw=1.2, ls="--", zorder=1)
+        for x, y, comp, method in pool:
+            ax.scatter(x, y, s=_size(comp), marker="o", color=colors[method],
+                       alpha=0.8, edgecolor="white", linewidth=0.8, zorder=3)
+        for x, y, _, method in front:
+            ax.scatter(x, y, s=26, marker="*", color="black", zorder=4)
+        winners = ", ".join(sorted({METHOD_LABEL[p[3]] for p in front}))
+        ax.set_title(f"{group} — non-dominated ($\\star$): {winners}", fontsize=9)
+        ax.grid(alpha=0.25)
+        ax.set_xlim(*xlim)
+        ax.set_ylim(*ylim)
+
+    axes[1, 0].set_xlabel("reaction delay (steps) — lower is better")
+    axes[1, 1].set_xlabel("reaction delay (steps) — lower is better")
+    axes[0, 0].set_ylabel("post-event violation CVaR — lower is better")
+    axes[1, 0].set_ylabel("post-event violation CVaR — lower is better")
+    # Compact direction key in the corner. A long arrow across the panel reads
+    # as pointing at a data point; this reads as an axis-direction cue.
+    axes[0, 0].annotate("", xy=(0.045, 0.045), xytext=(0.155, 0.155),
+                        textcoords="axes fraction", xycoords="axes fraction",
+                        arrowprops=dict(arrowstyle="-|>", color="#444444", lw=1.3))
+    axes[0, 0].text(0.175, 0.115, "better", transform=axes[0, 0].transAxes,
+                    fontsize=8, color="#444444", ha="left", va="center")
+
+    method_handles = [plt.Line2D([0], [0], marker="o", color="w", markerfacecolor=colors[m],
+                                 markersize=9, label=METHOD_LABEL[m]) for m in methods]
+    # Marker area encodes control latency; without a key it is undecodable.
+    size_handles = [plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="#BBBBBB",
+                               markeredgecolor="white",
+                               markersize=np.sqrt(_size(c)) * 0.72,
+                               label=f"{c:,.0f} ms/step") for c in (0.0, 1000.0, 2400.0)]
+    fig.legend(handles=method_handles + size_handles, loc="outside lower center",
+               ncol=4, fontsize=8, title="method (colour)   |   control latency (marker area)",
+               title_fontsize=8)
+    fig.suptitle("RELLIS-Dyn 8-event Pareto by event group", fontsize=13)
     _save_figure(fig, args, "rellis_dyn_8event_group_pareto")
 
 
@@ -984,6 +1078,8 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--out", type=Path, default=ROOT / "runs" / "rellis_dyn_artifacts")
     ap.add_argument("--tex-out", type=Path, default=REPO_ROOT / "exp-highway-env" / "Master_s_Thesis" / "NeurIPS_2026" / "tex" / "generated")
     ap.add_argument("--paper-figures", type=Path, default=REPO_ROOT / "exp-highway-env" / "Master_s_Thesis" / "NeurIPS_2026" / "figures")
+    ap.add_argument("--corridor-episode", default="13",
+                    help="Episode for the corridor-opens figure; empty string restores automatic selection.")
     ap.add_argument("--event-fraction", type=float, default=0.38)
     ap.add_argument("--event-duration", type=int, default=80)
     ap.add_argument("--max-steps", type=int, default=140)

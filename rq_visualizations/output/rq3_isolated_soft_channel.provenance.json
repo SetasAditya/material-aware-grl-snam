@@ -1,0 +1,13 @@
+{
+  "figure": "rq3_isolated_soft_channel",
+  "inputs": [
+    {
+      "path": "rebuttal_experiments/results/exp9_soft_coefficient_isolation/per_episode_metrics.csv",
+      "sha256": "266159580295a92ec63fb30e7fc15c249b361c7fb19439c34a6a0daf3faf649e"
+    },
+    {
+      "path": "rebuttal_experiments/results/exp9_soft_coefficient_isolation/rollout_coefficients.csv",
+      "sha256": "1b694eee09ea8bfc3e070dda4bc801efb4fd449536d9aa023db870be3b73298a"
+    }
+  ]
+}

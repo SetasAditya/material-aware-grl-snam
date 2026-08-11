@@ -1,0 +1,17 @@
+{
+  "figure": "rq2_witness_execution",
+  "inputs": [
+    {
+      "path": "rebuttal_experiments/results/gaps1_2_gate_analysis/witness_execution_by_regime_phase.csv",
+      "sha256": "217e5f5a0ede729fb3b3ca7b0482b872f136d1fc57376a397d5f64152b4d91e2"
+    },
+    {
+      "path": "rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv",
+      "sha256": "df3bf06dfb7bfed13b2e8dd5c4d921c7cc69b0efa23c836c4dea06d2ab8c883d"
+    },
+    {
+      "path": "rebuttal_experiments/results/exp1_gate_ablation_100/event_specs.csv",
+      "sha256": "2090bcff44eccaba96a932e3452dc166e05c1246664f75ac86e2caeb2376f526"
+    }
+  ]
+}

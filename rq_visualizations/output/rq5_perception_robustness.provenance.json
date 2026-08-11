@@ -1,0 +1,13 @@
+{
+  "figure": "rq5_perception_robustness",
+  "inputs": [
+    {
+      "path": "rebuttal_experiments/results/exp7_semantic_corruption/summary_metrics.csv",
+      "sha256": "07cdfa69775e760d1d9f28a72ebd5478c5c09181ea5a711435d1554cd35f2a5e"
+    },
+    {
+      "path": "rebuttal_experiments/results/exp7_semantic_corruption/raw_predictions.csv",
+      "sha256": "d8910a73695c858f169270687bc4957b1a6e551708272f6fcbc8e0e223a66916"
+    }
+  ]
+}
