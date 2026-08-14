@@ -92,6 +92,15 @@
   tbody td:first-child{font-family:var(--sans)}
   .tblnote{font-size:13.5px;color:var(--muted);margin-top:10px}
 
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:22px 0 6px}
+  @media (max-width:820px){.grid2{grid-template-columns:1fr}}
+  .eq-block{font-family:var(--mono);font-size:14.5px;line-height:1.95;white-space:normal;text-align:left;color:var(--ink-2)}
+  .eq-block .lhs{color:var(--ink);font-weight:600}
+  .claim{background:var(--surface);border:1px solid var(--accent);border-left-width:4px;border-radius:8px;padding:18px 20px;margin:24px 0 0}
+  .claim .no{color:var(--bad);font-weight:600}
+  .claim .yes{color:var(--ours);font-weight:600}
+  .claim p{margin:0 0 10px;max-width:72ch}
+  .claim p:last-child{margin:0}
   .limits li{margin-bottom:9px;color:var(--ink-2);max-width:70ch}
   footer{padding:34px 0 60px;font-size:14px;color:var(--muted)}
   a{color:var(--accent-2)}
@@ -236,6 +245,83 @@
 </div></section>
 
 <section><div class="wrap">
+  <div class="eyebrow">The obvious objection</div>
+  <h2>Why not just plan? MPC and MPPI are often better</h2>
+  <p>
+    They frequently are. A receding-horizon planner evaluates multi-step consequences, optimizes a whole
+    control sequence, carries dynamics and constraints explicitly, escapes some local minima, and attains
+    lower trajectory risk whenever its model and horizon are adequate. None of that is in dispute.
+  </p>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="n">What they solve</div>
+      <h3>An optimization, every cycle</h3>
+      <div class="eq-block" style="margin-top:10px">
+        <span class="lhs">min</span> over u<sub>t:t+H−1</sub> &nbsp; Σ<sub>k=0..H−1</sub> ℓ(x<sub>t+k</sub>, u<sub>t+k</sub>) + V<sub>f</sub>(x<sub>t+H</sub>)<br>
+        subject to &nbsp; x<sub>t+k+1</sub> = f(x<sub>t+k</sub>, u<sub>t+k</sub>)
+      </div>
+      <p style="margin-top:10px">
+        MPPI instead samples many noisy control sequences, rolls each one out, weights them by exponential
+        trajectory cost, and updates the nominal sequence. Both pay that cost at every control step.
+      </p>
+    </div>
+    <div class="card">
+      <div class="n">When they struggle</div>
+      <h3>Assumptions that can fail</h3>
+      <p>
+        A tight latency budget. An inaccurate dynamics or prediction model. Moving objects that do not follow
+        their predicted trajectories. Too few samples, or a horizon too short to see the event, or long enough
+        but too expensive to run. Optimization that stalls or goes numerically unstable. A plan that must be
+        regenerated from scratch, repeatedly, when only local sensing is available and no reliable long-range
+        prediction exists.
+      </p>
+    </div>
+  </div>
+
+  <p>
+    Our field asks for much less per step: one local patch, a small set of feasibility witnesses, a
+    coefficient prediction, and a single force composition and integration. On the RELLIS-Dyn material
+    aggregate that buys planner-level success at a fraction of the cost.
+  </p>
+
+  <table>
+    <thead><tr><th>Method</th><th>Success</th><th>Explicit replans</th><th>Compute</th></tr></thead>
+    <tbody>
+      <tr><td>Local A* (budgeted)</td><td>0.983</td><td>9.8</td><td>8.4 ms/step</td></tr>
+      <tr><td>MPC (budgeted)</td><td>0.967</td><td>11.1</td><td>42.2 ms/step</td></tr>
+      <tr><td>Material-aware field (ours)</td><td class="win">0.980</td><td class="win">0</td><td class="win">2.3 ms/step</td></tr>
+    </tbody>
+  </table>
+  <p class="tblnote">RELLIS-Dyn three-event material aggregate. All methods see the same per-step local BEV patch.</p>
+
+  <figure style="margin-top:30px">
+    <div class="mat"><img src="media/planner_comparison.gif" alt="Four-panel comparison on one moving-obstacle episode: semantic DWA succeeds, semantic MPPI gets stuck, budgeted MPC gets stuck, and the material-aware field succeeds with zero replans"></div>
+    <figcaption>
+      <b>One episode where planning does not win.</b>
+      The same RELLIS-Dyn <i>moving obstacle blocks detour</i> event and the same local BEV, replayed for four
+      methods. The moving obstacle does not follow the trajectory the planners predict for it, which is
+      precisely the assumption that MPC and MPPI depend on. Budgeted MPC spends 17 explicit replans and MPPI
+      resamples every step; both still stall. The gated field reaches the goal with zero replans.
+      <span class="cap-tags">
+        <span class="tag">DWA: success · 63 steps · 1.58 m</span>
+        <span class="tag bad">MPPI: stuck · 141 steps · 24.51 m</span>
+        <span class="tag bad">MPC: stuck · 141 steps · 19.42 m</span>
+        <span class="tag ours">ours: success · 61 steps · 2.00 m</span>
+      </span>
+    </figcaption>
+  </figure>
+
+  <div class="claim">
+    <p><span class="no">The claim is not:</span> our method universally beats MPC and MPPI.</p>
+    <p><span class="yes">The claim is:</span> our method can approach planner-level success using a
+    substantially cheaper zero-replan local field, and can be preferable when computation, model accuracy,
+    or the opportunity to replan is limited. The episode above is a qualitative counterexample to
+    <i>planning is always better</i>, not evidence of dominance.</p>
+  </div>
+</div></section>
+
+<section><div class="wrap">
   <div class="eyebrow">What we measure</div>
   <h2>Interventions, not just outcomes</h2>
   <p>
@@ -273,6 +359,10 @@
         corrupted, correct and false activations decay almost identically.</li>
     <li>The gate is recomputed frame-wise with no hysteresis, so it can flicker, and reactive
         boundary-following remains stronger on moving-obstacle events.</li>
+    <li>We do not claim superiority over MPC or MPPI in general. Those methods win when their model and
+        horizon are adequate and the compute is available. The planner comparison above is a single measured
+        episode chosen because it violates their prediction assumption, and the aggregate result is
+        comparable success at lower cost rather than a better trajectory.</li>
   </ul>
 </div></section>
 
