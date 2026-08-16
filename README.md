@@ -39,7 +39,6 @@ redistributed.
   splits, and the frozen v7 artifact described in `FROZEN_V7_STATE.md`.
 - `rq_visualizations/`: reproducible RQ1--RQ5 figures and closed-loop GIF
   renderers. Generated figures include per-file provenance records.
-- `69fce49f7b741296914475ad/`: current LaTeX manuscript snapshot and figures.
 - `site/`: self-contained visualization page using the generated GIFs.
 
 ## Setup
