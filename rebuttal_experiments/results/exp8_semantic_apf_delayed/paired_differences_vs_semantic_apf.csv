@@ -1,0 +1,17 @@
+difference,metric,n_paired,mean_difference,ci95_low,ci95_high
+route_aware_stage2 - semantic_apf,success,100,0.5,0.4097500000000002,0.6
+route_aware_stage2 - semantic_apf,hard_hazard_length_m,100,0.026212999999999997,0.005,0.055355
+route_aware_stage2 - semantic_apf,post_event_cvar_violation,100,-0.07576668683970891,-0.1020871674849914,-0.05036117747205613
+route_aware_stage2 - semantic_apf,reaction_delay,100,-0.49,-0.96,-0.06
+route_aware_stage2 - semantic_apf,route_deviation_delay,100,-5.15,-7.85,-2.48
+route_aware_stage2 - semantic_apf,path_length_ratio,100,-0.352082972869243,-0.44948773188142865,-0.2565817606094312
+route_aware_stage2 - semantic_apf,stuck,100,-0.42,-0.52,-0.33
+route_aware_stage2 - semantic_apf,pre_open_deviation_proxy,100,0.12,0.05,0.2
+dwa_semantic - semantic_apf,success,100,0.37,0.25,0.48
+dwa_semantic - semantic_apf,hard_hazard_length_m,100,0.028283999999999997,-0.033284,0.11522844999999969
+dwa_semantic - semantic_apf,post_event_cvar_violation,100,-0.22087087516585757,-0.2748559069036815,-0.1623468651975067
+dwa_semantic - semantic_apf,reaction_delay,100,-1.08,-2.06,-0.10975000000000364
+dwa_semantic - semantic_apf,route_deviation_delay,100,-16.23,-20.690250000000002,-12.259750000000004
+dwa_semantic - semantic_apf,path_length_ratio,100,-0.2395665123147005,-0.3430978528438997,-0.13570362911267753
+dwa_semantic - semantic_apf,stuck,100,-0.31,-0.42,-0.2
+dwa_semantic - semantic_apf,pre_open_deviation_proxy,100,0.69,0.6,0.78

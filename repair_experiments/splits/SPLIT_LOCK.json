@@ -1,0 +1,78 @@
+{
+  "bev_manifest": {
+    "counts_by_sequence": {
+      "00000": 500,
+      "00001": 500,
+      "00002": 500,
+      "00003": 500,
+      "00004": 500
+    },
+    "num_scenes": 2500,
+    "pair_scene_reference_audit": "PASS",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500/manifest.json",
+    "sha256": "744e0c92c290b8235d7395226e4e7a15c6c1ecb5be42aa1ab588ce34d2975ccf"
+  },
+  "dynamic_event_types": [
+    "mud_onset",
+    "puddle_expansion",
+    "corridor_closes",
+    "corridor_opens",
+    "crossing_obstacle",
+    "moving_obstacle_blocks_detour",
+    "mud_onset_detour_blocked",
+    "delayed_escape_opens",
+    "delayed_required_escape"
+  ],
+  "leakage_audit": {
+    "boundary": "whole RELLIS sequence",
+    "num_unique_episode_uids": 2250,
+    "pairwise_intersections": {
+      "train__test": {
+        "episode_overlap": [],
+        "scene_overlap": [],
+        "sequence_overlap": []
+      },
+      "train__validation": {
+        "episode_overlap": [],
+        "scene_overlap": [],
+        "sequence_overlap": []
+      },
+      "validation__test": {
+        "episode_overlap": [],
+        "scene_overlap": [],
+        "sequence_overlap": []
+      }
+    },
+    "status": "PASS"
+  },
+  "output_manifest_hashes": {
+    "test_dynamic.json": "eec30ca1567a736038d435bc3c4b8b87c880ae6897da3c8e81407889b3cc48dc",
+    "test_static.json": "9ec014ee064aaa3c8bc277c301fb8949ee281cf256383a013e24d49955e90038",
+    "train_dynamic.json": "3fc68e6924b8e1b4e6158a33ce9401d83475402e0335229f816d4330821f973f",
+    "train_static.json": "3ad3164fe46c788001f7b54ab8af3537b8da2bf396a2c169b1fdf9f91b1a8011",
+    "validation_dynamic.json": "27f440faf29d6908bbf0ed94e311a20f32d2b57a4ba96d60799605658586b369",
+    "validation_static.json": "ff95aeadf405d88e159c3cde55e257fd99de5051c028d06807f4ba9ca9d3ce08"
+  },
+  "schema_version": "rellis-repair-split-v1",
+  "source_manifest_hashes": {
+    "00000": "d462915666d14d7c987aa2d0a8f6bfeb64d47aa7eb1b4733912bdb2183315d0c",
+    "00001": "3e9c66d7e0785c1335c6e38ba0c71e0045defe1b78e303b17801fd3e53f03786",
+    "00002": "389a0a4a819e357622fd0d69b1e9b3a7830c03c6b49563a2d2a477b2698db3d2",
+    "00003": "d6b0cc7e417114c80f49ecac80d718c7ad66a45452973a77ea915803ee70537e",
+    "00004": "dcb6645d36f411e4894904e8317848708afc58ea910b467d88b8902d57c19ea0"
+  },
+  "split_assignment": {
+    "test": [
+      "00004"
+    ],
+    "train": [
+      "00000",
+      "00001",
+      "00002"
+    ],
+    "validation": [
+      "00003"
+    ]
+  },
+  "test_policy": "Do not load test_static.json, test_dynamic.json, sequence 00004 BEVs, or any outcome files derived from them until the model, controller, thresholds, seeds, and analysis code are frozen from train/validation."
+}

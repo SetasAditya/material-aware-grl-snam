@@ -1,0 +1,1141 @@
+% =============================================================
+%  Chapter 2 — Preliminaries and Related Work
+% =============================================================
+
+\chapter{Preliminaries and Related Work}
+\label{chap:background}
+
+% ------------------------------------------------------------------
+% Macro block — consistent with iclr2026_conference.tex
+% ------------------------------------------------------------------
+\providecommand{\Ham}{\mathcal{H}}
+\providecommand{\Energy}{\mathcal{E}}
+\providecommand{\Potential}{\mathcal{R}}
+\providecommand{\Constraints}{\mathcal{C}}
+\providecommand{\Navigator}{\mathsf{N}}
+\providecommand{\PhaseState}{z}
+\providecommand{\Pos}{q}
+\providecommand{\Mom}{p}
+\providecommand{\Mass}{\mathrm{M}}
+\providecommand{\J}{\mathbb{J}}
+\providecommand{\Lag}{\mathscr{L}}
+\providecommand{\mult}{\boldsymbol{\lambda}}
+\providecommand{\pen}{\boldsymbol{\rho}}
+
+This chapter has two roles.
+The first half (\S\ref{sec:prelim:setting}--\S\ref{sec:prelim:continual})
+builds the mathematical vocabulary shared across Chapters~\ref{chap:grlsnam}
+and~\ref{chap:material}.
+The second half surveys
+the literature through the lens established here.
+
+The central thesis lens, stated once and carried throughout:
+
+\begin{quote}\itshape
+Rather than learning a fixed policy, reward, or planner, we study
+how an agent can learn a \textbf{structured decision dynamics}—a vector field
+over phase space whose energy landscape can be \textbf{continually reshaped}
+by geometry, material properties, and risk.
+\end{quote}
+
+% =======================================================================
+\section{Problem Setting and Notation}
+\label{sec:prelim:setting}
+% =======================================================================
+
+\paragraph{Environment and task.}
+The agent operates in a workspace $\mathcal{W} \subset \mathbb{R}^2$ (or $\mathbb{R}^3$)
+that is initially unknown.
+Obstacles are encoded by an occupancy field
+$I : \mathcal{W} \to \{0,1\}$ that is never given in full;
+the agent receives only \emph{local} observations through an environment
+context $\mathcal{E}_\tau$ at each planning stage $\tau = 0, 1, 2, \ldots$
+The task is to navigate from an initial configuration $\vec{x}_0$ to a goal
+$\vec{x}_g$ while satisfying geometric and risk constraints, minimizing
+both path cost and exposure to latent hazards.
+
+\paragraph{Configuration and phase space.}
+The robot's configuration space $\mathcal{Q}$ decomposes as
+\begin{equation}
+  \mathcal{Q} = \mathcal{Q}_y \times \mathcal{Q}_f \times \mathcal{Q}_o,
+  \label{eq:config_decomp}
+\end{equation}
+where $\vec{y} \in \mathcal{Q}_y$ are sensor variables,
+$\vec{c} \in \mathcal{Q}_f \subset \mathbb{R}^2$ is the robot pose in world
+coordinates, and $\vec{\psi} \in \mathcal{Q}_o$ collects deformation or
+morphology variables.
+The full configuration is $\vec{q} = (\vec{y}, \vec{c}, \vec{\psi}) \in
+\mathcal{Q}$.
+The \textbf{phase space} is the cotangent bundle $T^*\mathcal{Q}$, whose
+elements are pairs $(\vec{q}, p)$ with $\vec{q} \in \mathcal{Q}$ and
+$p \in T^*_{\vec{q}}\mathcal{Q}$ a covector (generalized momentum dual to
+$T_{\vec{q}}\mathcal{Q}$).
+We write $\PhaseState = (\vec{q}, \Mom)$ for a generic phase-space point.
+
+\paragraph{Environment context.}
+At stage $\tau$, the sensor returns an environment context
+$\mathcal{E}_\tau$ containing at minimum:
+a local target goal $\vec{c}_{\mathrm{target}}(\mathcal{E}_\tau) \in \mathbb{R}^2$,
+an obstacle count $C(\mathcal{E}_\tau) \in \mathbb{N}$,
+and signed-clearance functions
+$\{d_i(\vec{q};\mathcal{E}_\tau) \geq 0\}_{i=1}^{C(\mathcal{E}_\tau)}$
+encoding collision-free space.
+In the material-aware stage (Chapter~\ref{chap:material}), $\mathcal{E}_\tau$
+additionally contains a material-risk field
+$\rho : \mathcal{Q}_f \to [0,1]$ and hazard indicator
+$h : \mathcal{Q}_f \to \{0,1\}$.
+
+\paragraph{Notation table.}
+Table~\ref{tab:notation} collects the symbols used throughout the thesis.
+
+\begin{table}[h]
+\centering
+\caption{\textbf{Notation.} Symbols are consistent across all chapters.}
+\label{tab:notation}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lll}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Space / Type} \\
+\midrule
+$\mathcal{Q}$               & Configuration space                      & Smooth manifold \\
+$T^*\mathcal{Q}$            & Cotangent bundle (phase space)            & Symplectic manifold \\
+$\vec{q}$                   & Configuration (pose + sensor + shape)     & $\mathcal{Q}$ \\
+$p$                         & Costate / generalized momentum            & $T^*_{\vec{q}}\mathcal{Q}$ \\
+$\PhaseState = (\vec{q},p)$ & Phase-space state                         & $T^*\mathcal{Q}$ \\
+$H(\vec{q},p;\mathcal{E})$  & Reduced Hamiltonian                       & $C^\infty(T^*\mathcal{Q})$ \\
+$\mathcal{R}(\vec{q};\mathcal{E})$ & Potential energy (navigation terms) & $C^\infty(\mathcal{Q})$ \\
+$\mathbf{D}(\PhaseState)$   & Damping / dissipation matrix (port-Ham.) & $\mathbb{S}^{2n}_{\succeq 0}$ \\
+$\Mass$                     & Mass / mobility matrix                    & $\mathbb{S}^n_{++}$ \\
+$\J$                        & Symplectic matrix                         & $\mathbb{R}^{2n\times 2n}$ \\
+$\Phi^{\Delta t}_H$         & Time-$\Delta t$ flow map of $H$           & $T^*\mathcal{Q}\to T^*\mathcal{Q}$ \\
+$\pi_H(z_t)$                & Policy as phase-space flow (deterministic) & $T^*\mathcal{Q}\to\mathcal{Q}$ \\
+$\mathcal{E}_\tau$          & Environment context at stage $\tau$       & Structured record \\
+$d_i(\vec{q};\mathcal{E})$  & Signed clearance to obstacle $i$          & $\mathbb{R}$ \\
+$C(\mathcal{E})$            & Active obstacle count                     & $\mathbb{N}$ \\
+$\alpha_i(\mathcal{E})$     & Barrier weight for obstacle $i$           & $\mathbb{R}_{\geq 0}$ \\
+$b_i(s)$                    & Barrier potential applied to $d_i$        & $C^2(\mathbb{R})$ \\
+$\rho(\vec{c})$             & Material risk field                       & $[0,1]$ \\
+$\xi$                       & Learnable parameters of $\eta_\xi$        & $\mathbb{R}^P$ \\
+$\tau$                      & Stage index                               & $\mathbb{N}$ \\
+$\mathrm{CVaR}_\beta$       & Conditional Value-at-Risk at level $\beta$ & $\mathbb{R}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =======================================================================
+\section{Hamiltonian and Port-Hamiltonian Dynamics}
+\label{sec:prelim:hamiltonian}
+% =======================================================================
+
+\subsection{Classical Hamiltonian Systems}
+\label{subsec:prelim:classical_ham}
+
+A \textbf{Hamiltonian system} on $T^*\mathcal{Q} \cong \mathbb{R}^{2n}$
+is defined by a smooth scalar $H : T^*\mathcal{Q} \to \mathbb{R}$ called the
+\emph{Hamiltonian}, via Hamilton's equations:
+\begin{equation}
+  \dot{\vec{q}} = \nabla_p H(\vec{q},p), \qquad
+  \dot{p}       = -\nabla_{\vec{q}} H(\vec{q},p).
+  \label{eq:hamilton_eqs}
+\end{equation}
+Equivalently, writing $\PhaseState = (\vec{q},p)$ and the standard
+symplectic matrix
+\begin{equation}
+  \J = \begin{pmatrix} 0 & I_n \\ -I_n & 0 \end{pmatrix},
+  \label{eq:symplectic_matrix}
+\end{equation}
+Hamilton's equations take the compact form
+$\dot{\PhaseState} = \J\,\nabla_\PhaseState H(\PhaseState)$.
+
+\begin{definition}[Mechanical Hamiltonian]
+\label{def:mech_hamiltonian}
+A \emph{mechanical Hamiltonian} has the form
+\begin{equation}
+  H(\vec{q},p;\mathcal{E})
+  = \tfrac{1}{2}\,p^\top \Mass^{-1} p
+    + \mathcal{R}(\vec{q};\mathcal{E}),
+  \label{eq:mech_hamiltonian}
+\end{equation}
+where $\Mass \in \mathbb{S}^n_{++}$ is a mass/metric matrix and
+$\mathcal{R}(\vec{q};\mathcal{E})$ is the \emph{potential energy},
+encoding navigation objectives (goal attraction, obstacle repulsion, risk).
+The kinetic term $\frac{1}{2}p^\top\Mass^{-1}p$ drives forward momentum;
+the gradient $-\nabla_{\vec{q}}\mathcal{R}$ provides the restoring force.
+\end{definition}
+
+\paragraph{Flow map and policy.}
+The time-$\Delta t$ \emph{flow map} of $H$ advances phase-space state by
+integrating \eqref{eq:hamilton_eqs}:
+\begin{equation}
+  \Phi^{\Delta t}_H : T^*\mathcal{Q} \to T^*\mathcal{Q},
+  \qquad
+  (\vec{q}_{t+\Delta t}, p_{t+\Delta t})
+  = \Phi^{\Delta t}_H(\vec{q}_t, p_t).
+  \label{eq:flow_map}
+\end{equation}
+The \textbf{thesis policy} is the deterministic configuration projection of this flow:
+\begin{equation}
+  \pi_H(z_t) := \Pi_{\mathcal{Q}}\!\left(\Phi^{\Delta t}_H(z_t)\right),
+  \qquad
+  z_{t+1} = \Phi^{\Delta t}_H(z_t),
+  \label{eq:policy_as_flow}
+\end{equation}
+where $z_t = (\vec{q}_t, p_t)$ and $\Pi_{\mathcal{Q}}$ projects to configuration.
+(The earlier shorthand $\pi(\vec{q}|p)$ used conditional-distribution notation
+misleadingly; $\Phi^{\Delta t}_H$ is a \emph{deterministic} map.)
+Adapting the policy means reshaping $H$ by adjusting potential coefficients,
+adding energy terms and not relearning a flat action mapping.
+
+\paragraph{Symplectic structure.}
+A key property of Hamiltonian flows is that they are
+\textbf{symplectomorphisms}: they preserve the symplectic 2-form
+$\omega = \sum_i dq^i \wedge dp_i$.
+This implies volume preservation in phase space (Liouville's theorem) and
+controls long-run drift in numerical integration.
+
+\begin{proposition}[Symplectic invariance~\citep{hairer2006geometric}]
+\label{prop:symplectic}
+Let $H \in C^2(T^*\mathcal{Q})$ be a \emph{conservative} Hamiltonian
+(no dissipation or port inputs). Then for all $t$, the map
+$\Phi^t_H$ is a symplectomorphism: $(\Phi^t_H)^* \omega = \omega$.
+Symplectic integrators~\citep{reich1996symplectic} preserve the discrete
+symplectic form exactly (up to roundoff) for separable conservative
+Hamiltonians, while generic Euler steps accumulate $O(t)$ drift.
+\emph{Note:} once dissipation ($\mathbf{D} \succ 0$) or port inputs ($u$)
+are added via the port-Hamiltonian extension~\eqref{eq:port_ham}, the
+flow is no longer symplectic.
+The dissipative and port-input substeps are handled separately through the
+port-Hamiltonian energy balance~\eqref{eq:energy_balance} rather than via
+symplectic preservation.
+\end{proposition}
+
+\subsection{Port-Hamiltonian Extension}
+\label{subsec:prelim:portham}
+
+Classical Hamiltonian systems are conservative; real navigation involves
+dissipation (actuator drag, damping) and external forcing (control inputs,
+sensor-injected corrections).
+The \textbf{port-Hamiltonian framework}~\citep{desai2021porthamiltonian}
+extends \eqref{eq:hamilton_eqs} to:
+\begin{equation}
+  \dot{\PhaseState}
+  = \bigl(\J - \mathbf{D}(\PhaseState)\bigr)\,\nabla_\PhaseState H(\PhaseState)
+    + \mathbf{B}(\PhaseState)\,u,
+  \label{eq:port_ham}
+\end{equation}
+where:
+\begin{itemize}
+  \item $\J$ is the skew-symmetric structure matrix (symplectic part),
+  \item $\mathbf{D}(\PhaseState) \succeq 0$ is the \emph{damping / dissipation} matrix
+        (symmetric positive semi-definite),
+  \item $\mathbf{B}(\PhaseState)$ is the input port matrix, and
+  \item $u$ is an external control input or correction signal.
+\end{itemize}
+The output (observation) port is $y = \mathbf{B}^\top \nabla_\PhaseState H$.
+
+\begin{definition}[Energy balance and passivity]
+\label{def:passivity}
+Along any trajectory of \eqref{eq:port_ham}, the stored energy $H$ satisfies
+\begin{equation}
+  \dot{H}
+  = -(\nabla_\PhaseState H)^\top \mathbf{D}\,\nabla_\PhaseState H
+    + y^\top u
+  \;\leq\; y^\top u.
+  \label{eq:energy_balance}
+\end{equation}
+The system is \textbf{passive} with storage function $H$ if
+$\mathbf{D} \succeq 0$: energy stored is bounded above by energy
+supplied through the port $y^\top u$.
+Passivity is the central stability concept for our framework:
+an adaptation step that preserves $\mathbf{D} \succeq 0$ is
+guaranteed not to inject spurious energy into the dynamics.
+\end{definition}
+
+The GRL-SNAM Hamiltonian~\citep{ellendula2025grlsnam} (Definition~\ref{def:mech_hamiltonian}) is a
+mechanical port-Hamiltonian where the dissipative port models motion
+resistance and the input port receives online correction signals from
+the adaptation loop.
+
+Figure~\ref{fig:prelim:portham} illustrates the port-Hamiltonian structure.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small\sffamily,
+  box/.style={rectangle, rounded corners=4pt,
+              draw=#1!70!black, fill=#1!10,
+              line width=1pt,
+              minimum width=2.6cm, minimum height=1.1cm,
+              align=center, inner sep=6pt},
+  arr/.style={-{Stealth[length=6pt]}, line width=1.1pt, color=#1},
+  lbl/.style={font=\scriptsize\sffamily\itshape, text=gray!60!black},
+  eqlbl/.style={font=\scriptsize\sffamily, text=black},
+]
+
+% Central storage box
+\node[box=teal] (H) at (0,0)
+  {$H(\vec{q},p;\mathcal{E})$\\[2pt]\scriptsize stored energy};
+
+% Symplectic flow
+\node[box=blue!60!black] (flow) at (-4.2,0)
+  {$\J\,\nabla_z H$\\[2pt]\scriptsize conservative flow\\(symplectic)};
+
+% Dissipation
+\node[box=red!60!black] (diss) at (0,-2.8)
+  {$-\mathbf{D}\,\nabla_z H$\\[2pt]\scriptsize dissipation\\$\mathbf{D}\succeq 0$};
+
+% External port
+\node[box=orange] (port) at (4.2,0)
+  {$\mathbf{B}u$\\[2pt]\scriptsize control /\\correction port};
+
+% Output
+\node[box=gray!60!black] (out) at (0,2.8)
+  {$y = \mathbf{B}^\top\nabla_z H$\\[2pt]\scriptsize observation port};
+
+% Summation
+% \node[circle, draw=black!50, fill=white, minimum size=22pt,
+%       font=\scriptsize\sffamily] (sum) at (0+0.1*0,0) {};
+% \node at (sum) {$+$};
+
+% Arrows
+\draw[arr=blue!60!black] (flow.east) -- (H.west)
+  node[midway, above, lbl] {$\dot{z}_{\mathrm{cons}}$};
+\draw[arr=red!60!black]  (diss.north) -- (H.south)
+  node[midway, right, lbl] {$\dot{z}_{\mathrm{diss}}$};
+\draw[arr=orange]        (port.west) -- (H.east)
+  node[midway, above, lbl] {$\dot{z}_{\mathrm{ctrl}}$};
+\draw[arr=teal]          (H.west) -- (flow.east)
+  node[midway, above=4pt, lbl] {$\nabla_z H$};
+\draw[arr=teal]          (H.south) -- (diss.north);
+\draw[arr=teal]          (H.east) -- (port.west);
+\draw[arr=gray!60!black] (H.north) -- (out.south)
+  node[midway, right, lbl] {$\dot{z}$};
+
+% Energy balance annotation
+\node[eqlbl, below=8pt of diss, text width=7cm, align=center]
+  {$\dot{H} = -(\nabla_z H)^\top \mathbf{D}\,\nabla_z H + y^\top u
+    \;\leq\; y^\top u$};
+
+\end{tikzpicture}
+\caption{%
+  \textbf{Port-Hamiltonian structure.}
+  The dynamics decompose into three additive contributions:
+  a conservative symplectic flow (blue),
+  a dissipative damping term (red, $\mathbf{D}\succeq 0$),
+  and an external control/correction port (orange).
+  The energy balance~\eqref{eq:energy_balance} ensures passivity:
+  stored energy can only increase when energy is supplied through the port.
+  Chapters~\ref{chap:grlsnam}--\ref{chap:material} use this structure to
+  monitor stability of each adaptation step.
+}
+\label{fig:prelim:portham}
+\end{figure}
+
+\subsection{From Optimal Control to Reduced Hamiltonians}
+\label{subsec:prelim:pmp}
+
+At stage $\tau$ with context $\mathcal{E}_\tau$, navigation is posed as a
+constrained optimal control problem (OCP):
+\begin{equation}
+\label{eq:ocp_prelim}
+\begin{aligned}
+\min_{\vec{u}(\cdot)\in\mathcal{U}}\;
+&\int_0^T L(\vec{q}(t),\vec{u}(t);\mathcal{E}_\tau)\,dt \\
+\text{s.t.}\quad
+&\dot{\vec{q}} = f(\vec{q}) + A(\vec{q})\,\vec{u},\;
+d_i(\vec{q};\mathcal{E}_\tau)\geq 0,\;
+\vec{q}(0)=\vec{q}_0,\;\vec{q}(T)=\vec{q}_{\mathrm{target}}.
+\end{aligned}
+\end{equation}
+The \emph{Pontryagin Maximum Principle} (PMP)~\citep{
+FERREIRA1994whenpmp,hartl1995survey} provides necessary optimality conditions
+by introducing a costate $p : [0,T]\to\mathbb{R}^n$ and defining the
+\emph{control Hamiltonian}
+$\mathcal{H}_c(\vec{q},p,\vec{u}) = \langle f(\vec{q})+A(\vec{q})\vec{u},\,p\rangle
+- L(\vec{q},\vec{u};\mathcal{E})$.
+The PMP motivates using a costate variable $p$ and a reduced phase-space
+dynamics that jointly govern the optimal trajectory.
+
+\textbf{Thesis surrogate.}
+Rather than deriving the exact PMP Hamiltonian for an arbitrary navigation OCP
+(which yields $H_{\mathrm{PMP}} = p^\top f(q) + \tfrac{1}{2}p^\top A R_u^{-1} A^\top p - \ell(q;\mathcal{E})$
+under quadratic control cost, a sign convention unsuited to energy shaping),
+we employ a \emph{mechanical surrogate Hamiltonian}:
+\begin{equation}
+H(\vec{q},p;\mathcal{E})
+= \tfrac{1}{2}\,p^\top\Mass^{-1}p
+  + V(\vec{q};\mathcal{E}),
+\quad
+V(\vec{q};\mathcal{E})
+= \ell(\vec{q};\mathcal{E})
+  + \textstyle\sum_{i=1}^{C(\mathcal{E})} \alpha_i(\mathcal{E})\,
+    b_i\!\bigl(d_i(\vec{q};\mathcal{E})\bigr),
+\label{eq:reduced_ham_prelim}
+\end{equation}
+where $b_i$ is a $C^2$ barrier potential, $\alpha_i(\mathcal{E})\geq 0$
+are environment-conditioned weights, and the potential $V$ is chosen so
+that its gradient acts as a repulsive/attractive force aligned with the
+navigation objective.
+This surrogate is \emph{inspired} by the PMP structure (a costate $p$ as
+internal evaluator, Hamilton's equations as motion law) but is not claimed
+to be the exact PMP Hamiltonian for arbitrary navigation OCPs.
+It is learned end-to-end so that the induced flow \eqref{eq:policy_as_flow}
+recovers navigation-optimal behavior.
+
+% =======================================================================
+\section{Stability, Barriers, and Safety}
+\label{sec:prelim:stability}
+% =======================================================================
+
+\subsection{Lyapunov Stability and Energy-Based Analysis}
+\label{subsec:prelim:lyapunov}
+
+\begin{definition}[Lyapunov function]
+\label{def:lyapunov}
+A function $V : T^*\mathcal{Q} \to \mathbb{R}_{\geq 0}$ is a
+\emph{Lyapunov function} for an equilibrium $\PhaseState^*$ if
+$V(\PhaseState^*) = 0$, $V(\PhaseState) > 0$ for $\PhaseState \neq \PhaseState^*$,
+and $\dot{V}(\PhaseState) \leq 0$ along trajectories.
+Strict decrease ($\dot{V} < 0$) gives asymptotic stability.
+\end{definition}
+
+For a mechanical Hamiltonian \eqref{eq:mech_hamiltonian} with a single goal
+at $\vec{q}^*$, the Hamiltonian itself is a Lyapunov candidate: dissipation
+($\mathbf{D} \succ 0$) ensures $\dot{H} < 0$ when moving, driving the
+system toward the energy minimum.
+This is the stability guarantee used in Chapter~\ref{chap:grlsnam}.
+
+\subsection{Control Barrier Functions}
+\label{subsec:prelim:cbf}
+
+\begin{definition}[Control Barrier Function (CBF)~\citep{ames2016control}]
+\label{def:cbf}
+Let $\mathcal{S} = \{\vec{q} : h(\vec{q}) \geq 0\}$ be a safe set.
+A function $h \in C^1$ is a \emph{Control Barrier Function} if there exists
+a class-$\mathcal{K}$ function $\kappa$ such that for all $\vec{q} \in \mathcal{S}$:
+\begin{equation}
+  \sup_{\vec{u}}\;\bigl[
+    L_f h(\vec{q}) + L_g h(\vec{q})\,\vec{u}
+  \bigr] \geq -\kappa(h(\vec{q})),
+  \label{eq:cbf_condition}
+\end{equation}
+where $L_f h$ and $L_g h$ are Lie derivatives.
+If \eqref{eq:cbf_condition} holds, then $\mathcal{S}$ is forward invariant.
+\end{definition}
+
+In our framework, the clearance functions $d_i(\vec{q};\mathcal{E})$
+play the role of barrier certificates.
+Rather than imposing them as external QP filters, they enter the energy as
+barrier potentials $b_i(d_i)$, so that the gradient field naturally repels
+trajectories from $\{d_i = 0\}$.
+Chapter~\ref{chap:material} adds a steep hazard-barrier term
+$H_{\mathrm{haz}}^{\mathrm{hard}}$ whose potential grows sharply near hazard
+boundaries, creating a strong repulsive force.
+Formal forward invariance under this barrier requires additional assumptions:
+in continuous time, an infinite barrier with bounded energy suffices;
+for finite-step rollouts, either a timestep bound or a discrete CBF
+projection step is needed (see §\ref{subsec:ch4:dynamics}).
+
+\subsection{Barrier Relaxation of State Constraints}
+\label{subsec:prelim:barrier_relax}
+
+For learning and differentiable rollout, the hard constraints
+$d_i \geq 0$ in \eqref{eq:ocp_prelim} are replaced by
+log-barrier or smooth-barrier potentials~\citep{NocedalWright2006NumericalOptimization}.
+
+\begin{proposition}[Barrier relaxation, adapted from~\citep{malisani2023interior}]
+\label{prop:barrier_convergence}
+Under standard Slater regularity and second-order sufficiency conditions,
+the solution of the barrier-relaxed OCP converges to the solution of the
+state-constrained OCP as the barrier stiffness parameter $t \to \infty$.
+The barrier-induced approximate multipliers
+$\lambda_i^t(\tau) = \alpha_i/(t\,d_i(q^t(\tau)))$
+converge weakly-$*$ to the true PMP constraint multipliers, and
+complementarity holds in the limit.
+\end{proposition}
+
+This proposition licenses the use of differentiable barrier potentials in
+the learned Hamiltonian: the training loss can be backpropagated through
+the rollout, and as the learned $\alpha_i$ values grow, the relaxed solution
+converges to the constrained one.
+
+% =======================================================================
+\section{Risk-Sensitive Objectives}
+\label{sec:prelim:risk}
+% =======================================================================
+
+Average-cost optimization is insufficient when the environment contains
+rare but catastrophic material hazards: a policy that maximizes expected
+return may still exhibit high tail-risk.
+
+\begin{definition}[Value-at-Risk and CVaR]
+\label{def:cvar}
+For a random cost $X$ and confidence level $\beta \in (0,1)$:
+\begin{align}
+  \mathrm{VaR}_\beta(X) &:= \inf\{x : P(X \leq x) \geq \beta\},
+  \label{eq:var} \\
+  \mathrm{CVaR}_\beta(X) &:= \min_{\nu \in \mathbb{R}}
+    \left[\nu + \frac{1}{1-\beta}\,\mathbb{E}(X - \nu)_+\right].
+  \label{eq:cvar}
+\end{align}
+For continuous distributions this simplifies to
+$\mathrm{CVaR}_\beta(X) = \mathbb{E}[X \mid X \geq \mathrm{VaR}_\beta(X)]$.
+$\mathrm{CVaR}_\beta$ is the expected cost in the upper $(1-\beta)$ tail of
+outcomes: for $\beta = 0.95$ it focuses on the worst $5\%$ of realizations,
+not the worst $95\%$.
+It is a \emph{coherent risk measure}~\citep{rockafellar2002cvar}:
+convex, monotone, and sub-additive, making it tractable as an optimization
+objective.
+\end{definition}
+
+\begin{definition}[Constrained MDP (CMDP)~\citep{achiam2017constrained}]
+\label{def:cmdp}
+A CMDP augments a standard MDP with a cost function $c : \mathcal{S}\times\mathcal{A}\to\mathbb{R}$
+and a constraint $\mathbb{E}\bigl[\sum_t \gamma^t c(s_t,a_t)\bigr] \leq \kappa$.
+Constrained policy optimization (CPO) solves CMDPs with near-constraint
+satisfaction per update step.
+\end{definition}
+
+In Chapter~\ref{chap:material}, the tail-risk objective enters as a
+CVaR term over material cost along the trajectory:
+\begin{equation}
+  J_{\mathrm{risk}}(\pi)
+  = \mathrm{CVaR}_\beta\!\Bigl[\int_0^T \rho(\vec{c}(t))\,dt\Bigr],
+  \label{eq:cvar_objective}
+\end{equation}
+where $\rho : \mathcal{Q}_f \to [0,1]$ is the material risk field.
+This is not a constraint added externally: it induces a new energy factor
+$H_{\mathrm{mat}}^{\mathrm{soft}}$ whose gradient directly reshapes the
+force field.
+
+% =======================================================================
+\section{Multi-Timescale Adaptation Hierarchy}
+\label{sec:prelim:continual}
+% =======================================================================
+
+A defining feature of our approach is that adaptation operates at
+\emph{three nested timescales}, each correcting a different aspect of the
+agent's behavior.
+Figure~\ref{fig:prelim:timescales} illustrates this hierarchy.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  font=\small\sffamily,
+  ring/.style args={#1,#2,#3}{
+    ellipse, draw=#1!70!black, fill=#1!8,
+    line width=1.2pt,
+    minimum width=#2, minimum height=#3,
+    align=center
+  },
+  lbl/.style args={#1}{
+    font=\scriptsize\sffamily, text=#1
+  },
+  arr/.style={-{Stealth[length=5pt]}, line width=1pt, dashed, color=gray!60},
+]
+
+% Three nested ellipses
+\node[ring={violet,6.4cm,3.4cm}] (outer) at (0,0) {};
+\node[ring={orange,4.4cm,2.3cm}] (mid)   at (0,0) {};
+\node[ring={teal,2.4cm,1.2cm}] (inner)   at (0,0) {};
+
+% Labels inside
+\node[lbl={teal!80!black}, font=\small\sffamily\bfseries] at (0,0)
+  {Step loop};
+\node[lbl={teal!60!black}] at (0,-0.38)
+  {$\Phi^{\Delta t}_H$ integration};
+
+\node[lbl={orange!80!black}, font=\small\sffamily\bfseries]
+  at (0, 1.32) {Segment / episode loop};
+\node[lbl={orange!60!black}]
+  at (0, 0.82) {online $\alpha_i, \Mass$ updates};
+
+\node[lbl={violet!80!black}, font=\small\sffamily\bfseries]
+  at (0, 2.18) {Curriculum loop};
+\node[lbl={violet!60!black}]
+  at (0, 1.86) {meta-parameter $\xi$, coverage, risk};
+
+% Side annotations
+\node[lbl={teal!70!black}, right=2.5cm of inner,
+      text width=3.2cm, align=left]
+  (ann1) {$\Delta t \sim 10$ms\\Symplectic integration\\Fixed $H$ per stage};
+
+\node[lbl={orange!70!black}, above right=-1.2cm and -9.0cm of mid,
+      text width=3.4cm, align=left]
+  (ann2) {$\sim$episode / corridor\\Update barrier weights $\alpha_i$\\Online correction signals};
+
+\node[lbl={violet!70!black}, above right=0.8cm and 0.4cm of outer,
+      text width=3.8cm, align=left]
+  (ann3) {$\sim$curriculum / deployment\\Update $\xi$: energy parameterization\\Risk model, coverage objectives};
+
+% Arrows
+\draw[arr] (ann1.west) -- +(-2.6,0);
+\draw[arr] (ann2.east) -- +(1.4,0);
+\draw[arr] (ann3.south west) -- +(-0.3,-0.6);
+
+\end{tikzpicture}
+\caption{%
+  \textbf{Multi-timescale adaptation hierarchy.}
+  Three nested loops operate at increasing timescales.
+  The \emph{step loop} (innermost, teal) integrates the fixed Hamiltonian
+  $H$ via a symplectic solver at each $\Delta t$.
+  The \emph{segment/episode loop} (middle, orange) updates barrier weights
+  $\alpha_i(\mathcal{E})$ and correction signals online, reshaping the
+  energy landscape between corridor segments.
+  The \emph{curriculum loop} (outer, violet) updates the meta-parameters
+  $\xi$ of the scenario-to-energy network, incorporating risk objectives
+  and coverage criteria over full training episodes.
+  Each loop corrects a different aspect of the decision field
+  without disrupting the inner loops' structure.
+}
+\label{fig:prelim:timescales}
+\end{figure}
+
+\paragraph{Step loop.}
+At every integration step $t \to t + \Delta t$, the symplectic integrator
+advances the phase-space state using the current Hamiltonian $H(\cdot;\mathcal{E}_\tau)$.
+No parameters are updated here; the field topology is fixed for the stage.
+
+\paragraph{Segment / episode loop.}
+After each navigation segment or episode, the barrier weights
+$\{\alpha_i(\mathcal{E}_\tau)\}$ and online correction signals $u$ are updated
+based on clearance violations, goal proximity, and (in Stage 2) material-risk
+observations.
+This is the \emph{geometric alignment} step that reshapes the energy landscape
+between stages without catastrophic relearning.
+
+\paragraph{Curriculum loop.}
+Over longer deployment, the meta-parameters $\xi$ of the
+scenario-to-energy mapping $\eta_\xi : \mathcal{E}_\tau \mapsto H(\cdot;\mathcal{E}_\tau)$
+are updated using rollout gradients, risk objectives, and coverage criteria.
+This loop corresponds to the continual learning component of the framework,
+and is the focus of Chapter~\ref{chap:material}.
+
+% =======================================================================
+\section{Learning from Demonstrations and Rewards}
+\label{sec:rw:demonstrations}
+% =======================================================================
+
+\paragraph{Imitation learning.}
+Behavioral cloning~\citep{torabi2018behavioralcloningobservation} treats policy learning as
+supervised regression onto expert actions, scaling well with data but
+degrading under distribution shift.
+DAgger~\citep{shi2025dagger} corrects this by querying the expert
+on learner-visited states, and GAIL~\citep{ho2016generativeadversarialimitationlearning} reframes
+imitation as occupancy-measure matching.
+For deformable settings, IL has been applied to manipulation
+trajectories~\citep{zhang2024adaptigraph} and coordinated
+motion~\citep{Lai_2025}.
+\emph{Gap:} all IL variants fix the demonstration target and learn a
+policy mapping; the resulting controller exposes no force-field
+topology and has no gradient pathway for reshaping dynamics when
+the environment changes.
+
+\paragraph{Reinforcement learning for navigation.}
+PPO~\citep{schulman2017proximalpolicyoptimizationalgorithms}, SAC~\citep{haarnoja2018softactorcriticoffpolicymaximum,mohammad2025sac},
+and TD3~\citep{fujimoto2018addressingfunctionapproximationerror} dominate continuous-control navigation.
+Large-scale platforms (Habitat, Gibson, HM3D) and distributed
+training~\citep{wijmans2019dd} have pushed PointNav near-perfect in
+simulation, but performance degrades sharply under distribution shift.
+Hierarchical RL~\citep{vezhnevets2017feudalnetworkshierarchicalreinforcement} adds temporal
+structure without exposing the topology of the closed-loop field.
+Most methods remain within the dynamic programming principle; a
+growing line of work departing from it like HJB-based
+learning~\citep{settai2025temporal}, martingale
+formulations~\citep{jia2023qlearning}, and duality-driven Hamiltonian
+RL~\citep{nguyen2024dpo} is more directly related to this thesis.
+\emph{Gap:} the reward is fixed; adapting to new material or risk
+requires reward redesign, not field reshaping.
+
+\paragraph{Inverse RL and reward learning.}
+MaxEnt IRL~\citep{ziebart2008maximum} and adversarial
+IRL~\citep{luo2024c} partially relax the fixed-reward assumption
+by recovering objectives from demonstrations.
+Terrain-cost learning~\citep{sathyamoorthy2022terrapn} recovers
+traversability fields from demonstrations for off-road navigation.
+\emph{Gap:} IRL learns the reward but fixes the downstream optimizer;
+updates to the objective do not automatically propagate as stable
+updates to the dynamics, and the closed-loop topology remains
+unconstrained.
+
+% =======================================================================
+\section{Structured Control and Planning under Constraints}
+\label{sec:rw:structured}
+% =======================================================================
+
+\paragraph{Classical planning and model-based navigation.}
+A*~\citep{hart1968formal} and sampling-based planners
+(RRT*, PRM*)~\citep{karaman2011sampling} provide completeness and
+optimality guarantees over explicit cost fields.
+MPPI~\citep{williams2017mppi} enables stochastic optimal control
+with GPU-parallel rollouts.
+Neural scene representations like NeRF-SLAM~\citep{Zhu2022CVPR,sucar2021imap},
+GS-SLAM~\citep{keetha2024splatamsplattrack} and differentiable
+planners~\citep{gupta2019cognitivemappingplanningvisual} further enrich the map for
+downstream use.
+\emph{Gap:} planners fix the cost/objective representation and optimize
+paths relative to it; the decision field structure is not itself learned
+or continually updated as latent semantic properties change.
+
+\paragraph{Safety-critical control.}
+CBF-based QP filters~\citep{ames2016control} enforce forward
+invariance of a safe set at runtime; neural zeroing
+barriers~\citep{feng2023safergapgapbasedlocal} and adaptive
+mechanisms~\citep{mohammad2025sac} extend these to learned settings.
+CPO~\citep{achiam2017constrained} provides near-constraint satisfaction
+per gradient step under CMDPs.
+CVaR MDPs~\citep{chow2015risk} optimize tail-risk rather than expected
+cost, focusing on rare catastrophic outcomes.
+\emph{Gap:} safety and risk typically appear as external projection
+layers or constraint penalties on top of unstructured controllers.
+We integrate them directly as energy terms whose gradients
+shape the force field, co-optimizing safety and task performance under
+a single structure-preserving flow.
+
+\paragraph{Geometric, Hamiltonian, and port-Hamiltonian learning.}
+HNNs~\citep{greydanus2019hamiltonian} learn a scalar $H(q,p)$ whose
+gradients define conservative dynamics, improving long-horizon
+stability over unconstrained neural ODEs~\citep{chen2019neuralordinarydifferentialequations}.
+SymODEN~\citep{zhong2020symplectic} adds control inputs; Lagrangian
+networks~\citep{cranmer2020lagrangian} remove the need for canonical
+coordinates.
+Port-Hamiltonian networks~\citep{dipersio2025porthamiltonianneuralnetworkstheory,desai2021porthamiltonian}
+explicitly separate stored energy, dissipation, and forcing ports;
+stable port-HNNs~\citep{roth2025stable} enforce global Lyapunov
+stability by construction.
+Geometric RL with equivariant
+policies~\citep{hoang2025geometry,martínezrubio2023acceleratedriemannianoptimizationhandling} and
+duality-driven Hamiltonian RL~\citep{nguyen2024dpo} exploit
+configuration-space structure for manipulation and optimal control
+without Bellman backups.
+Symplectic integrators~\citep{reich1996symplectic,hairer2006geometric}
+preserve the symplectic form over long rollouts, controlling the
+energy drift that plagues generic integrators.
+Table~\ref{tab:rw:hamiltonian} summarizes this literature.
+\emph{Gap:} existing Hamiltonian and port-Hamiltonian learning is
+developed for \emph{system identification} for recovering the energy of a
+known physical system from trajectory data and not for continual
+risk-sensitive navigation in unknown environments.
+We transfer the same structural principles to decision-making:
+energy factors encode navigation objectives, and adaptation loops
+update coefficients online as new structure is revealed.
+
+\begin{table}[t]
+\centering
+\caption{%
+  \textbf{Geometric and Hamiltonian learning literature.}
+  No existing method provides navigation decision-making with online
+  adaptation \emph{and} risk-semantic terms simultaneously.
+}
+\label{tab:rw:hamiltonian}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.3}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Method} &
+\makecell{\textbf{Non-conserv.}\\\textbf{/ control}} &
+\makecell{\textbf{Navigation}\\\textbf{decision}} &
+\makecell{\textbf{Online}\\\textbf{adapt.}} &
+\makecell{\textbf{Risk /}\\\textbf{semantic}} \\
+\midrule
+HNN~\citep{greydanus2019hamiltonian}            & \none & \none & \none & \none \\
+SymODEN~\citep{zhong2020symplectic}             & \partially & \none & \none & \none \\
+LNN~\citep{cranmer2020lagrangian}               & \none & \none & \none & \none \\
+Port-HNN~\citep{desai2021porthamiltonian} & \full & \none & \none & \none \\
+Stable port-HNN~\citep{roth2025stable}          & \full & \none & \none & \none \\
+Geometric RL~\citep{hoang2025geometry}          & \none & \partially & \none & \none \\
+Hamiltonian RL~\citep{nguyen2024dpo}            & \partially & \full & \none & \none \\
+HJB-based RL~\citep{settai2025temporal}         & \partially & \full & \none & \none \\
+\midrule
+\textbf{Stage~1 (Ch.~\ref{chap:grlsnam})}  & \full & \full & \full & \none \\
+\textbf{Stage~2 (Ch.~\ref{chap:material})} & \full & \full & \full & \full \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+% =======================================================================
+\section{Learning and Adapting in Unknown Environments}
+\label{sec:rw:unknown}
+% =======================================================================
+
+\paragraph{Semantic and material-aware navigation.}
+TerraPN~\citep{sathyamoorthy2022terrapn} learns terrain cost maps from
+demonstrations for a DWA~\citep{fox1997dynamic} downstream planner.
+Context-aware reward learning~\citep{wang2024crl} adapts objectives
+to semantic context.
+Neural Topological SLAM~\citep{chaplot2020neuraltopologicalslamvisual} and semantic vision
+extensions~\citep{zhang2025semantic} provide richer map representations
+for goal-directed navigation.
+RUGD~\citep{rugd2019} and RELLIS-3D~\citep{rellis2020} supply off-road
+semantic datasets; self-supervised traversability
+methods~\citep{mclennan2025learning} recover material costs without
+annotation.
+\emph{Gap:} these methods treat perception as upstream and planning as
+downstream; semantic signals update the map but not the structure of the
+decision dynamics.
+We integrate material signals as explicit energy terms whose
+gradients directly reshape the phase-space vector field.
+
+\paragraph{Simultaneous navigation and mapping (SNAM).}
+SGoLAM~\citep{kim2021sgolamsimultaneousgoallocalization}, CMP~\citep{gupta2019cognitivemappingplanningvisual}, and
+Active Neural SLAM~\citep{chaplot2020learning} couple map construction
+with policy execution, prioritizing rich global maps.
+They do not reason about mapping cost and are not formulated as optimal
+control problems.
+GRL-SNAM instead targets joint exploration with minimal sensing effort:
+the energy landscape is refined only in the local neighborhood the agent
+visits, not rebuilt globally.
+
+\paragraph{Continual learning, meta-learning, and online adaptation.}
+EWC~\citep{kirkpatrick2017ewc} protects parameters from forgetting via
+Fisher-information regularization; CLEAR~\citep{rolnick2019experience}
+adds experience replay; progressive networks~\citep{rusu2016progressive}
+expand architecture per task.
+MAML~\citep{finn2017maml} learns initializations for rapid fine-tuning;
+RMA~\citep{kumar2021rma} adds an online adaptation module for terrain
+and payload changes in legged locomotion.
+\emph{Gap:} CL and meta-learning adapt parameters and latent context but
+do not regulate the topology or geometry of the closed-loop vector
+field.
+We contribute a complementary axis: continual reshaping of
+the energy landscape itself, monitored by passivity and coverage
+criteria across three nested timescales.
+
+\paragraph{Foundation models and LLM-based planning.}
+SayCan~\citep{ahn2022saycan}, RT-1/RT-2~\citep{brohan2023rt1roboticstransformerrealworld,rt22023},
+Code as Policies~\citep{liang2022code}, and LLM-based
+navigation~\citep{zhu2024navi2gazeleveragingfoundationmodels,xiong2026sfconavefficientzeroshotvisual}
+provide strong semantic goal specification and task decomposition.
+They govern the high-level planning layer and rely on separate
+low-level controllers for stable continuous dynamics.
+Our approach is complementary: LLMs can supply semantic goals encoded
+as energy-term coefficients; the Hamiltonian dynamics then ensures
+physically stable, risk-aware execution.
+
+Foundation models and the Hamiltonian navigation framework are
+complementary, not competing.
+LLMs can supply semantic goals, task decompositions, and material-context
+priors that enter our framework as potential energy terms; the
+Hamiltonian dynamics then ensures that these high-level intentions translate
+into physically stable, risk-aware trajectories.
+
+% -----------------------------------------------------------------------
+\section{Summary and Positioning of This Thesis}
+\label{sec:rw:summary}
+% -----------------------------------------------------------------------
+
+Figure~\ref{fig:rw:gapmap} synthesizes the paradigm landscape along two axes:
+the degree of \emph{structural dynamics} encoded in the policy, and the
+\emph{timescale of adaptation}.
+Three observations emerge.
+
+First, methods with the strongest structural guarantees (port-Hamiltonian
+networks, CBF-based controllers, classical planners) tend to fix either the
+dynamics class or the objective, and provide little or no continual
+adaptation.
+
+Second, methods with the richest continual adaptation (meta-RL, CL,
+LLM-planners) typically operate over flat policy or parameter spaces, with no
+explicit topology guarantees on the resulting dynamics.
+
+Third, the combination of structured dynamics and continual adaptation, the
+combination needed for safe, correctable, risk-sensitive navigation in unknown
+environments, is the gap that our work directly addresses.
+
+Figure~\ref{fig:rw:gapmap} motivates
+our central contribution: a Hamiltonian learning framework in which
+the policy is the flow map of an energy landscape that is structured by
+design and continually enriched by experience, so that geometry, material
+risk, and adaptation timescale are not separate concerns but unified aspects
+of one framework.
+
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small\sffamily,
+  % styles
+  blk/.style={
+    rectangle, rounded corners=4pt,
+    draw=#1!70!black, fill=#1!9,
+    line width=1pt,
+    minimum width=2.8cm, minimum height=0.9cm,
+    align=center, inner sep=4pt
+  },
+  thesisblk/.style={
+    rectangle, rounded corners=4pt,
+    draw=violet!70!black, fill=violet!15,
+    line width=1.5pt,
+    minimum width=3.2cm, minimum height=0.9cm,
+    align=center, inner sep=4pt,
+    font=\small\sffamily\bfseries
+  },
+  gap/.style={
+    draw=red!50!black, fill=red!6,
+    dashed, line width=0.8pt
+  },
+  arr/.style={-{Stealth[length=5pt]}, line width=1pt, color=#1},
+  lbl/.style={font=\scriptsize\sffamily\itshape, text=gray!70!black},
+]
+
+% ---- x-axis: "what is learned" (structure → flat) ----
+% ---- y-axis: "adaptation timescale" (none → continual) ----
+
+% Column headers
+\node[font=\scriptsize\sffamily\bfseries, text=gray!60] at (-3.8, 3.6)
+  {Structured dynamics};
+\node[font=\scriptsize\sffamily\bfseries, text=gray!60] at (3.8, 3.6)
+  {Flat policy / value fn.};
+\draw[arr=gray!40, <->] (-2.2,3.6) -- (2.2,3.6);
+
+% Row labels
+\node[font=\scriptsize\sffamily\bfseries, text=gray!60, rotate=90] at (-7.2, 0)
+  {No adaptation $\longrightarrow$ Continual adaptation};
+\draw[arr=gray!40, <->] (-6.8,-2.6) -- (-6.8, 2.6);
+
+% ---- Paradigm boxes ----
+% top-left: structured + no/partial adaptation
+\node[blk=teal]   (hnn)   at (-3.6, 2.0) {Port-HNN\\(sysid only)};
+\node[blk=teal]   (cbf)   at (-3.6, 0.6) {CBF / Safe RL\\(fixed safety set)};
+\node[blk=teal]   (plan)  at (-3.6,-0.8) {A* / RRT* / MPC\\(fixed cost field)};
+
+% top-right: flat + no/partial adaptation
+\node[blk=orange] (bc)    at ( 3.6, 2.0) {BC / DAgger\\(fixed demos)};
+\node[blk=orange] (rl)    at ( 3.6, 0.4) {PPO / SAC / TD3\\(fixed reward)};
+\node[blk=orange] (irl)   at ( 3.6,-1.2) {IRL / GAIL\\(two-stage)};
+
+% bottom-right: flat + continual adaptation
+\node[blk=blue!60!black] (meta)  at ( 3.6,-2.9) {MAML / CLEAR\\(param.\ adaptation)};
+\node[blk=blue!60!black] (llm)   at ( 0.0,-2.2) {LLM planners\\(semantic only)};
+
+% bottom-left: structured + continual — THE GAP, then filled by thesis
+\node[blk=red!60!black, gap] (gapbox) at (-3.6,-2.9)
+  {\textcolor{red!70!black}{\textbf{GAP:}}\\ structured \&\\ continual};
+
+% thesis arrow
+\node[thesisblk] (thesis) at (-3.6, -5.0)
+  {\textbf{This thesis}\\\textbf{(Continual Ham.\ Learning)}};
+\draw[arr=violet!70!black, line width=1.5pt]
+  (thesis.north) -- (gapbox.south)
+  node[midway, right=2pt, font=\scriptsize\sffamily\itshape, text=violet!80!black]
+    {fills this gap};
+
+% arrows showing "each paradigm leaves something fixed"
+\node[lbl, above=2pt of hnn]  {learns $H$ but not for navigation};
+\node[lbl, above=2pt of bc]   {demo target is fixed};
+\node[lbl, above=-2pt of rl]   {reward is fixed};
+\node[lbl, below=2pt of plan] {cost field is fixed};
+\node[lbl, below=2pt of irl]  {optimizer is fixed};
+\node[lbl, below=2pt of meta] {controller form is fixed};
+
+\end{tikzpicture}
+\caption{%
+  \textbf{Paradigm gap map.}
+  Existing methods cluster into two axes: those providing structured dynamics
+  (left column) and those with richer adaptation (right/bottom).
+  No existing paradigm simultaneously provides structured dynamics \emph{and}
+  continual adaptation with risk sensitivity.
+  This thesis fills that gap through continual Hamiltonian learning.
+}
+\label{fig:rw:gapmap}
+\end{figure}
+
+% =======================================================================
+\section{Supporting Theoretical Results}
+\label{sec:prelim:theory}
+% =======================================================================
+
+The following lemmas and theorems underpin the claims made in
+Chapters~\ref{chap:grlsnam} and~\ref{chap:material}.
+They are stated precisely here and referenced throughout the thesis.
+
+% -----------------------------------------------------------------------
+\subsection*{A. Well-Posedness of the Learned Hamiltonian Flow}
+% -----------------------------------------------------------------------
+
+\begin{lemma}[Local existence and uniqueness]
+\label{lem:wellposed}
+Fix an active obstacle set $\mathcal{C}$, a positive-definite mass matrix
+$\Mass \succ 0$, and bounded energy coefficients.
+Suppose $H_\theta \in C^2$ on the safe interior
+$\{\vec{q} : d_i(\vec{q}) > 0,\, \forall i \in \mathcal{C}\}$.
+Then the vector field
+\[
+  \dot{z} = (\J - \mathbf{D}_\theta(z))\,\nabla_z H_\theta(z) + \mathbf{B}\,u
+\]
+is locally Lipschitz on the safe interior, so the rollout has a unique
+solution on $[0,T]$ up to the first active-set change or boundary contact.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+$\nabla_z H_\theta$ is $C^1$ (since $H_\theta \in C^2$) on the open safe
+interior, and $\J$, $\mathbf{D}_\theta$, $\mathbf{B}$ are bounded there.
+The Picard--Lindel\"of theorem then gives local existence and uniqueness.
+\end{proof}
+
+% -----------------------------------------------------------------------
+\subsection*{B. Continuous-Time Passivity}
+% -----------------------------------------------------------------------
+
+\begin{theorem}[Port-Hamiltonian energy balance]
+\label{thm:passivity}
+If $\mathbf{D}_\theta(z) \succeq 0$ for all $z$, then along solutions of
+\eqref{eq:port_ham}:
+\[
+  \dot{H}_\theta = -(\nabla_z H_\theta)^\top \mathbf{D}_\theta\,\nabla_z H_\theta
+                  + y^\top u,
+  \qquad y = \mathbf{B}^\top \nabla_z H_\theta.
+\]
+In particular, if $u = 0$ the stored energy is non-increasing:
+$\dot{H}_\theta \leq 0$.
+\end{theorem}
+
+\begin{proof}
+Differentiate $H_\theta(z(t))$ along trajectories and substitute
+$\dot{z} = (\J - \mathbf{D}_\theta)\nabla_z H_\theta + \mathbf{B}u$.
+Skew-symmetry of $\J$ gives $(\nabla_z H_\theta)^\top \J\,\nabla_z H_\theta = 0$.
+\end{proof}
+
+% -----------------------------------------------------------------------
+\subsection*{C. Discrete Passivity under the Split Integrator}
+% -----------------------------------------------------------------------
+
+\begin{theorem}[Discrete energy inequality]
+\label{thm:discrete_passivity}
+Let the integration step split into a symplectic conservative half-step
+(leapfrog) followed by a dissipative correction and port input.
+For step size $\Delta t \leq h_0$ (a problem-dependent constant),
+\[
+  H_\theta(z_{n+1}) - H_\theta(z_n)
+  \;\leq\;
+  \Delta t\, y_n^\top u_n + C\,\Delta t^2,
+\]
+where $C$ depends on the Lipschitz constant of $\nabla_z H_\theta$ and the
+magnitude of $\mathbf{D}_\theta$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The conservative substep preserves $H_\theta$ up to $O(\Delta t^2)$
+(symplectic integrator shadow Hamiltonian bound).
+The dissipative substep decreases $H_\theta$ by at least
+$\Delta t \,(\nabla_z H_\theta)^\top \mathbf{D}_\theta\,\nabla_z H_\theta \geq 0$.
+The port-input substep adds $\Delta t\, y_n^\top u_n + O(\Delta t^2)$.
+Combining gives the stated inequality.
+\end{proof}
+
+% -----------------------------------------------------------------------
+\subsection*{D. Energy-Barrier Forward Invariance (Continuous Time)}
+% -----------------------------------------------------------------------
+
+\begin{theorem}[Barrier safety]
+\label{thm:barrier_safety}
+Let $\mathcal{S} = \{\vec{q} : d_i(\vec{q}) > 0,\, \forall i\}$ and
+suppose $b_i(s) \to +\infty$ as $s \downarrow 0$.
+If $H_\theta(z(0)) < B < \infty$ and the port input is energy-bounded so
+that $H_\theta(z(t)) \leq B$ for all $t$ (e.g., $u = 0$ or passivity
+ensures energy is non-increasing), then $\vec{q}(t) \in \mathcal{S}$ for
+all $t \geq 0$ in the continuous-time system.
+
+\emph{Discrete caveat:} For finite-step integration, this guarantee requires
+either (i) a sufficiently small timestep $\Delta t \leq h_0$ such that
+barrier overflow cannot occur in one step, or (ii) a CBF-based projection
+\[
+  h(\vec{q}_{n+1}) - h(\vec{q}_n) \geq -\alpha\, h(\vec{q}_n)
+\]
+enforced as a safety filter.
+\end{theorem}
+
+% -----------------------------------------------------------------------
+\subsection*{E. Local Residual Decrease of Online Coefficient Update}
+% -----------------------------------------------------------------------
+
+\begin{lemma}[Tikhonov--Gauss--Newton step]
+\label{lem:tikhonov}
+The online coefficient update
+$\Delta\zeta = (J_t^\top J_t + \lambda I)^{-1} J_t^\top r_t$
+minimizes $\min_\Delta \|J_t \Delta - r_t\|^2 + \lambda\|\Delta\|^2$.
+\end{lemma}
+
+\begin{theorem}[Local observable residual decrease]
+\label{thm:residual_decrease}
+Suppose the observable map $y(\zeta)$ is $C^1$, and $J_t$ approximates
+$\partial y/\partial\zeta$ with error $\epsilon_J$.
+For step size $\kappa > 0$ sufficiently small,
+\[
+  \|y(\zeta + \kappa\Delta\zeta) - y^\star\|
+  \;\leq\;
+  \|y(\zeta) - y^\star\| - c\kappa\|J_t^\top r_t\|^2
+  + O(\kappa^2 + \epsilon_J),
+\]
+where $c > 0$ depends on the regularization $\lambda$ and the local
+Lipschitz constant of $y$.
+\end{theorem}
+
+% -----------------------------------------------------------------------
+\subsection*{F. CVaR Gradient and Sample Complexity}
+% -----------------------------------------------------------------------
+
+\begin{theorem}[Empirical CVaR subgradient]
+\label{thm:cvar_gradient}
+For bounded episode cost $J_\theta \in [0, J_{\max}]$:
+\[
+  \operatorname{CVaR}_\beta(J_\theta)
+  = \min_{\nu \in \mathbb{R}}
+    \Bigl[\nu + \tfrac{1}{1-\beta}\,\mathbb{E}(J_\theta - \nu)_+\Bigr].
+\]
+A subgradient with respect to $\theta$ at the optimal $\nu^\star$ is:
+\[
+  \nabla_\theta \operatorname{CVaR}_\beta(J_\theta)
+  = \frac{1}{1-\beta}\,
+    \mathbb{E}\!\Bigl[\mathbf{1}\{J_\theta \geq \nu^\star\}\,
+    \nabla_\theta J_\theta \Bigr].
+\]
+\end{theorem}
+
+\begin{lemma}[CVaR concentration]
+\label{lem:cvar_concentration}
+If $J \in [0, J_{\max}]$, then with $B$ i.i.d.\ episode samples,
+\[
+  \bigl|\widehat{\operatorname{CVaR}}_\beta - \operatorname{CVaR}_\beta\bigr|
+  = O\!\left(\frac{J_{\max}}{1-\beta}\sqrt{\frac{\log(1/\delta)}{B}}\right)
+\]
+with probability $1 - \delta$.
+This bounds the number of episodes required for reliable CVaR updates.
+\end{lemma}
+
+% -----------------------------------------------------------------------
+\subsection*{G. Coefficient Identifiability}
+% -----------------------------------------------------------------------
+
+\begin{theorem}[Local coefficient identifiability]
+\label{thm:identifiability}
+Let the force channels be $\phi_i(\vec{q}) = -\nabla_{\vec{q}} H_i(\vec{q})$.
+If the Gram matrix
+\[
+  G_{ij} = \sum_t \phi_i(\vec{q}_t)^\top \phi_j(\vec{q}_t)
+\]
+is full rank over the training trajectories, then the coefficient vector
+$(\beta, \lambda_s, \lambda_h, \{\alpha_i\}, \gamma)$ is locally
+identifiable from trajectory data up to measurement noise.
+\end{theorem}
+
+% -----------------------------------------------------------------------
+\subsection*{H. Per-Step Computational Complexity}
+% -----------------------------------------------------------------------
+
+\begin{proposition}[Per-step complexity]
+\label{prop:complexity}
+For active set size $m = |\mathcal{C}_t|$, state dimension $n$, and
+coefficient dimension $k = m + O(1)$, one integration/update step costs:
+\[
+  O(mn) \quad \text{(force evaluation)},
+  \qquad
+  O(k^3) \quad \text{(Tikhonov solve, or } O(k^2) \text{ with rank-1 update)}.
+\]
+This is local in the active set $m \ll |\mathcal{W}|$ and does not scale
+with the global workspace size, supporting efficiency claims in §\ref{sec:ch3:efficiency}.
+\end{proposition}

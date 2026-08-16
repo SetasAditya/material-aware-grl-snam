@@ -1,0 +1,20 @@
+{
+  "claim_scope": "Measured advantage is soft-force exposure control; this low-coefficient gate toggle does not change success.",
+  "selection": "Deterministic ranking by post-opening activations minus twice premature activations, balanced across R1/R2/R3.",
+  "episodes": [
+    "0",
+    "59",
+    "3",
+    "11"
+  ],
+  "outputs": [
+    "rq_visualizations/gifs/output/gate_advantage_ep000_r1.gif",
+    "rq_visualizations/gifs/output/gate_advantage_ep059_r2.gif",
+    "rq_visualizations/gifs/output/gate_advantage_ep003_r3.gif",
+    "rq_visualizations/gifs/output/gate_advantage_ep011_r1.gif"
+  ],
+  "inputs": [
+    "rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv",
+    "rebuttal_experiments/results/exp1_gate_ablation_100/event_specs.csv"
+  ]
+}

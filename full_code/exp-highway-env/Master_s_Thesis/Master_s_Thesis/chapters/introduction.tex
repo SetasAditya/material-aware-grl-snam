@@ -1,0 +1,565 @@
+% =============================================================
+%  Chapter 1 — Introduction
+%  Toward Continual Hamiltonian Learning in Unknown Environments
+% =============================================================
+
+\chapter{Introduction \\Toward Continual Hamiltonian Learning in Unknown Environments}
+\label{chap:intro}
+
+% ------------------------------------------------------------------
+\section{The Core Challenge}
+\label{sec:intro:challenge}
+% ------------------------------------------------------------------
+
+Autonomous agents operating in real environments must make decisions under
+incomplete knowledge, changing local conditions, and evolving notions of risk.
+A mobile robot sent into an unmapped building, an off-road vehicle traversing
+terrain whose material properties are hidden beneath surface appearance, or a
+deformable manipulator squeezing through a corridor whose geometry is revealed
+only incrementally each of these settings shares a fundamental difficulty.
+Successful behavior cannot be reduced to executing a fixed policy, following a
+fixed planner, or optimizing a fixed reward signal.
+Instead, the agent must \emph{continually revise how it moves through its state
+space} as new structure is revealed.
+
+The challenge is not merely to choose good actions.
+It is to maintain a \textbf{decision process that can be corrected and enriched
+as the environment changes}: geometrically, materially, and semantically.
+Current paradigms handle parts of this challenge well, but none provides all
+four properties simultaneously:
+\begin{enumerate}
+  \item \emph{structured dynamics} - a decision policy whose topology can be
+        analysed and shaped rather than treated as a black box;
+  \item \emph{continual adaptation} - the ability to revise behavior online as
+        new information arrives, without forgetting previously learned structure;
+  \item \emph{passivity-monitored updates} - correction mechanisms whose
+        energy dissipation is tracked at runtime via a passivity surrogate,
+        providing a checkable signal (not a formal certificate) that
+        adaptation has not destabilized the field; and
+  \item \emph{risk-sensitive objectives} - explicit reasoning about rare but
+        catastrophic outcomes caused by latent material or hazard structure, not
+        only about expected performance.
+\end{enumerate}
+We study how navigation in unknown environments can be cast as a
+\textbf{continual Hamiltonian learning problem}—a principled framework that
+jointly addresses all four properties by representing the agent's
+decision-making as a \emph{structured phase-space dynamics} whose energy
+landscape is progressively reshaped by geometry, constraints, and
+semantic risk.
+
+% ------------------------------------------------------------------
+\section{What Existing Paradigms Hold Fixed}
+\label{sec:intro:gap}
+% ------------------------------------------------------------------
+
+Understanding \emph{why} our approach is needed requires identifying a shared
+structural gap across existing paradigms.
+The claim is not that imitation learning, reinforcement learning, or classical
+planning are insufficient in every sense each provides important and
+well-studied properties.
+The claim is more specific: each paradigm tends to \emph{hold fixed} something
+that must remain adaptable in truly unknown environments.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figs/ch1_method_comparison.png}
+    \caption{
+    The first three columns illustrate common decision-making paradigms in robotics and machine learning:
+    imitation learning uses a flat policy fitted to a fixed demonstration target;
+    actor--critic reinforcement learning updates a policy through an external value evaluator under a fixed reward structure;
+    and replanning methods repeatedly solve trajectories against an external cost map or planner template.
+    In all three cases, evaluation is external to the evolving trajectory.
+    By contrast, our framework represents policy as a phase-space flow
+    \((\Pos_t,\Mom_t)\mapsto(\Pos_{t+1},\Mom_{t+1})\),
+    where the cotangent variable \(\Mom_t\) acts as an internal evaluator, predictor, and guide.
+    New information enters directly through \(\Mom_t\),
+    which in turn shapes the force balance driving the next configuration update.
+    This internal phase-space evaluator supports continual correction across segment, episode, and curriculum timescales, while preserving an explicit dissipative structure for stability.
+    % The figure highlights the core thesis distinction: rather than relying on a fixed or external evaluator, continual Hamiltonian learning embeds sensing, evaluation, correction, and control inside the evolving dynamics.
+    }
+    \label{fig:ch1:method_comparison}
+\end{figure}
+
+\paragraph{Imitation learning.}
+Methods such as behavioral cloning~\citep{pomerleau1991efficient} and the
+DAgger family~\citep{ross2011reduction} achieve sample efficiency by fixing a
+demonstration target and learning a reactive policy relative to that target.
+Even interactive imitation methods~\citep{shi2025dagger} improve robustness to
+distribution shift, but the resulting controller remains a \emph{policy
+mapping}: it does not expose the qualitative structure of the induced
+closed-loop dynamics nor guarantee stable behavior when the environment
+departs from the demonstration regime.
+
+\paragraph{Reinforcement learning.}
+Deep RL methods such as PPO~\citep{schulman2017proximalpolicyoptimizationalgorithms} and
+SAC~\citep{haarnoja2018softactorcriticoffpolicymaximum} are powerful continuous-control optimizers, but
+they fix the reward structure and optimize a black-box value function relative
+to it.
+Performance degrades sharply under distribution shift~\citep{wijmans2019dd},
+and the learned policy encodes no explicit language of stability, dissipation,
+or safety invariants.
+Hierarchical RL~\citep{vezhnevets2017feudalnetworkshierarchicalreinforcement} adds temporal
+structure but does not resolve the fundamental issue: the optimizer still has
+no direct handle on the \emph{topology} of the decision field being learned.
+
+\paragraph{Inverse reinforcement learning and reward learning.}
+IRL and preference-based methods~\citep{ziebart2008maximum,christiano2017deep}
+learn objectives from demonstrations or comparisons, partially relaxing the
+fixed-reward assumption.
+Yet they still rely on a separate downstream optimization stage with a
+fixed controller class, and the induced closed-loop dynamics need not be
+topology-correct stably attracted to the goal, robustly repelled from obstacles across changing environments.
+
+\paragraph{Classical planners and model-based methods.}
+Graph search~\citep{hart1968formal}, sampling-based
+planners~\citep{karaman2011sampling}, and MPC-style
+approaches~\citep{williams2017mppi} provide explicit structure and, in some
+cases, formal guarantees.
+However, they require pre-specified cost representations and do not
+themselves provide a stable, differentiable, continually correctable mechanism
+for reshaping the decision dynamics as latent material or semantic properties
+change.
+
+\paragraph{LLM-based planners.}
+Foundation-model planners~\citep{ahn2022saycan,liang2022code} offer impressive
+semantic flexibility and goal generalization, but they govern
+\emph{high-level} planning and still rely on separate low-level controllers
+for stable continuous-time dynamics.
+They do not themselves provide passivity, safety invariants, or risk-sensitive
+field shaping at the level of the underlying motion.
+
+Table~\ref{tab:paradigm_gap} summarizes this comparison along the four
+axes identified above.
+
+\begin{table}[htbp]
+\centering
+\caption{%
+\textbf{What existing paradigms hold fixed versus what this thesis learns.}
+Each paradigm solves a valuable subproblem.
+Our contribution is to unify (i)--(iv) through continual Hamiltonian
+learning.
+$\checkmark$ = genuinely addressed; $\triangle$ = partial/monitored; $\times$ = not addressed.
+Column (iii) for our work reflects passivity-regularized and
+passivity-monitored updates; formal update-stability theorems are identified
+as a contribution in Chapter~\ref{chap:limitations}.
+}
+\label{tab:paradigm_gap}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.25}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Paradigm} &
+\makecell{\textbf{(i)}\\\textbf{Structured}\\\textbf{dynamics}} &
+\makecell{\textbf{(ii)}\\\textbf{Continual}\\\textbf{adaptation}} &
+\makecell{\textbf{(iii)}\\\textbf{Passivity-}\\\textbf{monitored updates}} &
+\makecell{\textbf{(iv)}\\\textbf{Risk-sensitive}\\\textbf{objectives}} \\
+\midrule
+Imitation learning \citep{ross2011reduction,shi2025dagger}
+  & \none & \partially & \none & \none \\
+Deep RL \citep{schulman2017proximalpolicyoptimizationalgorithms,haarnoja2018softactorcriticoffpolicymaximum}
+  & \none & \partially & \none & \none \\
+Constrained / Safe RL \citep{achiam2017constrained,chow2015risk}
+  & \none & \partially & \partially & \full \\
+Inverse RL \citep{ziebart2008maximum,christiano2017deep}
+  & \none & \none & \none & \none \\
+Classical planning / MPC \citep{hart1968formal,williams2017mppi}
+  & \partially & \none & \partially & \none \\
+Port-Hamiltonian networks \citep{desai2021porthamiltonian,roth2025stable}
+  & \full & \none & \full & \none \\
+Continual / meta-RL \citep{rolnick2019experience,finn2017maml}
+  & \none & \full & \none & \none \\
+\midrule
+\textbf{This thesis (Continual Hamiltonian Learning)}
+  & \full & \full & \partially & \full \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+% ------------------------------------------------------------------
+\section{The Thesis Viewpoint: Continual Hamiltonian Learning}
+\label{sec:intro:viewpoint}
+% ------------------------------------------------------------------
+
+We adopt the following viewpoint:
+\begin{quote}
+\itshape
+Rather than learning a fixed policy, reward, or planner, we seek to learn
+a \textbf{structured decision dynamics}, a vector field over phase space that
+can be \textbf{continually reshaped} by new observations.
+\end{quote}
+The key idea is to represent the agent's policy not as a mapping from
+observations to actions, but as the deterministic \emph{flow map} of a
+Hamiltonian vector field over the cotangent bundle $T^*\mathcal{Q}$:
+\begin{equation}
+  z_{t+1} = \Phi^{\Delta t}_{H}(z_t),
+  \qquad
+  \pi_H(z_t) := \Pi_{\mathcal{Q}}\!\left(\Phi^{\Delta t}_H(z_t)\right),
+  \label{eq:intro:policy_as_flow}
+\end{equation}
+where $z_t = (\vec{q}_t, p_t) \in T^*\mathcal{Q}$,
+$\Pi_{\mathcal{Q}}$ projects to configuration, and
+$H : T^*\mathcal{Q} \to \mathbb{R}$ is a structured energy function
+whose additive factors encode goal attraction, obstacle repulsion, risk, and dissipation.
+Adapting the policy means \emph{reshaping the energy landscape} by adjusting
+coefficients, adding new force channels, updating the dissipative port rather
+than relearning a flat action map from scratch.
+
+This perspective yields a natural language for all four desiderata:
+\begin{enumerate}
+  \item \emph{Structured dynamics.}
+        The vector field topology is explicit: goal-attracting basins,
+        obstacle-repelling barriers, and dissipative channels are
+        interpretable terms in $H$.
+  \item \emph{Continual adaptation.}
+        New observations update the coefficients of energy terms, injecting
+        minimal correction rather than catastrophic relearning.
+  \item \emph{Passivity-monitored updates.}
+        Passivity regularization and the port-Hamiltonian energy balance provide
+        checkable conditions and empirical monitors for whether an adaptation
+        step degrades stability~\citep{desai2021porthamiltonian,roth2025stable}.
+        Formal update-stability theorems (sufficient conditions for
+        passivity preservation under coefficient change) are identified
+        as a contribution target in Chapter~\ref{chap:limitations}.
+  \item \emph{Risk-sensitive objectives.}
+        Tail-risk terms (e.g., CVaR over material cost distributions)
+        enter as additional energy factors with their own force channels and
+        gradient pathways~\citep{chow2015risk}.
+\end{enumerate}
+
+% ------------------------------------------------------------------
+\section{The Thesis Arc: A Hierarchy of Complexity}
+\label{sec:intro:arc}
+% ------------------------------------------------------------------
+
+We develop the continual Hamiltonian learning viewpoint
+through two major stages, each solving a harder version of the same
+underlying problem by enriching the energy landscape along well-defined axes.
+Figure~\ref{fig:intro:hierarchy} illustrates this hierarchy.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  font=\small\sffamily,
+  % --- node styles ---
+  stage/.style={
+    rectangle, rounded corners=5pt,
+    draw=#1!70!black, fill=#1!10,
+    line width=1.2pt,
+    minimum width=11.2cm, minimum height=1.5cm,
+    align=left, inner sep=8pt,
+    text=black
+  },
+  stageno/.style={
+    circle, draw=#1!80!black, fill=#1!25,
+    line width=1pt,
+    minimum size=22pt,
+    font=\bfseries\small\sffamily
+  },
+  axis/.style={
+    rectangle, rounded corners=3pt,
+    draw=gray!60, fill=gray!8,
+    inner sep=4pt, align=center,
+    font=\scriptsize\sffamily
+  },
+  arrow/.style={-{Stealth[length=6pt]}, line width=1.2pt, color=#1},
+  dasharrow/.style={-{Stealth[length=5pt]}, dashed, line width=0.9pt, color=gray!60},
+  addlabel/.style={font=\scriptsize\sffamily\itshape, text=gray!70!black},
+]
+
+% -------------------------------------------------------
+%  Stage boxes (stacked vertically, left-aligned content)
+% -------------------------------------------------------
+
+% Stage 0 — foundation
+\node[stage=teal] (s0) at (0,0) {%
+  \hspace{26pt}%
+  \begin{minipage}{9.8cm}
+    \textbf{Stage 1 — Geometry-Only Foundation (GRL-SNAM)}\\[2pt]
+    \textit{Energy:} $H = H_{\mathrm{goal}} + H_{\mathrm{obs}} + H_{\mathrm{diss}}$\\
+    \textit{Adaptation:} offline meta-training + online geometric alignment\\
+    \textit{Limitation:} geometry-blind to latent material/risk structure
+  \end{minipage}%
+};
+\node[stageno=teal] at ($(s0.west)+(14pt,0)$) {\textcolor{teal!80!black}{1}};
+
+% Stage 1 — material-aware
+\node[stage=orange, below=14pt of s0] (s1) {%
+  \hspace{26pt}%
+  \begin{minipage}{9.8cm}
+    \textbf{Stage 2 — Material-Aware Risk-Sensitive Learning}\\[2pt]
+    \textit{Energy:} $H = H_{\mathrm{goal}} + H_{\mathrm{obs}} + H_{\mathrm{mat}}^{\mathrm{soft}}
+                        + H_{\mathrm{haz}}^{\mathrm{hard}} + H_{\mathrm{diss}}$\\
+    \textit{Adaptation:} segment/episode/curriculum gradient updates\\
+    \textit{Adds:} new force channels, tail-risk (CVaR) objective, oracle material maps
+  \end{minipage}%
+};
+\node[stageno=orange] at ($(s1.west)+(14pt,0)$) {\textcolor{orange!80!black}{2}};
+
+% Stage 2 — synthesis
+\node[stage=violet, below=14pt of s1] (s2) {%
+  \hspace{26pt}%
+  \begin{minipage}{9.8cm}
+    \textbf{Synthesis — Continual Hamiltonian Learning Framework}\\[2pt]
+    \textit{Unifies:} stages 1--2 as a hierarchy of energy enrichment\\
+    \textit{Shows:} each new term $\Rightarrow$ new force channel, coefficient,
+                    loss, update law\\
+    \textit{Vision:} self-improving learner in unknown environments
+  \end{minipage}%
+};
+\node[stageno=violet] at ($(s2.west)+(14pt,0)$) {\textcolor{violet!80!black}{$\Sigma$}};
+
+% -------------------------------------------------------
+%  Right-side axis labels
+% -------------------------------------------------------
+\node[axis, right=18pt of s0] (a0)
+  {\textbf{Geometry}\\\textbf{sensing}};
+\node[axis, right=18pt of s1] (a1)
+  {\textbf{Material}\\\textbf{risk}};
+\node[axis, right=18pt of s2] (a2)
+  {\textbf{Continual}\\\textbf{learning}};
+
+% -------------------------------------------------------
+%  Vertical progression arrow
+% -------------------------------------------------------
+\draw[arrow=teal!60!black]
+  ($(s0.south west)!0.5!(s0.south east)+(0,-2pt)$) --
+  ($(s1.north west)!0.5!(s1.north east)+(0,2pt)$)
+  node[midway, left=4pt, addlabel] {enriched energy $+$ new objectives};
+\draw[arrow=orange!70!black]
+  ($(s1.south west)!0.5!(s1.south east)+(0,-2pt)$) --
+  ($(s2.north west)!0.5!(s2.north east)+(0,2pt)$)
+  node[midway, left=4pt, addlabel] {unified hierarchy $+$ synthesis};
+
+% -------------------------------------------------------
+%  Horizontal axis arrows (right side)
+% -------------------------------------------------------
+\draw[arrow=teal!50!black]   (s0.east) -- (a0.west);
+\draw[arrow=orange!60!black] (s1.east) -- (a1.west);
+\draw[arrow=violet!60!black] (s2.east) -- (a2.west);
+
+% -------------------------------------------------------
+%  "What is enriched" annotation box at top
+% -------------------------------------------------------
+\node[
+  rectangle, rounded corners=3pt,
+  draw=gray!40, fill=white,
+  inner sep=5pt,
+  font=\scriptsize\sffamily,
+  text width=6.4cm,
+  above=16pt of s0,
+  align=center
+] (legend) {%
+  \textbf{At each stage, adding one energy term induces:}\\[2pt]
+  new force channel $\;\cdot\;$ new coefficient\\
+  new objective term $\;\cdot\;$ new gradient pathway\\
+  new update law across timescales
+};
+\draw[dasharrow] (legend.south) -- ($(s0.north)+(0,2pt)$);
+
+\end{tikzpicture}
+\caption{%
+  \textbf{The enrichment hierarchy of complexity.}
+  Each stage enriches the phase-space energy landscape along a well-defined
+  axis.
+  Stage 1 establishes the
+  geometry-only foundation with offline meta-training and online geometric
+  alignment.
+  Stage 2 extends this to material-aware,
+  risk-sensitive continual learning by adding new energy terms, a CVaR
+  tail-risk objective, and multi-timescale gradient updates.
+  The synthesis unifies both stages as
+  instances of a single enrichment principle and frames the broader
+  continual Hamiltonian learning vision.
+}
+\label{fig:intro:hierarchy}
+\end{figure}
+
+\paragraph{Stage 1: geometry-only structured navigation (GRL-SNAM~\citep{ellendula2025grlsnam}).}
+The first stage establishes the \emph{base case}: learning structured local
+navigation under geometry-only sensing.
+We formulate navigation as learning a reduced Hamiltonian
+$H : T^*\mathcal{Q} \to \mathbb{R}$ whose energy factors capture goal
+attraction, obstacle repulsion, and dissipation.
+The policy is the time-$\Delta t$ flow map $\Phi^{\Delta t}_H$, learned through a three-module
+architecture operating at different timescales sensing, frame-level motion,
+and shape control.
+Offline meta-training identifies the family of admissible control objectives;
+online geometric alignment updates energy coefficients as new obstacles are
+revealed.
+GRL-SNAM demonstrates that geometry-aware energy shaping significantly
+outperforms standard RL baselines
+and classical planners on deformable robot navigation in unknown environments.
+
+At the same time, Stage~1 reveals clear limitations that motivate the next
+stage: the energy landscape is \emph{geometry-only}.
+It cannot reason about latent material properties like terrain compliance, hazard
+density, absorption coefficients that affect traversal cost and risk in
+ways invisible to geometric sensing alone.
+
+\paragraph{Stage 2: material-aware risk-sensitive continual Hamiltonian learning.}
+The second stage enriches the energy landscape with two new factors:
+a \emph{soft material-risk term} $H_{\mathrm{mat}}^{\mathrm{soft}}$ encoding
+expected material cost, and a \emph{hard hazard barrier}
+$H_{\mathrm{haz}}^{\mathrm{hard}}$ that acts as a steep repulsive potential
+over high-risk regions, inspired by control barrier function
+ideas~\citep{ames2016control} but without a formal forward-invariance certificate.
+These additions induce new force channels, new coefficients to be learned,
+new objective terms (including a CVaR tail-risk
+penalty~\citep{chow2015risk}), and new update laws operating across segment,
+episode, and curriculum timescales.
+The result is a richer learner that adapts not only to geometric change but
+to latent material structure revealed through experience.
+
+\paragraph{Synthesis.}
+We conclude by synthesizing both stages as instances of a single
+enrichment principle: each new energy term induces a new force channel, a
+new coefficient subspace, a new objective term, a new gradient pathway, and
+a new update law.
+This hierarchy is the backbone of a broader continual Hamiltonian learning
+vision—a framework for agents that progressively enrich their decision
+dynamics as the unknown environment reveals its structure.
+
+% ------------------------------------------------------------------
+\section{Why the Hamiltonian Viewpoint?}
+\label{sec:intro:why}
+% ------------------------------------------------------------------
+
+The choice of Hamiltonian structure is not aesthetic.
+It provides five concrete advantages for the problem studied here.
+
+\paragraph{1. Interpretable topology.}
+The energy factorization makes the qualitative topology of the decision
+field explicit: basins of attraction around goals, repulsive walls around
+obstacles, and dissipative channels that remove excess kinetic energy.
+This topology can be verified and corrected independently of the policy
+weights~\citep{greydanus2019hamiltonian}.
+
+\paragraph{2. Stability language.}
+Port-Hamiltonian systems admit a natural stability analysis through passivity
+and energy dissipation~\citep{desai2021porthamiltonian}.
+When a new energy term is added, passivity monitoring provides a checkable
+signal—whether the adaptation step increased or decreased total system
+energy—something that flat RL policies do not naturally
+expose~\citep{roth2025stable}.
+This is not a formal Lyapunov certificate but a practical indicator
+that guides the curriculum (§\ref{sec:ch4:loops}).
+
+\paragraph{3. Compositionality.}
+Complex behavior emerges from composing interpretable energy terms that can
+be reweighted or extended without relearning from scratch.
+This is precisely the mechanism needed for continual adaptation: the agent
+adds terms to its existing energy landscape rather than discarding
+learned structure~\citep{rolnick2019experience}.
+
+\paragraph{4. Differentiable geometry.}
+The symplectic structure of $T^*\mathcal{Q}$ preserves geometric invariants
+(energy, volume, momentum) through numerical
+integration~\citep{reich1996symplectic}, reducing long-horizon drift that
+plagues black-box policy networks on continuous-control tasks.
+
+\paragraph{5. Natural coupling to sensing.}
+New sensor observations—geometric clearance, material spectral response,
+traversability estimates~\citep{rugd2019,rellis2020}—enter as updates to
+energy coefficients, directly reshaping the force field without requiring
+a separate reward-engineering step.
+
+% ------------------------------------------------------------------
+\section{Scope and What This Thesis Does Not Claim}
+\label{sec:intro:scope}
+% ------------------------------------------------------------------
+
+We make focused claims and do not attempt to replace all existing
+approaches.
+Three boundaries are important to state explicitly.
+
+\emph{Not a general continual learning algorithm.}
+The framework is developed and validated in the context of robot navigation
+in unknown 2D/3D environments.
+Generalizing to arbitrary task structures, object manipulation, or social
+interaction is future work.
+
+\emph{Not a learned perception front-end.}
+We assume that a sensor pipeline provides geometry and
+material-context observations.
+Learning the perception co-jointly with the energy landscape is an
+important extension~\citep{rosinol2020kimera} but is not the primary focus.
+
+\emph{Principled framework, not universal benchmark winner.}
+The claim is that continual Hamiltonian learning is a \emph{principled
+alternative} to black-box policy learning in unknown environments: one that
+provides structure, stability, and compositional enrichment that existing
+methods lack.
+The experimental chapters validate this claim on the problem settings studied;
+they do not claim superiority across all benchmarks.
+
+% ------------------------------------------------------------------
+\section{Thesis Contributions}
+\label{sec:intro:contributions}
+% ------------------------------------------------------------------
+
+The main contributions of this work are:
+
+\begin{enumerate}
+  \item \textbf{GRL-SNAM: geometry-only Hamiltonian navigation}
+        A geometric RL framework that casts simultaneous navigation and
+        mapping as stagewise Hamiltonian optimization, with a three-module
+        architecture, offline meta-training, and online geometric alignment.
+        \textit{\textbf{Accepted at ICLR 2026.}}
+
+  \item \textbf{Material-aware risk-sensitive continual Hamiltonian learning}
+        An extension that enriches the energy landscape with soft material-risk
+        and hard hazard-barrier terms, introduces CVaR tail-risk objectives,
+        and defines multi-timescale gradient update laws across segment,
+        episode, and curriculum loops.
+
+  \item \textbf{A hierarchy-of-complexity analysis}
+        A unified view showing that each stage of enrichment follows the
+        same structural pattern: new energy term $\Rightarrow$ new force
+        channel, coefficient, objective, and update law and framing both
+        stages as instances of a single continual Hamiltonian learning
+        principle.
+
+  \item \textbf{Empirical validation and failure analysis}
+        Comparative experiments on deformable robot navigation and
+        material-rich terrain, analyzing both quantitative performance and
+        qualitative failure modes as a function of energy complexity.
+\end{enumerate}
+
+% ------------------------------------------------------------------
+\section{Thesis Roadmap}
+\label{sec:intro:roadmap}
+% ------------------------------------------------------------------
+The remainder of this document is organized as follows.
+
+\textbf{Chapter~2 (Background)} unifies the mathematical tools shared
+across both stages: optimal control and the Pontryagin viewpoint,
+port-Hamiltonian dynamics, symplectic integration, barrier methods,
+risk-sensitive objectives (CVaR / CMDPs), and
+continual/curriculum learning.
+
+\textbf{Chapter~3 (GRL-SNAM)} presents the geometry-only foundation.
+It introduces the three-module Hamiltonian architecture, the offline
+meta-training procedure, and the online geometric alignment mechanism.
+The chapter ends by identifying the limitations that motivate Stage~2.
+
+\textbf{Chapter~4 (Material-Aware Continual Hamiltonian Learning)}
+introduces the enriched energy landscape with material-risk and
+hazard-barrier terms, the CVaR tail-risk objective, and the
+multi-timescale gradient update laws.
+This chapter constitutes the primary new contribution of this work.
+
+\textbf{Chapter~5 (Hierarchy of Complexity)} synthesizes Chapters~3
+and~4 by formalizing the enrichment principle and showing how each
+added energy term induces new structure in the force field, objective,
+and update law.
+
+\textbf{Chapter~6 (Experimental Evaluation)} presents comparative
+results across both stages, analysing performance, failure modes, and
+the qualitative impact of each energy enrichment step.
+
+\textbf{Chapters~7--8 (Limitations, Future Work, and Conclusion)}
+discuss open problems including perception co-training, stronger
+passivity guarantees, and richer coverage theory and synthesize the
+enrichment arc.

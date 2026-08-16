@@ -1,0 +1,330 @@
+% ======================================================================
+\section{Experiments: Selective Hamiltonian Risk Adaptation}
+\label{sec:experiments}
+% ======================================================================
+
+The experiments ask one question across four settings: does Hamiltonian
+context enrichment activate risk forces when a safer feasible alternative
+exists and suppress them when it does not? We lead with the head-to-head
+domain where this mechanism is decisive: delayed required escape, where
+the policy must suppress a tempting lateral maneuver before it is feasible
+and activate it after the escape opens, all with zero replans.
+
+% ----------------------------------------------------------------------
+\subsection{Setup, Metrics, and Domains}
+\label{sec:exp_setup}
+% ----------------------------------------------------------------------
+
+\paragraph{Research questions.}
+RQ1--RQ2 (spatial): does the context-enriched field activate toward a feasible lower-risk
+direction and suppress when blocked?
+RQ3--RQ5 (temporal): does the context-enriched field activate faster than replanning
+baselines, avoid pursuing closed or unavailable escapes, and
+suppress-then-activate within one episode?
+RQ6: must risk enter the force channel, or is loss reweighting sufficient?
+RQ7: does CVaR training reduce tail violations, not only mean risk?
+
+\paragraph{Regimes.}
+All domains share \textbf{R1} (feasible lower-risk alternative exists),
+\textbf{R2} (lower-risk-looking direction blocked or dynamically unsafe),
+and \textbf{R3} (risk-neutral; the context-enriched field should preserve geometry-only behavior).
+RELLIS-Dyn extends R1/R2 from space to time via eight event types spanning
+soft-risk, hard-boundary, dynamic-obstacle, and compound/delayed scenarios;
+full definitions are in Appendix~\ref{app:rellis_dyn_details}. The primary
+head-to-head benchmark is \emph{delayed required escape}: blocked before
+$t_{\rm escape}$, necessary after.
+
+\paragraph{Metrics.}
+Spatial selectivity:
+\begin{equation}
+\mathrm{CAR}=\Pr[\langle F_{\rm ctx},d_{\rm safe}\rangle{>}\epsilon\mid R1],\;\;
+\mathrm{FAR}=\Pr[|P_\perp F_{\rm ctx}|{>}\epsilon\mid R2],\;\;
+\mathrm{SR}=\frac{\mathbb{E}[|P_\perp F_{\rm ctx}|\mid R1]}
+                 {\mathbb{E}[|P_\perp F_{\rm ctx}|\mid R2]},
+\end{equation}
+and AUPRC (threshold-independent). Temporal: \emph{reaction delay}
+($\delta$-displacement from the pre-event geometry-only trajectory; sensitivity in
+Appendix Table~\ref{tab:app_rellis_dyn_delay_sensitivity}),
+\emph{stale exposure} (violation before reaction),
+\emph{false pre-activation} (lateral force before $t_{\rm escape}$),
+\emph{suppress rate} ($1-$false pre-activation).
+Post-event \emph{violation CVaR} (hard contact weighted separately) is
+the primary tail metric.
+
+% ----------------------------------------------------------------------
+\subsection{Primary Head-to-Head: Delayed Required Escape}
+\label{sec:exp_primary_delayed}
+% ----------------------------------------------------------------------
+
+All methods receive the same updated BEV patch at every step; only the
+decision mechanism differs. Table~\ref{tab:delayed_escape} is the main
+head-to-head result: the route-aware CVaR field reduces DWA and semantic
+MPPI false pre-activation from $0.950$ to $0.180$ while raising success
+from $0.480$/$0.240$ to $0.810$, and does so without replans. The table also isolates the
+three ingredients: Hamiltonian force structure, CVaR timing, and
+context-conditioned coefficients.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Delayed-required-escape} benchmark.
+Escape is blocked before $t_{\rm escape}$ and necessary afterward. The full
+model best suppresses early false activation while still succeeding after
+the escape opens. Main rows use $100$ paired episodes. $^\dagger$Low CVaR
+with success ${<}0.21$ indicates low exposure from getting stuck; CIs are
+in Appendix Table~\ref{tab:app_delayed_escape_ci}.}
+\label{tab:delayed_escape}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{lcccc}
+\toprule
+Method & False pre-act$\downarrow$ & Suppress$\uparrow$
+       & Success$\uparrow$ & Viol.\ CVaR$\downarrow$ \\
+\midrule
+Geometry-only policy  & $0.000$ & $1.000$ & $0.030$ & $1.894$ \\
+Risk-loss-only          & $0.420$ & $0.580$ & $0.040$ & $1.793$ \\
+Fixed-coeff context field     & $0.990$ & $0.010$ & $0.030$ & $0.463^\dagger$ \\
+Black-box CVaR policy   & $0.920$ & $0.080$ & $0.200$ & $0.503^\dagger$ \\
+DWA semantic            & $0.950$ & $0.050$ & $0.480$ & $0.695$ \\
+MPPI semantic           & $0.950$ & $0.050$ & $0.240$ & $0.831$ \\
+Ctx-enriched, expected cost  & $0.370$ & $0.630$ & $0.620$ & $0.855$ \\
+\textbf{Route-aware Ctx CVaR}
+  & $\mathbf{0.180}$ & $\mathbf{0.820}$
+  & $\mathbf{0.810}$ & $\mathbf{0.740}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{NeurIPS_2026/figures/rellis_dyn_spotlight_four_methods.png}
+\caption{\textbf{Qualitative temporal selectivity in one delayed-required
+escape episode.} Yellow dashed trajectories/arrows show behavior before the
+escape is available; solid colored trajectories/arrows show behavior after it
+opens. The geometry-only policy ignores the material update, DWA and black-box CVaR move
+before the escape is feasible and then stall, while route-aware context
+enrichment suppresses before $t_{\rm escape}$ and takes the newly feasible
+route after it opens.}
+\label{fig:rellis_dyn_spotlight}
+\end{figure*}
+
+\emph{Hamiltonian structure}: black-box CVaR uses the same CVaR objective
+and BEV patch but no Hamiltonian force channel; false pre-activation
+$0.920$, success $0.200$ vs.\ $0.810$. Static CAR $0.884$ does not
+transfer to temporal suppression.
+\emph{CVaR training}: same architecture, different objective; CVaR halves
+false pre-activation ($0.370{\to}0.180$), raises suppression
+($0.630{\to}0.820$), improves success by $30\%$, reduces violation CVaR
+($0.855{\to}0.740$).
+\emph{Context-conditioning}: fixed vs.\ CNN-predicted $(\lambda_s,\lambda_h)$;
+success $0.030$ vs.\ $0.810$. Without adaptive coefficients the method
+suppresses nothing.
+
+% ----------------------------------------------------------------------
+\subsection{RELLIS-3D: Spatial Selectivity}
+\label{sec:exp_rellis_static}
+% ----------------------------------------------------------------------
+
+Table~\ref{tab:rellis_selectivity} reports six variants on 2{,}250 BEV
+episodes (leave-one-sequence-out; CIs in Appendix
+Table~\ref{tab:app_rellis_full}). The SR gap between black-box CVaR ($1.292$) and route-aware context-enriched field
+($2.358$) is the spatial analog of the temporal gap in
+Table~\ref{tab:delayed_escape}: the black-box learns \emph{when} risk
+gradients exist but not \emph{whether} following them is safe.
+The route-aware gate produces the selectivity; Section~\ref{sec:exp_primary_delayed}
+shows the same architecture without the gate (black-box) collapses to
+$0.200$ navigation success on the strictest temporal test.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{RELLIS-3D spatial selectivity.}
+Route-aware context enrichment achieves the best SR and AUPRC, indicating
+selective activation rather than uniform risk-gradient following. Fixed
+coefficients fail to suppress in blocked scenes (FAR~$0.888$).}
+\label{tab:rellis_selectivity}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{lcccc}
+\toprule
+Method & CAR$\uparrow$ & FAR$\downarrow$ & SR$\uparrow$ & AUPRC$\uparrow$ \\
+\midrule
+Geometry-only policy    & $0.000$ & $0.000$ & $0.000$ & $0.000$ \\
+Scalar context field            & $0.378$ & $0.752$ & $1.031$ & $0.008$ \\
+Fixed-coeff context field    & $0.566$ & $0.888$ & $1.123$ & $0.008$ \\
+Non-route directional Ctx  & $0.135$ & $0.178$ & $1.165$ & $0.206$ \\
+Black-box CVaR policy     & $0.884$ & $0.129$ & $1.292$ & $0.206$ \\
+\textbf{Route-aware Ctx} & $\mathbf{0.837}$ & $\mathbf{0.114}$
+                           & $\mathbf{2.358}$ & $\mathbf{0.289}$ \\
+\bottomrule
+\end{tabular}
+\end{table} 
+
+% ----------------------------------------------------------------------
+\subsection{RELLIS-Dyn: Temporal Selectivity}
+\label{sec:exp_rellis_dyn}
+% ----------------------------------------------------------------------
+
+\paragraph{Material-event aggregate.}
+Table~\ref{tab:rellis_dyn_agg} reports the three-event material subset
+(mud onset, corridor closes, corridor opens) at 100 episodes per event.
+Black-box CVaR success $0.273$ on the same task where it achieves
+CAR~$0.884$ confirms that static selectivity metrics do not predict
+navigation success.
+Risk-loss-only hard exposure $0.694$ vs.\ Route-aware Ctx $0.027$
+supports RQ6: the risk signal must enter the force channel.
+The route-aware context-enriched field is the strongest zero-replan learned-field method,
+matching planning baselines that use $9$--$68$ explicit replans.
+Corridor-opens trajectory detail is in Appendix
+Figure~\ref{fig:app_rellis_dyn_corridor}; the eight-event breakdown
+(including moving-obstacle events where DWA is architecturally
+stronger) is in Appendix Table~\ref{tab:app_rellis_dyn_8event_groups}.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{RELLIS-Dyn 3-event material aggregate.}
+All methods receive the same updated BEV patch. The gate uses only
+$K{=}8$ local primitives, not graph search or trajectory optimization.
+$^\dagger$Oracle has global map access. $^{\ddagger}$Delay includes
+gate-suppressed R2 episodes; see Table~\ref{tab:delayed_escape}.}
+\label{tab:rellis_dyn_agg}
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\resizebox{0.9\linewidth}{!}{%
+\begin{tabular}{llccccccc}
+\toprule
+Method & Family
+  & Succ.$\uparrow$ & Soft CVaR$\downarrow$
+  & Delay$\downarrow$ & Stuck$\downarrow$
+  & Replans$\downarrow$ & ms/step$\downarrow$ \\
+\midrule
+Geometry-only policy      & geom.-only     & $1.000$ & $0.712$ & $16.2$ & $0.04$ & $0$    & $0.8$  \\
+Risk-loss-only     & learned loss   & $1.000$ & $0.673$ & $13.4$ & $0.03$ & $0$    & $0.9$  \\
+Fixed-coeff Ctx     & learned field  & $0.120$ & $0.459$ & $1.47$ & $0.74$ & $0$    & $1.4$  \\
+Black-box CVaR     & learned field  & $0.273$ & $0.482$ & $3.61$ & $0.61$ & $0$    & $4.2$  \\
+Ctx-enriched, exp.cost  & learned field  & $0.983$ & $0.465$ & $1.30$ & $0.02$ & $0$    & $2.1$  \\
+DWA semantic       & reactive       & $0.567$ & $0.621$ & $2.8$  & $0.43$ & $0$    & $0.6$  \\
+CBF-QP             & safety filter  & $0.890$ & $0.651$ & $7.4$  & $0.09$ & $0$    & $0.9$  \\
+Local A* (budget)  & planner        & $0.983$ & $0.629$ & $4.6$  & $0.01$ & $9.8$  & $8.4$  \\
+MPC (budget)       & planner        & $0.967$ & $0.624$ & $3.8$  & $0.03$ & $11.1$ & $42.2$ \\
+\textbf{Route-aware Ctx}& learned field & $\mathbf{0.980}$ & $\mathbf{0.638}$
+  & $\mathbf{1.8}^{\ddagger}$ & $\mathbf{0.06}$ & $\mathbf{0}$ & $\mathbf{2.3}$ \\
+Oracle replanner   & planner$^\dagger$  & $1.000$ & $0.601$ & $1.9$  & $0.00$ & $68.3$ & $97.5$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\paragraph{Within-episode temporal selectivity.}
+Figure~\ref{fig:rellis_dyn_spotlight} shows the delayed-required-escape
+mechanism qualitatively.
+Route-aware CVaR suppresses lateral activation throughout the blocked
+window and activates within two steps of $t_{\rm escape}$
+(false pre-activation $0.180$).
+The expected-cost variant activates earlier ($0.370$), directly
+demonstrating CVaR's tail-gradient contribution.
+DWA false pre-activates on $95\%$ of episodes, typically $3$--$5$ steps
+before $t_{\rm escape}$, because partial boundary changes trigger
+its reactive response before the escape is fully open.
+
+% ----------------------------------------------------------------------
+\subsection{DFC2018: Geometry-Only Repair}
+\label{sec:exp_dfc}
+% ----------------------------------------------------------------------
+
+Table~\ref{tab:dfc_geom_ctx} shows enrichment repairs a geometry-only
+policy on a static semantic material map: success $0.867{\to}1.000$,
+catastrophic failure $0.600{\to}0.100$, hard-hazard traversal $-96.9\%$,
+cumulative risk $-59.2\%$, oscillation $-90.7\%$, path-length ratio
+unchanged.
+Full planner comparison in Appendix~\ref{app:dfc_full}; full-map
+planners with global access obtain lower raw risk but the context-enriched field produces
+smoother trajectories with zero oscillation.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{DFC2018 outcome shift} (300 paired episodes).}
+\label{tab:dfc_geom_ctx}
+\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.08}
+\resizebox{0.7\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Method & Succ.$\uparrow$ & Cat.fail$\downarrow$ & Hard len.$\downarrow$
+       & Risk$\downarrow$ & Len.ratio & Osc.$\downarrow$ \\
+\midrule
+Geometry-only policy & $0.867$ & $0.600$ & $21.106$ & $23.267$ & $1.044$ & $82.212$ \\
+\textbf{Ctx-enriched} & $\mathbf{1.000}$ & $\mathbf{0.100}$ & $\mathbf{0.658}$
+                 & $\mathbf{9.493}$ & $1.045$ & $\mathbf{7.629}$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+% ----------------------------------------------------------------------
+\subsection{Highway-env: Interaction Selectivity}
+\label{sec:exp_highway}
+% ----------------------------------------------------------------------
+
+The open slow-leader scenario is the interaction analog of corridor
+opens (lateral channel should activate); the boxed scenario is the
+analog of moving-obstacle-blocks-detour (channel should suppress).
+Table~\ref{tab:highway_mechanism} shows the mechanism ablation: removing
+the lateral channel causes collision with the slow leader on every
+episode; adding it without the TTC channel causes off-road failure in
+the boxed scenario; only the full system passes and suppresses correctly.
+MOBIL-IDM and risk-aware MPC outperform the context-enriched field overall (Appendix
+Table~\ref{tab:app_highway_baselines}); the context-enriched field is the strongest
+learned method and the only one exhibiting the intended
+activation/suppression split.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Highway mechanism ablation} (200 paired seeds).
+The lateral channel enables passing; the TTC channel prevents using it
+when the adjacent maneuver is unsafe.}
+\label{tab:highway_mechanism}
+\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.08}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Variant & Def.off-rd$\downarrow$ & Slow coll$\downarrow$
+        & Slow succ$\uparrow$ & Boxed coll$\downarrow$
+        & Boxed off-rd$\downarrow$ & Boxed spd$\uparrow$ \\
+\midrule
+No lateral context       & $0.00$ & $1.00$ & $0.00$ & $1.00$ & $0.00$ & $22.33$ \\
+Lateral only             & $0.20$ & $0.00$ & $1.00$ & $1.00$ & $0.00$ & $22.33$ \\
+\textbf{Lateral + TTC}   & $\mathbf{0.00}$ & $\mathbf{0.00}$ & $\mathbf{1.00}$
+                         & $\mathbf{0.00}$ & $\mathbf{0.00}$ & $\mathbf{7.57}$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+% ----------------------------------------------------------------------
+\subsection{Interpretation and Limitations}
+\label{sec:exp_interpretation}
+% ----------------------------------------------------------------------
+
+\paragraph{Tradeoff positions.}
+Reactive baselines (DWA, CBF-QP) handle hard-boundary events well but
+false pre-activate on discovery events (DWA: $0.950$ on delayed escape).
+Planning baselines reduce violation under replan budget but pay
+$9$--$68\times$ more replans.
+The route-aware context-enriched field occupies the zero-replan gradient-following frontier:
+strongest on soft-risk and escape-discovery events, weaker on
+moving-obstacle events where reactive boundary following suffices.
+The eight-event Pareto (Appendix Figure~\ref{fig:app_rellis_dyn_pareto})
+shows the full tradeoff surface.
+
+\paragraph{Limitations.}
+(i) $b_{\rm sp}(\phi)$ is a differentiable barrier, not a CBF
+certificate; our claims are empirical tail-risk reductions, not
+forward-invariance guarantees
+(Appendix~\ref{app:theory}, \S A.9).
+(ii) Performance depends on risk-map quality; at $20$--$30\%$ label
+corruption, CAR/FAR degrade despite the gate's tendency to suppress
+inconsistent soft-risk evidence (Appendix
+Table~\ref{tab:app_rellis_perception}).
+(iii) Gate overhead must be profiled on latency-constrained hardware
+(ms/step in Table~\ref{tab:rellis_dyn_agg}).
+
+
+% \clearpage

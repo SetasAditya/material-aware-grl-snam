@@ -1,0 +1,171 @@
+{
+  "config": {
+    "analysis_name": "Gap 4: paired historical route-aware versus risk-loss-only",
+    "comparisons": [
+      "route_aware_stage2:risk_loss_only"
+    ],
+    "event_specs": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_dyn_delayed_required_100_v2/dynamic_event_specs.csv",
+    "force_eps": null,
+    "input": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_dyn_delayed_required_100_v2/dynamic_rollouts.csv",
+    "metrics": [
+      "success",
+      "post_event_cvar_violation",
+      "event_window_cvar_violation",
+      "hard_contact",
+      "path_length_ratio",
+      "stuck",
+      "reaction_delay",
+      "route_deviation_delay"
+    ],
+    "mode": "dynamic",
+    "n_bootstrap": 10000,
+    "scopes": [
+      "aggregate"
+    ],
+    "seed": 27370
+  },
+  "pairing_validation": [
+    {
+      "complete_pairing": true,
+      "max_observations_per_cluster": 1,
+      "method_a": "route_aware_stage2",
+      "method_a_only": 0,
+      "method_b": "risk_loss_only",
+      "method_b_only": 0,
+      "min_observations_per_cluster": 1,
+      "mode": "dynamic",
+      "paired_observations": 100,
+      "scope": "aggregate"
+    }
+  ],
+  "results": [
+    {
+      "bootstrap_probability_a_better": 0.0,
+      "ci95_high": -0.29000000000000004,
+      "ci95_low": -0.49,
+      "difference_a_minus_b": -0.39,
+      "higher_is_better": true,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 0.61,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 1.0,
+      "metric": "success",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    },
+    {
+      "bootstrap_probability_a_better": 1.0,
+      "ci95_high": -0.833897410133566,
+      "ci95_low": -1.0656695086721764,
+      "difference_a_minus_b": -0.9526051539634037,
+      "higher_is_better": false,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 0.8400129019591511,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 1.7926180559225549,
+      "metric": "post_event_cvar_violation",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    },
+    {
+      "bootstrap_probability_a_better": 1.0,
+      "ci95_high": -0.8278146560665355,
+      "ci95_low": -1.0612333576936184,
+      "difference_a_minus_b": -0.9480605682831141,
+      "higher_is_better": false,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 0.8445574876394407,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 1.7926180559225549,
+      "metric": "event_window_cvar_violation",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    },
+    {
+      "bootstrap_probability_a_better": 1.0,
+      "ci95_high": -0.77,
+      "ci95_low": -0.9099999999999999,
+      "difference_a_minus_b": -0.8400000000000001,
+      "higher_is_better": false,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 0.08,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 0.92,
+      "metric": "hard_contact",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    },
+    {
+      "bootstrap_probability_a_better": 0.0,
+      "ci95_high": 0.48377574001799445,
+      "ci95_low": 0.3383835173710225,
+      "difference_a_minus_b": 0.40988387646272295,
+      "higher_is_better": false,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 1.3860106802265815,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 0.9761268037638585,
+      "metric": "path_length_ratio",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    },
+    {
+      "bootstrap_probability_a_better": 0.0,
+      "ci95_high": 0.58,
+      "ci95_low": 0.38,
+      "difference_a_minus_b": 0.48,
+      "higher_is_better": false,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 0.48,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 0.0,
+      "metric": "stuck",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    },
+    {
+      "bootstrap_probability_a_better": 1.0,
+      "ci95_high": -3.6700000000000004,
+      "ci95_low": -10.639999999999999,
+      "difference_a_minus_b": -6.890000000000001,
+      "higher_is_better": false,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 2.85,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 9.74,
+      "metric": "reaction_delay",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    },
+    {
+      "bootstrap_probability_a_better": 1.0,
+      "ci95_high": -7.289750000000002,
+      "ci95_low": -18.980000000000004,
+      "difference_a_minus_b": -13.070000000000002,
+      "higher_is_better": false,
+      "method_a": "route_aware_stage2",
+      "method_a_mean": 13.1,
+      "method_b": "risk_loss_only",
+      "method_b_mean": 26.17,
+      "metric": "route_deviation_delay",
+      "mode": "dynamic",
+      "n_clusters": 100,
+      "n_paired_observations": 100,
+      "scope": "aggregate"
+    }
+  ]
+}

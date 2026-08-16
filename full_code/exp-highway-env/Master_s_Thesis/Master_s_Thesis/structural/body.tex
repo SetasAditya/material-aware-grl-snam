@@ -1,0 +1,195 @@
+% This is the body of your document. You may copy-paste it into your main document
+% (dissertation.tex, masterreport.tex, masterthesis.tex, treatise.tex), or edit it here.
+
+
+\copyrightpage  % Produces the copyright page. Optional.
+
+\commcertpage   % Produces the Committee Certification
+			%   of Approved Version page (doctoral)
+			%   or Signature page (masters).
+			%		20 Mar 2002	cwm
+                % Required.
+
+\titlepage      % Produces the title page. Required.
+
+
+\begin{dedication}
+To my parents, for the sacrifices I could not fully see until now.\\
+And to every student who came to Austin searching for something
+they could not yet name.
+\end{dedication}
+
+\begin{epigraph}
+\begin{center}
+\textit{The art of progress is to preserve order amid change\\
+and to preserve change amid order.}
+\\\hspace{4em}---Alfred North Whitehead
+\end{center}
+\end{epigraph}
+
+\begin{acknowledgments}
+This thesis would not exist without the guidance and intellectual
+generosity of Professor Chandrajit Bajaj, whose insistence on
+mathematical precision, rigorous problem framing, and breadth of
+vision shaped every chapter of this work.
+I am grateful for his patience when the ideas were still unclear
+and his standards when they needed to be higher.
+
+I thank the members of the Computational Visualization Center at
+UT Austin for research discussions, shared compute, and the daily
+reminder that hard problems are best approached together.
+
+My collaborators Yi Wang, and Minh Nguyen contributed materially to
+the geometric foundations of this work, and I am grateful for both
+their technical contributions and their willingness to think
+carefully about what we were actually building.
+
+To my friends in Austin who made the city feel like home, and who
+understood when deadlines meant disappearing for weeks at a time:
+thank you for still being there when I came back.
+
+Finally, to my family: your belief in me preceded my belief in
+myself, and carries me still.
+
+This research was supported in part by the Oden Institute for
+Computational Engineering and Sciences at The University of Texas
+at Austin.
+\end{acknowledgments}
+
+\begin{preface}
+This thesis is about learning to move safely through unknown
+environments: a problem that turns out to be about far more
+than navigation.
+
+The central idea, that a policy should be the flow map of a
+structured energy landscape rather than an unstructured mapping
+from observations to actions, emerged gradually over many failed
+experiments and many conversations with my advisor.
+The geometry-only foundation came first and worked better than
+expected.
+The material-aware extension came next and was harder than expected.
+The synthesis chapter was the one I did not know I needed to write
+until it was written.
+
+Each chapter is an honest record of what was understood, what was
+proven, and what remains open.
+The open problems in Chapter~7 are not admissions of failure;
+they are the most useful thing the thesis can leave behind.
+
+I hope the framework developed here is useful to researchers who
+want to build navigators that are not merely fast or accurate,
+but genuinely safe, structured, and self-improving.
+That remains the goal.
+
+\hfill Aditya Sai Ellendula\\
+\hfill Austin, Texas\\
+\hfill May 2026
+\end{preface}
+% The abstract is required. Note the use of ``utabstract'' instead of
+% ``abstract''! This was necessary to fix a page numbering problem.
+% The abstract heading is generated automatically.
+% Do NOT use \begin{abstract} ... \end{abstract}.
+%
+\utabstract
+\input{chapters/abstract}    % this includes the text from `abstract.tex`
+
+\tableofcontents   % Table of Contents will be automatically
+                   % generated and placed here. Required.
+
+% \listoftables      % Optional.
+% \listoffigures     % Optional.
+% \listofillustrations     % Optional.
+% \listofmaps      % Optional.
+% \listofslides    % Optional.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Actual text starts here.					     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Including external files for each chapter makes this document simpler,
+% makes each chapter simpler, and allows for generating test documents
+% with as few as zero chapters (by commenting out the include statements).
+% Can even change the chapter order by merely interchanging the order
+% of the include statements (something past contributors found helpful in their own
+% dissertations =) ).
+%
+
+\include{chapters/introduction}
+\include{chapters/ch2}
+\include{chapters/ch3}
+\include{chapters/ch4}
+\include{chapters/ch5}
+\include{chapters/ch6}
+\include{chapters/ch7}
+\include{chapters/ch8}
+
+
+% \include{chapters/main}
+
+
+
+% NOTE: If you have only one appendix, use the command \appendix instead
+% of \appendices.
+%
+% \appendix
+\appendices
+
+\include{chapters/appendix}
+
+%%%%%%%%%%%%%%%%%%%%%
+% Optional glossary. May also be moved between the Table of Contents and the Text.
+% %%%%%%%%%%%%%%%%%%%%%
+% \begin{glossary}
+% \begin{description}
+%     \item[\theauthor] A hard-working graduate student, nearing the end of this chapter of your education!
+%     \item[\thedegree] \theauthor\ is about to earn this. Congratulations!
+% \end{description}
+% \end{glossary}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generate the bibliography.					     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \nocite{*}    % This command causes all items in the 		     %
+                % bibliographic database to be added to 	     %
+                % the bibliography, even if they are not 	     %
+                % explicitly cited in the text. 		     %
+\bibliographystyle{plainnat}  % Here the bibliography 		     %
+\bibliography{references}        % is inserted.			     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Vita page.							     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \begin{vita}
+% Aditya Sai Ellendula was born in India and completed his undergraduate
+% education in computer science before joining the Department of Computer
+% Science at The University of Texas at Austin for his Master of Science
+% degree.
+% At UT Austin he worked in the Computational Visualization Center under
+% the supervision of Professor Chandrajit Bajaj, conducting research at
+% the intersection of geometric reinforcement learning, Hamiltonian
+% dynamics, and continual learning for navigation and multi-agent
+% coordination.
+
+% \paragraph{Publications.}
+% \begin{itemize}
+%   \item \textbf{GRL-SNAM: Geometric Reinforcement Learning with Path
+%         Differential Hamiltonians for Simultaneous Navigation and Mapping
+%         in Unknown Environments.}
+%         Aditya Sai Ellendula, Yi Wang, Minh Nguyen, Chandrajit Bajaj.
+%         \textit{International Conference on Learning Representations
+%         (ICLR)}, 2026.
+
+%   \item \textbf{Self-balancing, Memory Efficient, Dynamic Metric Space Data Maintenance, for Rapid Multi-kernel Estimation}
+%         Aditya Sai Ellendula et al.
+%         \textit{Joint European Conference on Machine Learning and Knowledge Discovery in Databases}, 2026.
+% \end{itemize}
+
+% \noindent
+% \textit{Permanent address: Austin, Texas}\\
+% \textit{This dissertation was typeset with \LaTeX\ by the author.}
+% \end{vita}

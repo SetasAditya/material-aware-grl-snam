@@ -1,0 +1,28 @@
+{
+  "num_episodes": 100,
+  "num_rollouts": 100,
+  "arms": {
+    "gate_on": {
+      "success": 1.0,
+      "final_distance_m": 2.7129844927787783,
+      "path_length_m": 38.5499648476392,
+      "risk_exposure": 20.146655333854987,
+      "cvar20_risk": 0.8407580827777846,
+      "cvar20_violation": 2.351966282386453,
+      "hard_contacts": 12.43,
+      "false_pre_activation_rate": 0.011000000000000001,
+      "post_open_activation_rate": 0.05439177000394428,
+      "post_open_activation_delay": 70.45
+    }
+  },
+  "mean_paired_delta_on_minus_off": {},
+  "smoke_validation": {
+    "paired_episode_count": 0,
+    "pair_invariants_evaluated": false,
+    "paired_first_step_learned_coefficients_equal": null,
+    "gate_off_multiplier_always_one": true,
+    "gate_on_multiplier_binary": true,
+    "learned_hard_force_active_both_arms": true,
+    "all_rollouts_reach_post_opening_window": true
+  }
+}

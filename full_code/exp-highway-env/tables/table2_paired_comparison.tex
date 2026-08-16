@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Paired Stage 1 vs.\ Stage 2 across scenarios.} 20 paired episodes per scenario, identical seeds. Stage 2 preserves Stage 1's default-scenario performance; produces qualitatively new behavior on slow leader (lane change, no crash); correctly defers in boxed (no escape geometry).}
+\label{tab:paired_comparison}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{Default} & \multicolumn{2}{c}{Slow leader} & \multicolumn{2}{c}{Boxed} \\
+ & S1 & S2 & S1 & S2 & S1 & S2 \\
+\midrule
+Crash rate & $5.0%$ & $0.0%$ & $100.0%$ & $0.0%$ & $100.0%$ & $100.0%$ \\
+Mean speed (m/s) & $24.66\pm0.87$ & $22.68\pm1.31$ & $23.87\pm0.00$ & $26.31\pm0.00$ & $22.92\pm0.00$ & $22.33\pm0.00$ \\
+Lane changes/ep & $0.95\pm0.74$ & $0.00\pm0.00$ & $0.00\pm0.00$ & $1.00\pm0.00$ & $0.00\pm0.00$ & $0.00\pm0.00$ \\
+|a_lat| p95 & $1.65\pm0.54$ & $1.69\pm1.08$ & $0.00\pm0.00$ & $7.67\pm0.00$ & $0.51\pm0.00$ & $0.69\pm0.00$ \\
+LKE mean (m) & $5.75\pm2.53$ & $0.17\pm0.06$ & $0.00\pm0.00$ & $0.65\pm0.00$ & $0.09\pm0.00$ & $0.09\pm0.00$ \\
+Cum risk (eval) & $2.82\pm4.31$ & $5.94\pm5.57$ & $5.67\pm0.00$ & $6.33\pm0.00$ & $3.45\pm0.00$ & $3.75\pm0.00$ \\
+Min clearance (m) & $7.60\pm3.12$ & $4.63\pm3.39$ & $3.05\pm0.00$ & $1.16\pm0.00$ & $3.88\pm0.00$ & $3.63\pm0.00$ \\
+\bottomrule
+\end{tabular}
+\end{table}

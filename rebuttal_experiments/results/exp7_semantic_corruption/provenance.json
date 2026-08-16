@@ -1,0 +1,90 @@
+{
+  "experiment": "exp7_semantic_corruption",
+  "corruption_definition": "For each scene, exactly round(p*N) observed BEV cells are selected by a SHA-256-derived fixed scene seed. Their modal semantic ID is independently sampled from the evaluated scenes' empirical observed-cell distribution, conditioned on differing from the clean ID. Masks are nested across p.",
+  "ground_truth_definition": "CAR/FAR eligibility and best direction come from the clean ontology map; only model inputs are recomputed from corrupted semantics.",
+  "metrics_scope": "Pointwise directional-head selectivity only. No navigation rollout metrics are available or claimed.",
+  "config": {
+    "source_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis",
+    "bev_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500",
+    "pairs_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_pairs_all_seqbalanced_2500_loso",
+    "checkpoint_pattern": "runs/rellis_directional_routeaware_aw050_far020_{sequence}/best.pt",
+    "ontology": "/mnt/data/adityas/GRL-SNAM/exp-rellis/grl_rellis/risk_ontology.yaml",
+    "mapping": "main",
+    "out": "rebuttal_experiments/results/exp7_semantic_corruption",
+    "levels": [
+      0.0,
+      0.1,
+      0.2,
+      0.3
+    ],
+    "seed": 27370,
+    "bootstrap_seed": 27371,
+    "bootstrap_reps": 2000,
+    "episodes_per_sequence_regime": null,
+    "batch_size": 2048,
+    "device": "cpu"
+  },
+  "num_episodes": 2250,
+  "num_scenes": 293,
+  "counts_by_sequence_regime": {
+    "00000:R1": 150,
+    "00000:R3": 150,
+    "00000:R2": 150,
+    "00001:R1": 150,
+    "00001:R2": 150,
+    "00001:R3": 150,
+    "00002:R1": 150,
+    "00002:R3": 150,
+    "00002:R2": 150,
+    "00003:R1": 150,
+    "00003:R3": 150,
+    "00003:R2": 150,
+    "00004:R1": 150,
+    "00004:R3": 150,
+    "00004:R2": 150
+  },
+  "hashes": {
+    "bev_manifest_sha256": "744e0c92c290b8235d7395226e4e7a15c6c1ecb5be42aa1ab588ce34d2975ccf",
+    "pair_manifest_sha256": "9026af6c9dc6d931d6017d4944c424974842fd5f76e99c4957a023be221a9586",
+    "ontology_sha256": "95d74bdd79a4b4eba7f6b0892121fd34077c716d5efe0d2cf1cf36b2c13e13fa",
+    "checkpoint_00000_sha256": "24e2ae832e37de1020f22c617b930777fb8433e0870b500f43d3e84c20593630",
+    "checkpoint_00001_sha256": "76987b819b46b90df8b1cd1d3b246eccc8cac0016b1f78e8447134624ed30a65",
+    "checkpoint_00002_sha256": "765e2d1fef84fc9e9848a7bfcb9c5acdbd02a12218150a1bd095e62aa0e15a87",
+    "checkpoint_00003_sha256": "86b62a55d4149577d2dbbe0548169aa94b1e6d0f47d9e0c1d794c7d1655e575b",
+    "checkpoint_00004_sha256": "9e3cfea5e1a6c7896babd614c452476e11755a58c3a1f3a7fda8e66a5f0a444b"
+  },
+  "checkpoint_paths": {
+    "00000": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_directional_routeaware_aw050_far020_00000/best.pt",
+    "00001": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_directional_routeaware_aw050_far020_00001/best.pt",
+    "00002": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_directional_routeaware_aw050_far020_00002/best.pt",
+    "00003": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_directional_routeaware_aw050_far020_00003/best.pt",
+    "00004": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_directional_routeaware_aw050_far020_00004/best.pt"
+  },
+  "tests_run_inline": [
+    "p=0 exact equality for all canonical map arrays on every evaluated scene",
+    "changed-cell count equals round(p * observed cells) on every scene/level",
+    "p=0 CAR/FAR/SR recovers every frozen checkpoint's saved holdout metrics"
+  ],
+  "p0_checkpoint_metric_validation": {
+    "00000": {
+      "max_abs_metric_error": 8.22870527272812e-09,
+      "passed": true
+    },
+    "00001": {
+      "max_abs_metric_error": 8.275905294397035e-09,
+      "passed": true
+    },
+    "00002": {
+      "max_abs_metric_error": 5.2611404122160366e-09,
+      "passed": true
+    },
+    "00003": {
+      "max_abs_metric_error": 5.327661423137897e-09,
+      "passed": true
+    },
+    "00004": {
+      "max_abs_metric_error": 8.491717773395635e-09,
+      "passed": true
+    }
+  }
+}

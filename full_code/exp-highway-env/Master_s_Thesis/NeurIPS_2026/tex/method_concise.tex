@@ -1,0 +1,290 @@
+% ======================================================================
+\section{Method}
+\label{sec:method}
+% ======================================================================
+
+We use two model names to avoid temporal-stage ambiguity. The
+\emph{geometry-only policy} is the port-Hamiltonian navigator trained
+without context risk;
+the \emph{context-enriched field} is the same update after adding
+one context-energy term and, when used, the local affordance gate.
+Thus the enrichment is an architectural and training extension, not
+the second temporal stage of an online rollout. The added term introduces
+a learned force channel whose gradient reshapes the closed-loop decision
+field only when the local scene admits a lower-risk feasible maneuver.  At each step the agent observes goal
+displacement $\vec c_g-\vec c_t$, obstacle features within radius $\hat d$,
+and a $P\times P$ local context patch $P_t$ containing a smoothed soft-risk
+field $\tilde r(\cdot)\in[0,1]$ and a signed-distance field $\phi(\cdot)$ to
+hard hazards.  These fields are bilinearly resampled at the current position
+during integration.  All baselines and ablations use the same local-information
+contract.
+
+% ----------------------------------------------------------------------
+\subsection{Shared Hamiltonian update}
+\label{sec:method:skeleton}
+% ----------------------------------------------------------------------
+
+The geometry-only policy and the context-enriched field share the same phase-space update; the only dynamical
+addition is the boldfaced context-force term in the momentum equation:
+\begin{equation}
+\renewcommand{\arraystretch}{1.5}
+\begin{array}{ll}
+\textbf{Geometry-only policy} & \textbf{Ctx-enriched} \\[2pt]
+\Mom_{t+1} = \Mom_t
+  - \tau\nabla_\Pos\Ham_{\rm geom}
+  - \tau R_\theta(\Mom_t)
+&
+\Mom_{t+1} = \Mom_t
+  - \tau\nabla_\Pos\Ham_{\rm geom}
+  \;\boldsymbol{-\tau\nabla_\Pos\Ham_{\rm ctx}}
+  - \tau R_\theta(\Mom_t) \\[4pt]
+\multicolumn{2}{l}{\Pos_{t+1} = \Pos_t + \tau\Mass^{-1}\Mom_{t+1}
+  \quad\text{(identical in both fields).}}
+\end{array}
+\label{eq:method:skeleton}
+\end{equation}
+New sensory information therefore enters through the cotangent variable
+$\Mom$, not through a separate critic or global replanner.  The decision field
+is the policy: changing the stored energy changes the vector field that
+generates the next motion.
+
+% ----------------------------------------------------------------------
+\subsection{Context energy and route-aware force channel}
+\label{sec:method:energy}
+% ----------------------------------------------------------------------
+
+The context term is additive, so the context-enriched field preserves the geometry-only policy
+when its context coefficients vanish:
+\begin{equation}
+\Ham_\theta(\Pos,\Mom)
+=
+\underbrace{
+  \tfrac{1}{2}\Mom^\top\Mass^{-1}\Mom
+  + \beta D_{\mathcal{G}}(\Pos,\vec c_g)
+  + \textstyle\sum_j\alpha_j b_{\rm IPC}(d_j)
+}_{\Ham_{\rm kin}+\Ham_{\rm geom}\;\text{(geometry-only)}}
++
+\underbrace{
+  \lambda_s\tilde r(\vec c)
+  + \lambda_h b_{\rm sp}(\phi(\vec c))
+}_{\Ham_{\rm ctx}\;\text{(Ctx-enriched only)}}.
+\label{eq:method:energy}
+\end{equation}
+Here $b_{\rm IPC}$~\citep{li2020ipc} is the incremental-potential contact
+barrier and $b_{\rm sp}(\phi)=k^{-1}\log(1+e^{k(\hat d_\phi-\phi)})$ is a
+softplus-relaxed inverse SDF.  Differentiating $\Ham_{\rm ctx}$ yields two
+force channels:
+\begin{equation}
+F_{\rm ctx}(\vec c)
+=
+\underbrace{-\lambda_s\nabla\tilde r(\vec c)}_{F_{\rm soft}:\;\text{lateral risk deflection}}
++
+\underbrace{-\lambda_h b_{\rm sp}'(\phi(\vec c))\nabla\phi(\vec c)}_{F_{\rm hard}:\;\text{hazard repulsion}},
+\qquad
+b_{\rm sp}'(\phi)=-\sigma(k(\hat d_\phi-\phi)).
+\label{eq:method:force}
+\end{equation}
+$F_{\rm soft}$ expresses preferences among feasible maneuvers, while
+$F_{\rm hard}$ is a differentiable penalty against boundary contact. It is not
+a control-barrier certificate; throughout the paper, violation metrics should
+be read as empirical tail-risk reduction under finite rollouts. Risk is
+therefore not a post-hoc cost, but a force that reshapes the local closed-loop
+dynamics.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\linewidth]{NeurIPS_2026/figures/ch4_factored_hamiltonian.png}
+  \caption{\textbf{Factored stored energy and induced force channels.}
+  $\Ham_\theta$ separates kinetic, geometric, dissipative, and context
+  terms. The context term creates a soft-risk deflection channel and a
+  hard-hazard repulsion channel. The route-aware gate lets the soft channel
+  shift the field only when a feasible lower-risk maneuver exists; otherwise
+  the rollout stays near the geometry-only policy.}
+  \label{fig:factored}
+\end{figure}
+
+The scalar soft-risk force can overreact when a low-risk-looking region is
+blocked by a fence, berm, vehicle, or other non-traversable boundary.  We
+therefore gate only the soft-risk channel using a local affordance test:
+\begin{equation}
+F_{\rm ctx}^{\rm ra}(\vec c;P_t)
+=
+m_{\rm feas}(\vec c,z_t)\bigl(-\lambda_s\nabla\tilde r(\vec c)\bigr)
+-
+\lambda_h b_{\rm sp}'(\phi(\vec c))\nabla\phi(\vec c),
+\label{eq:method:route_aware_force}
+\end{equation}
+where $z_t$ denotes the finite set of $K$ short-horizon primitives sampled
+inside the current BEV patch.  Let $k^\star$ be the feasible primitive with
+lowest soft-risk exposure, and let $k_{\rm geo}$ be the primitive closest to
+the geometry-only policy direction.  The gate is
+\begin{equation}
+m_{\rm feas}(\vec c,z_t)
+=
+\sigma\!\left(\kappa_R[(R_{k_{\rm geo}}-R_{k^\star})-\rho_R]\right)
+\sigma\!\left(\kappa_C(C_{k^\star}-\delta_\phi)\right)
+I_{k^\star}.
+\label{eq:method:route_gate}
+\end{equation}
+Here $R_k$ is the primitive's soft-risk integral, $C_k$ its minimum SDF
+clearance, and $I_k$ its local traversability indicator.  Thus
+$F_{\rm soft}$ activates only when the current patch contains a feasible
+candidate that improves risk by margin $\rho_R$; otherwise it is suppressed
+without weakening $F_{\rm hard}$.  The gate is not a global replanner: it only
+tests local affordance inside the same sensed patch available to all
+local-sensing methods. Under semantic or risk-map corruption, the soft channel
+therefore has a conservative failure mode: a noisy low-risk patch is not enough
+to activate lateral deflection unless a short-horizon primitive also clears the
+SDF and improves risk by margin $\rho_R$. This is not a perception guarantee,
+but it tends to turn uncertain or inconsistent risk evidence into suppression
+rather than an unconstrained evasive force.  Figure~\ref{fig:route_gate_main}
+summarizes the gate used in all experiments.  Coefficients $(\lambda_s,\lambda_h)$ are predicted
+by sigmoid-bounded CNN heads from $P_t$ fused with the goal token; geometric
+heads $(\alpha,\beta,\gamma)$ are frozen from the geometry-only policy, so these coefficients
+are the only route by which context alters the field
+(Appendix~\ref{app:coeff_pred}).
+
+\begin{figure}[t]
+\centering
+\fbox{\begin{minipage}{0.94\linewidth}
+\small
+\textbf{Route-aware soft-channel gate.}
+Given the current BEV patch, sample short-horizon primitives $z_t$ and compute
+each primitive's soft-risk integral $R_k$, minimum SDF clearance $C_k$, and
+traversability flag $I_k$. Choose the lowest-risk feasible primitive $k^\star$
+and compare it with the primitive $k_{\rm geo}$ closest to the geometry-only
+policy direction. The soft channel opens only if
+\[
+R_{k_{\rm geo}}-R_{k^\star}>\rho_R,\qquad
+C_{k^\star}>\delta_\phi,\qquad I_{k^\star}=1.
+\]
+If any test fails, $m_{\rm feas}\approx0$: $F_{\rm soft}$ is suppressed while
+$F_{\rm hard}$ remains active. The test is local, differentiable through the
+sigmoids in Eq.~\eqref{eq:method:route_gate}, and does not call a global planner.
+\end{minipage}}
+\caption{\textbf{Gate specification in the main method.}
+The gate converts a risk-map cue into force activation only when the current
+local patch contains a cleared, traversable primitive that improves soft risk
+by margin $\rho_R$.}
+\label{fig:route_gate_main}
+\end{figure}
+
+% ----------------------------------------------------------------------
+\subsection{Tail-risk objective}
+\label{sec:method:cvar}
+% ----------------------------------------------------------------------
+
+Each rollout accumulates
+\begin{equation}
+J(\theta) =
+w_g\|\Pos_T-\Pos_g\|^2
++ w_\ell\textstyle\sum_t\|\Pos_{t+1}-\Pos_t\|
++ w_r\textstyle\sum_t\tilde r(\Pos_t)\|\Pos_{t+1}-\Pos_t\|
++ w_h\textstyle\sum_t\mathbf{1}[\phi(\Pos_t)<\epsilon].
+\label{eq:method:J}
+\end{equation}
+Because the relevant failures are rare, expected-cost training can be dominated
+by typical rollouts.  We therefore optimize the empirical
+Rockafellar--Uryasev CVaR objective~\citep{rockafellar2000optimization}:
+\begin{equation}
+\widehat{\cvar{\alpha}}(\theta)
+=
+\hat\eta
++\frac{1}{(1-\alpha)B}
+\sum_{i=1}^{B}\bigl(J^{(i)}(\theta)-\hat\eta\bigr)_+,
+\qquad
+\hat\eta=\widehat Q_\alpha\!\bigl(\{J^{(i)}\}_{i=1}^B\bigr)\;\text{detached}.
+\label{eq:method:cvar_emp}
+\end{equation}
+With $\alpha=0.95$ and $B=64$, gradient flows through the worst rollouts,
+giving a consistent estimator~\citep{hong2014monte}.  The resulting gradient
+acts through the sensitivity
+$\partial \Pos_{t+1}/\partial(\lambda_s,\lambda_h)$ exactly on rollouts where
+the context force can change the outcome.
+
+% ----------------------------------------------------------------------
+\subsection{Training hierarchy}
+\label{sec:method:loops}
+% ----------------------------------------------------------------------
+
+The context-enriched field uses three computational roles.  First, the geometry-only checkpoint is
+loaded with $\lambda_s,\lambda_h\equiv0$, so Eq.~\eqref{eq:method:skeleton}
+initially reproduces the geometry-only policy.  Second, the episode loop
+backpropagates the CVaR loss in Eq.~\eqref{eq:method:cvar_emp} through the
+differentiable rollout to update the context encoder and coefficient heads.
+Third, a lightweight segment-correction loop updates active geometry/context
+coefficients from realized local residuals, while a curriculum loop advances
+to harder patches only after validation violation rates fall below a threshold.
+The full loop diagram, initialization protocol, and pseudocode are given in
+Appendix~\ref{app:ctx_loops_hierarchy}; the main text keeps the algorithmic
+contract to the force law, loss, and update hierarchy above.
+For the logged $500$-epoch highway runs, the geometry-only policy trained for
+$1.49$ hours and the context-enriched policy for $3.27$ hours on one NVIDIA
+A100 GPU, for $4.8$ total GPU-hours.
+
+% ----------------------------------------------------------------------
+\subsection{Selectivity consequences of context-energy enrichment}
+\label{sec:method:enrichment}
+% ----------------------------------------------------------------------
+
+The additions above are coupled: adding $\Ham_{\rm ctx}$ creates the force
+channel $F_{\rm ctx}=-\nabla_\Pos\Ham_{\rm ctx}$, the coefficient subspace
+$(\lambda_s,\lambda_h)$, and the rollout-sensitivity pathway through which
+CVaR training acts.  The same structure yields the selectivity consequences
+measured in Sec.~\ref{sec:experiments}.
+
+\begin{proposition}[Selectivity consequences of context-energy enrichment]
+\label{prop:enrichment}
+Let the geometry-only policy and the context-enriched field share the same geometric Hamiltonian, dissipative
+port $R_\theta$, mass matrix $\Mass$, and semi-implicit integration rule.  Let
+$\Ham_{\rm enr}=\Ham_{\rm geo}+\Ham_{\rm ctx}$ with
+$F_{\rm ctx}=-\nabla_\Pos\Ham_{\rm ctx}$.  Under the boundedness and local
+Lipschitz assumptions in Appendix~\ref{app:theory}, the following hold over
+any finite horizon:
+\begin{enumerate}
+  \item[\textbf{C1.}] \emph{Geometry-only preservation.} If
+  $\sup_t\|F_{\rm ctx}(q_t)\|\le\varepsilon$, then the context-enriched rollout remains
+  within $O(\varepsilon)$ of the geometry-only rollout.
+  \item[\textbf{C2.}] \emph{No hallucinated escape.} If
+  $\sup_t\|P_\perp F_{\rm ctx}(q_t)\|\le\varepsilon_\perp$, then lateral
+  deviation from the geometry-only rollout is bounded by $O(\varepsilon_\perp)$.
+  \item[\textbf{C3.}] \emph{Selective risk deflection.} If a feasible lateral
+  direction has projected risk-gradient margin $\Delta$ and projected
+  hard-barrier forces cancel the soft-risk force by at most $\chi$, then
+  $\|P_\perp F_{\rm ctx}\|\ge\lambda_s\Delta-\chi$ and one semi-implicit step
+  decreases local soft risk relative to the geometry-only policy by
+  $O(\tau^2\lambda_s\Delta^2)$ whenever $\lambda_s\Delta>\chi$.
+\end{enumerate}
+\end{proposition}
+
+Proofs: C1 $\Rightarrow$ Theorem~\ref{thm:scaffold_preservation};
+C2 $\Rightarrow$ Corollary~\ref{cor:no_hallucination};
+C3 $\Rightarrow$ Theorem~\ref{thm:risk_deflection}.  Selectivity is not
+trained as a separate label: C1--C3 follow from the gradient structure of
+$\Ham_{\rm ctx}$ and the affordance gate, not from post-hoc tuning. Appendix
+Table~\ref{tab:app_theory_checks} makes C1--C3 checkable by mapping each
+theoretical consequence to measured rollout statistics.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Main-text check of the theory predictions.}
+We test C1--C3 as finite-rollout predictions, not formal safety certificates.
+``Below-$\delta$'' means lateral deviation stays below the reaction threshold
+used for false pre-activation.}
+\label{tab:main_theory_checks}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.06}
+\begin{tabular}{lccc}
+\toprule
+Prediction & Rollout condition & Below-$\delta \uparrow$ & Failure metric$\downarrow$ \\
+\midrule
+C1 & geometry-only delayed escape
+& $1.000$ & false pre-act $0.000$ \\
+C2 & route-aware context, static blocked R2
+& $0.886$ & FAR $0.114$ \\
+C3 & route-aware CVaR, pre-escape delayed
+& $0.820$ & false pre-act $0.180$ \\
+\bottomrule
+\end{tabular}
+\end{table}

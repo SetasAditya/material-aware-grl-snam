@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Material-Aware Hamiltonian Risk Fields — project page</title>
+<style>
+  :root{
+    --ground:#F5F3F7; --surface:#FFFFFF; --sunk:#EBE7F0; --mat:#FFFFFF;
+    --ink:#16121C; --ink-2:#3A3145; --muted:#6B6178; --line:#DED8E6;
+    --accent:#8A4B12; --accent-2:#B0651C; --accent-soft:#F5E6D4;
+    --plum:#3B2A54; --ours:#178A5A; --bad:#B23A34;
+    --disp:Charter,"Bitstream Charter","Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#14111A; --surface:#1C1825; --sunk:#100D16; --mat:#F3F1F6;
+      --ink:#F0ECF5; --ink-2:#CFC7DA; --muted:#9A90A8; --line:#2C2537;
+      --accent:#D99A4E; --accent-2:#E8B267; --accent-soft:#33240F;
+      --plum:#C0AEE0; --ours:#3FC58C; --bad:#E27069;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#14111A; --surface:#1C1825; --sunk:#100D16; --mat:#F3F1F6;
+    --ink:#F0ECF5; --ink-2:#CFC7DA; --muted:#9A90A8; --line:#2C2537;
+    --accent:#D99A4E; --accent-2:#E8B267; --accent-soft:#33240F;
+    --plum:#C0AEE0; --ours:#3FC58C; --bad:#E27069;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+       font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:0}
+
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h1{font-family:var(--disp);font-weight:700;font-size:clamp(34px,5.6vw,62px);line-height:1.05;
+     letter-spacing:-.02em;margin:0 0 18px;text-wrap:balance}
+  h2{font-family:var(--disp);font-weight:700;font-size:clamp(24px,3vw,33px);line-height:1.15;
+     letter-spacing:-.01em;margin:0 0 14px;text-wrap:balance}
+  h3{font-family:var(--disp);font-size:20px;margin:0 0 6px;font-weight:600}
+  p{margin:0 0 16px;max-width:68ch}
+  .lede{font-size:clamp(18px,2vw,21px);color:var(--ink-2);max-width:64ch}
+  .muted{color:var(--muted)}
+  em.term{font-style:normal;font-weight:600;color:var(--accent)}
+
+  header.hero{padding:64px 0 46px;border-bottom:1px solid var(--line)}
+  .authors{margin:22px 0 0;font-size:17px;color:var(--ink-2);max-width:none}
+  .authors b{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:18.5px}
+  .authors .aff{font-size:14.5px;color:var(--muted)}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+    border:1px solid var(--line);border-radius:99px;padding:5px 13px;color:var(--muted);background:var(--surface)}
+
+  /* the equation, the one idea of the page */
+  .eqwrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:26px 24px;margin:26px 0 8px;overflow-x:auto}
+  .eq{font-family:var(--mono);font-size:clamp(15px,2.1vw,21px);line-height:2.5;white-space:nowrap;text-align:center}
+  .tok{padding:5px 9px;border-radius:6px;border:1px solid transparent}
+  .tok.geom{background:var(--sunk);border-color:var(--line)}
+  .tok.expo{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+  .tok.str{background:var(--sunk);border-color:var(--line)}
+  .tok.dir{background:var(--sunk);border-color:var(--line)}
+  .eqkey{display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:center;margin-top:16px;font-size:14px;color:var(--muted)}
+  .eqkey b{color:var(--ink-2);font-weight:600}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+  @media (max-width:820px){.grid3{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:20px}
+  .card .n{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .card p{font-size:15.5px;margin:6px 0 0;color:var(--ink-2)}
+
+  /* media */
+  figure{margin:0 0 34px}
+  .mat{background:var(--mat);border:1px solid var(--line);border-radius:10px;padding:12px;overflow:hidden}
+  .mat img{display:block;width:100%;height:auto;border-radius:4px}
+  figcaption{margin-top:12px;font-size:15px;color:var(--ink-2);max-width:74ch}
+  figcaption b{font-family:var(--disp);font-size:16.5px;color:var(--ink)}
+  .cap-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+  .tag{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
+  .tag.ours{color:var(--ours);border-color:var(--ours)}
+  .tag.bad{color:var(--bad);border-color:var(--bad)}
+
+  table{width:100%;border-collapse:collapse;font-size:15px;margin-top:6px}
+  th,td{text-align:right;padding:11px 10px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  td.win{color:var(--ours);font-weight:600}
+  tbody td{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  tbody td:first-child{font-family:var(--sans)}
+  .tblnote{font-size:13.5px;color:var(--muted);margin-top:10px}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:22px 0 6px}
+  @media (max-width:820px){.grid2{grid-template-columns:1fr}}
+  .eq-block{font-family:var(--mono);font-size:14.5px;line-height:1.95;white-space:normal;text-align:left;color:var(--ink-2)}
+  .eq-block .lhs{color:var(--ink);font-weight:600}
+  .claim{background:var(--surface);border:1px solid var(--accent);border-left-width:4px;border-radius:8px;padding:18px 20px;margin:24px 0 0}
+  .claim .no{color:var(--bad);font-weight:600}
+  .claim .yes{color:var(--ours);font-weight:600}
+  .claim p{margin:0 0 10px;max-width:72ch}
+  .claim p:last-child{margin:0}
+  .limits li{margin-bottom:9px;color:var(--ink-2);max-width:70ch}
+  footer{padding:34px 0 60px;font-size:14px;color:var(--muted)}
+  a{color:var(--accent-2)}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Ellendula · Wang · Bajaj — UT Austin</div>
+  <h1>Material-aware navigation needs a gate, not a bigger weight</h1>
+  <p class="lede">
+    An autonomous vehicle can see that the adjacent lane is safer and still have no way to reach it.
+    The lane may be occupied, or it may only clear a few seconds later. We give material risk its own
+    force channel and admit it only when a local feasibility witness says a lower-risk motion
+    actually exists.
+  </p>
+  <p class="authors">
+    <b>Aditya Sai Ellendula</b><sup>1</sup> &nbsp; <b>Yi Wang</b><sup>2</sup> &nbsp; <b>Chandrajit Bajaj</b><sup>1,2</sup><br>
+    <span class="aff"><sup>1</sup> Department of Computer Science &nbsp;·&nbsp; <sup>2</sup> Oden Institute &nbsp;·&nbsp; The University of Texas at Austin</span>
+  </p>
+  <div class="badges">
+    <span class="badge">port-Hamiltonian field</span>
+    <span class="badge">no global replanner</span>
+    <span class="badge">2.3 ms / step</span>
+    <span class="badge">RELLIS-3D · DFC2018 · highway-env</span>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <div class="eyebrow">The problem</div>
+  <h2>A lower-risk direction is not a feasible maneuver</h2>
+  <p>
+    A geometry-only navigator treats two equally clear routes as identical, even when one is firm
+    ground and the other is wet clay. The obvious fix is to add a material-risk gradient that pushes
+    away from the costly surface. That fix fails in a specific way. The low-cost side may be walled
+    off by a hard hazard, or it may only open several steps later. An always-active material force
+    reacts to these apparent escapes and steers toward motions the robot cannot take.
+  </p>
+  <p>
+    So the governing question is not how heavily to weight material risk. It is
+    <em class="term">when material information should be admitted to reshape the motion at all</em>.
+  </p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">The approach</div>
+  <h2>Three factors, separately measurable</h2>
+  <p>
+    We build on an inherited geometry-only port-Hamiltonian navigator and add exactly two things: a
+    material-risk force with its own direction, and a witness that gates its exposure. Because the
+    channel is separable, direction, strength, and exposure can each be intervened on independently.
+  </p>
+
+  <div class="eqwrap">
+    <div class="eq">
+      F(q) &nbsp;=&nbsp; <span class="tok geom">F<sub>geom</sub></span>
+      &nbsp;+&nbsp; <span class="tok expo">g(c)</span>
+      <span class="tok str">λ<sub>s</sub>(c)</span>
+      <span class="tok dir">f<sub>mat</sub>(q)</span>
+      &nbsp;+&nbsp; <span class="tok geom">λ<sub>h</sub>(c) f<sub>haz</sub>(q)</span>
+    </div>
+    <div class="eqkey">
+      <span><b>g</b> exposure — the witness gate</span>
+      <span><b>λ<sub>s</sub></b> strength — learned from context</span>
+      <span><b>f<sub>mat</sub></b> direction — the risk gradient</span>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="n">01 — Witness</div>
+      <h3>Evidence, not a path</h3>
+      <p>Among K sampled short-horizon primitives, the gate opens only if one improves risk by a
+      margin, clears the hazard field, and is traversable. The witness is evidence that a feasible
+      lower-risk motion exists. It is never tracked as a reference.</p>
+    </div>
+    <div class="card">
+      <div class="n">02 — Hazard stays on</div>
+      <h3>Only the soft channel is gated</h3>
+      <p>The hard-hazard force acts at every step. Gating applies to the material channel alone, so
+      suppression never trades away collision avoidance.</p>
+    </div>
+    <div class="card">
+      <div class="n">03 — Local only</div>
+      <h3>No global replanning</h3>
+      <p>Everything is computed inside the current local patch. The policy is reactive at
+      2.3 ms/step while the planners it matches spend 9.8 to 68.3 explicit replans.</p>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">Behavior</div>
+  <h2>The same mechanism, two failure modes it avoids</h2>
+
+  <figure>
+    <div class="mat"><img src="media/authored_slow_leader.gif" alt="Highway: geometry baseline crashes into the slow leader while the risk-shaped policy changes lane and passes"></div>
+    <figcaption>
+      <b>An escape exists, so take it.</b>
+      A slow leader blocks the lane. The geometry baseline has no lateral channel through which risk
+      can act, and it runs into the leader. With the material channel exposed, the lateral force
+      builds and the policy leaves the costly lane before contact. The force legend on the right
+      shows the channels being summed at that instant.
+      <span class="cap-tags"><span class="tag bad">baseline: crash</span><span class="tag ours">risk-shaped: passes</span></span>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <div class="mat"><img src="media/authored_slow_leader_boxed.gif" alt="Highway: the adjacent lanes are occupied, so the risk-shaped policy withholds the lateral force and slows instead of swerving"></div>
+    <figcaption>
+      <b>No escape exists, so withhold it.</b>
+      The identical risk field, now with both neighbouring lanes occupied. The lower-risk direction is
+      still visible and still wrong. The policy suppresses the lateral force and slows instead of
+      swerving into occupied space. This is the case that separates a gated channel from a merely
+      stronger coefficient, and the honest cost is speed.
+      <span class="cap-tags"><span class="tag bad">baseline: crash</span><span class="tag ours">risk-shaped: suppresses, slows</span></span>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <div class="mat"><img src="media/rellis_delayed_escape_example_1.gif" alt="RELLIS delayed required escape, four methods compared on the same BEV patch"></div>
+    <figcaption>
+      <b>Delayed required escape on RELLIS-3D.</b>
+      The nominal route is blocked, an alternative becomes feasible ten steps later, and the nominal
+      route is sealed at the same instant, so acting on the escape is required rather than optional.
+      All four methods see an identical per-step BEV patch. Dark is lower soft risk, the white
+      boundary is the hard hazard, the star is the goal.
+      <span class="cap-tags"><span class="tag">geometry scaffold</span><span class="tag">DWA + semantic</span><span class="tag">CBF-QP</span><span class="tag ours">material-aware (ours)</span></span>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <div class="mat"><img src="media/rellis_delayed_escape_example_2.gif" alt="A second RELLIS delayed-required-escape episode with the same four-method comparison"></div>
+    <figcaption>
+      <b>A second episode, same protocol.</b>
+      The pattern that matters is temporal. Methods that move before the escape is feasible commit
+      early and stall; the gated field withholds while blocked and commits once the witness passes.
+      Panel titles carry each method's outcome and the phase at that step.
+      <span class="cap-tags"><span class="tag">success / stuck labelled per panel</span></span>
+    </figcaption>
+  </figure>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">The obvious objection</div>
+  <h2>Why not just plan? MPC and MPPI are often better</h2>
+  <p>
+    They frequently are. A receding-horizon planner evaluates multi-step consequences, optimizes a whole
+    control sequence, carries dynamics and constraints explicitly, escapes some local minima, and attains
+    lower trajectory risk whenever its model and horizon are adequate. None of that is in dispute.
+  </p>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="n">What they solve</div>
+      <h3>An optimization, every cycle</h3>
+      <div class="eq-block" style="margin-top:10px">
+        <span class="lhs">min</span> over u<sub>t:t+H−1</sub> &nbsp; Σ<sub>k=0..H−1</sub> ℓ(x<sub>t+k</sub>, u<sub>t+k</sub>) + V<sub>f</sub>(x<sub>t+H</sub>)<br>
+        subject to &nbsp; x<sub>t+k+1</sub> = f(x<sub>t+k</sub>, u<sub>t+k</sub>)
+      </div>
+      <p style="margin-top:10px">
+        MPPI instead samples many noisy control sequences, rolls each one out, weights them by exponential
+        trajectory cost, and updates the nominal sequence. Both pay that cost at every control step.
+      </p>
+    </div>
+    <div class="card">
+      <div class="n">When they struggle</div>
+      <h3>Assumptions that can fail</h3>
+      <p>
+        A tight latency budget. An inaccurate dynamics or prediction model. Moving objects that do not follow
+        their predicted trajectories. Too few samples, or a horizon too short to see the event, or long enough
+        but too expensive to run. Optimization that stalls or goes numerically unstable. A plan that must be
+        regenerated from scratch, repeatedly, when only local sensing is available and no reliable long-range
+        prediction exists.
+      </p>
+    </div>
+  </div>
+
+  <p>
+    Our field asks for much less per step: one local patch, a small set of feasibility witnesses, a
+    coefficient prediction, and a single force composition and integration. On the RELLIS-Dyn material
+    aggregate that buys planner-level success at a fraction of the cost.
+  </p>
+
+  <table>
+    <thead><tr><th>Method</th><th>Success</th><th>Explicit replans</th><th>Compute</th></tr></thead>
+    <tbody>
+      <tr><td>Local A* (budgeted)</td><td>0.983</td><td>9.8</td><td>8.4 ms/step</td></tr>
+      <tr><td>MPC (budgeted)</td><td>0.967</td><td>11.1</td><td>42.2 ms/step</td></tr>
+      <tr><td>Material-aware field (ours)</td><td class="win">0.980</td><td class="win">0</td><td class="win">2.3 ms/step</td></tr>
+    </tbody>
+  </table>
+  <p class="tblnote">RELLIS-Dyn three-event material aggregate. All methods see the same per-step local BEV patch.</p>
+
+  <figure style="margin-top:30px">
+    <div class="mat"><img src="media/planner_comparison.gif" alt="Four-panel comparison on one moving-obstacle episode: semantic DWA succeeds, semantic MPPI gets stuck, budgeted MPC gets stuck, and the material-aware field succeeds with zero replans"></div>
+    <figcaption>
+      <b>One episode where planning does not win.</b>
+      The same RELLIS-Dyn <i>moving obstacle blocks detour</i> event and the same local BEV, replayed for four
+      methods. The moving obstacle does not follow the trajectory the planners predict for it, which is
+      precisely the assumption that MPC and MPPI depend on. Budgeted MPC spends 17 explicit replans and MPPI
+      resamples every step; both still stall. The gated field reaches the goal with zero replans.
+      <span class="cap-tags">
+        <span class="tag">DWA: success · 63 steps · 1.58 m</span>
+        <span class="tag bad">MPPI: stuck · 141 steps · 24.51 m</span>
+        <span class="tag bad">MPC: stuck · 141 steps · 19.42 m</span>
+        <span class="tag ours">ours: success · 61 steps · 2.00 m</span>
+      </span>
+    </figcaption>
+  </figure>
+
+  <div class="claim">
+    <p><span class="no">The claim is not:</span> our method universally beats MPC and MPPI.</p>
+    <p><span class="yes">The claim is:</span> our method can approach planner-level success using a
+    substantially cheaper zero-replan local field, and can be preferable when computation, model accuracy,
+    or the opportunity to replan is limited. The episode above is a qualitative counterexample to
+    <i>planning is always better</i>, not evidence of dominance.</p>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">What we measure</div>
+  <h2>Interventions, not just outcomes</h2>
+  <p>
+    Each claim has a matching intervention that changes one thing. The headline result is the gate
+    toggle: holding the trained model fixed and switching only the gate removes almost all soft-force
+    exposure without changing where the robot drives.
+  </p>
+
+  <table>
+    <thead><tr><th>Intervention</th><th>Baseline</th><th>Ours</th><th>Reading</th></tr></thead>
+    <tbody>
+      <tr><td>Soft-force exposure (gate off → on)</td><td>1.000</td><td class="win">0.061–0.094</td><td>91–94% removed</td></tr>
+      <tr><td>Premature activation vs DWA</td><td>0.950</td><td class="win">0.380</td><td>CI [−0.67, −0.47]</td></tr>
+      <tr><td>Success after the escape opens</td><td>0.480</td><td class="win">0.610</td><td>CI [0.03, 0.23]</td></tr>
+      <tr><td>Explicit replans</td><td>9.8–68.3</td><td class="win">0</td><td>2.3 ms/step</td></tr>
+      <tr><td>λ<sub>s</sub> recovered, off-road → dense semantic</td><td>0.107</td><td class="win">1.813</td><td>~17× without retuning</td></tr>
+    </tbody>
+  </table>
+  <p class="tblnote">
+    Delayed-required escape, 100 paired episodes on identical seeds and events. Coefficient range is
+    the one-factor λ<sub>s</sub> intervention across RELLIS R1 and DFC2018.
+  </p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">In closing</div>
+  <h2>Conclusion</h2>
+  <p>
+    Material risk earns its own force channel, and a local feasibility witness decides when that channel
+    is allowed to act. Because direction, strength, and exposure stay separable, each can be intervened
+    on by itself, and the interventions point at the gate. Toggling only the gate removes 91 to 94 percent
+    of soft-force exposure without moving the robot off its path, premature activation falls from 0.950 to
+    0.380 against a reactive baseline while success rises from 0.480 to 0.610, and the same model rescales
+    its coefficient roughly seventeenfold between off-road and dense-semantic domains with no retuning.
+    All of it runs locally at 2.3 ms per step with no global replanner.
+  </p>
+  <p>
+    Stating the boundaries is part of the result.
+  </p>
+  <ul class="limits">
+    <li>The tail-risk objective is not the source of the behavior. Retraining the same architecture
+        and gate under expected cost separates no outcome metric at 95% confidence, so the selectivity
+        belongs to the gate rather than to CVaR.</li>
+    <li>The hazard barrier is differentiable but is not a control-barrier certificate. Safety numbers
+        are empirical finite-rollout reductions, not guarantees.</li>
+    <li>Robustness to a degraded risk map is conservatism rather than discrimination. As labels are
+        corrupted, correct and false activations decay almost identically.</li>
+    <li>The gate is recomputed frame-wise with no hysteresis, so it can flicker, and reactive
+        boundary-following remains stronger on moving-obstacle events.</li>
+    <li>We do not claim superiority over MPC or MPPI in general. Those methods win when their model and
+        horizon are adequate and the compute is available. The planner comparison above is a single measured
+        episode chosen because it violates their prediction assumption, and the aggregate result is
+        comparable success at lower cost rather than a better trajectory.</li>
+  </ul>
+</div></section>
+
+<footer><div class="wrap">
+  Animations are measured rollouts from the evaluation, not illustrations. All methods in a panel
+  share the same per-step local patch and the same episode.
+</div></footer>
+
+</body>
+</html>

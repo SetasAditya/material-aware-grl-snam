@@ -1,0 +1,52 @@
+{
+  "num_episodes": 2,
+  "num_rollouts": 4,
+  "arms": {
+    "gate_on": {
+      "success": 1.0,
+      "final_distance_m": 2.554461717605591,
+      "path_length_m": 35.14599420502782,
+      "risk_exposure": 18.308080810217408,
+      "cvar20_risk": 0.7684268071794637,
+      "cvar20_violation": 2.1614991461603843,
+      "hard_contacts": 8.5,
+      "false_pre_activation_rate": 0.0,
+      "post_open_activation_rate": 0.30952380952380953,
+      "post_open_activation_delay": 54.5
+    },
+    "gate_off": {
+      "success": 1.0,
+      "final_distance_m": 2.5544291734695435,
+      "path_length_m": 35.14605360478163,
+      "risk_exposure": 18.308107589788904,
+      "cvar20_risk": 0.7684269208278924,
+      "cvar20_violation": 2.1614961861823483,
+      "hard_contacts": 8.5,
+      "false_pre_activation_rate": 1.0,
+      "post_open_activation_rate": 1.0,
+      "post_open_activation_delay": 0.0
+    }
+  },
+  "mean_paired_delta_on_minus_off": {
+    "success": 0.0,
+    "final_distance_m": 3.254413604736328e-05,
+    "path_length_m": -5.939975380897522e-05,
+    "risk_exposure": -2.677957149543886e-05,
+    "mean_risk": 9.184568480757882e-08,
+    "cvar20_risk": -1.13648428778923e-07,
+    "cvar20_violation": 2.9599780358990913e-06,
+    "hard_contacts": 0.0,
+    "hard_hazard_length_m": 3.993511199951172e-06,
+    "false_pre_activation_rate": -1.0,
+    "post_open_activation_rate": -0.6904761904761905,
+    "post_open_activation_delay": 54.5
+  },
+  "smoke_validation": {
+    "paired_episode_count": 2,
+    "paired_first_step_learned_coefficients_equal": true,
+    "gate_off_multiplier_always_one": true,
+    "gate_on_multiplier_binary": true,
+    "learned_hard_force_active_both_arms": true,
+    "all_rollouts_reach_post_opening_window": true
+  }
+}

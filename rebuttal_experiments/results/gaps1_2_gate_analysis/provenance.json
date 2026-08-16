@@ -1,0 +1,11 @@
+{
+  "experiment": "gaps1_2_gate_analysis",
+  "bootstrap_reps": 10000,
+  "seed": 27370,
+  "input_hashes": {
+    "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/exp1_gate_ablation_100/per_episode_metrics.csv": "8ca107e5ff7d08e53f9139641eec2925f1b3d2ebd61eca49c8eb801d49c7d05a",
+    "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/exp2_gate_trajectory_agreement/summary_by_regime_phase.csv": "217e5f5a0ede729fb3b3ca7b0482b872f136d1fc57376a397d5f64152b4d91e2",
+    "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/exp3_gate_activation/summary_by_regime_phase.csv": "11c8eace143785f10643b65f950622d90172d0be35d1939b1be206106fcd2173"
+  },
+  "interpretation_guardrail": "effective_soft_rate is a dynamic exposure diagnostic and is not reported as static directional CAR/FAR"
+}

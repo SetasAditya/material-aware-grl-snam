@@ -1,0 +1,137 @@
+{
+  "config": {
+    "analysis_name": "Gap 4: controlled directional force-channel versus learned scalar risk coefficient",
+    "comparisons": [
+      "stage2_directional_head:s2_model_lambda"
+    ],
+    "event_specs": null,
+    "force_eps": 0.001,
+    "input": "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_selectivity_val1500_with_directional_head/force_samples.csv",
+    "metrics": [
+      "correct_activation",
+      "false_activation",
+      "selectivity_ratio",
+      "force_perp_norm",
+      "force_norm",
+      "dot_safe"
+    ],
+    "mode": "static",
+    "n_bootstrap": 10000,
+    "scopes": [
+      "static"
+    ],
+    "seed": 27370
+  },
+  "pairing_validation": [
+    {
+      "complete_pairing": true,
+      "max_observations_per_cluster": 1,
+      "method_a": "stage2_directional_head",
+      "method_a_only": 0,
+      "method_b": "s2_model_lambda",
+      "method_b_only": 0,
+      "min_observations_per_cluster": 1,
+      "mode": "static",
+      "paired_observations": 13553,
+      "scope": "static"
+    }
+  ],
+  "results": [
+    {
+      "bootstrap_probability_a_better": 1.0,
+      "ci95_high": 0.6067996239968573,
+      "ci95_low": 0.42857142857142855,
+      "difference_a_minus_b": 0.5185185185185186,
+      "higher_is_better": true,
+      "method_a": "stage2_directional_head",
+      "method_a_mean": 0.8835978835978836,
+      "method_b": "s2_model_lambda",
+      "method_b_mean": 0.36507936507936506,
+      "metric": "correct_activation",
+      "mode": "static",
+      "n_clusters": 113,
+      "n_paired_observations": 189,
+      "scope": "static"
+    },
+    {
+      "bootstrap_probability_a_better": 1.0,
+      "ci95_high": -0.6031312488911741,
+      "ci95_low": -0.643074781144406,
+      "difference_a_minus_b": -0.6233173625370751,
+      "higher_is_better": false,
+      "method_a": "stage2_directional_head",
+      "method_a_mean": 0.12856490987907826,
+      "method_b": "s2_model_lambda",
+      "method_b_mean": 0.7518822724161534,
+      "metric": "false_activation",
+      "mode": "static",
+      "n_clusters": 600,
+      "n_paired_observations": 8766,
+      "scope": "static"
+    },
+    {
+      "bootstrap_probability_a_better": 0.7607,
+      "ci95_high": 0.36395755478312325,
+      "ci95_low": -0.1577207481006382,
+      "difference_a_minus_b": 0.09253770542770146,
+      "higher_is_better": true,
+      "method_a": "stage2_directional_head",
+      "method_a_mean": 1.2922135244362993,
+      "method_b": "s2_model_lambda",
+      "method_b_mean": 1.1996758190085979,
+      "metric": "selectivity_ratio",
+      "mode": "static",
+      "n_clusters": 600,
+      "n_paired_observations": 9347,
+      "scope": "static"
+    },
+    {
+      "bootstrap_probability_a_better": null,
+      "ci95_high": 0.07581917341011418,
+      "ci95_low": 0.06425626661000701,
+      "difference_a_minus_b": 0.06992342032167752,
+      "higher_is_better": null,
+      "method_a": "stage2_directional_head",
+      "method_a_mean": 0.08581330424416882,
+      "method_b": "s2_model_lambda",
+      "method_b_mean": 0.015889883922491296,
+      "metric": "force_perp_norm",
+      "mode": "static",
+      "n_clusters": 900,
+      "n_paired_observations": 13553,
+      "scope": "static"
+    },
+    {
+      "bootstrap_probability_a_better": null,
+      "ci95_high": 0.1485418003559444,
+      "ci95_low": 0.13048610653893153,
+      "difference_a_minus_b": 0.1394767175185837,
+      "higher_is_better": null,
+      "method_a": "stage2_directional_head",
+      "method_a_mean": 0.15981700798070694,
+      "method_b": "s2_model_lambda",
+      "method_b_mean": 0.020340290462123226,
+      "metric": "force_norm",
+      "mode": "static",
+      "n_clusters": 900,
+      "n_paired_observations": 13553,
+      "scope": "static"
+    },
+    {
+      "bootstrap_probability_a_better": null,
+      "ci95_high": 0.0667192416790434,
+      "ci95_low": 0.05320699751527956,
+      "difference_a_minus_b": 0.0599327479765555,
+      "higher_is_better": null,
+      "method_a": "stage2_directional_head",
+      "method_a_mean": 0.07257643249442479,
+      "method_b": "s2_model_lambda",
+      "method_b_mean": 0.01264368451786929,
+      "metric": "dot_safe",
+      "mode": "static",
+      "n_clusters": 900,
+      "n_paired_observations": 13553,
+      "scope": "static"
+    }
+  ]
+}

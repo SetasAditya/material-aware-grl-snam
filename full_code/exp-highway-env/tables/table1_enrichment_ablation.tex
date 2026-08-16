@@ -1,0 +1,14 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Enrichment ablation.} Freezing Stage 1 geometry preserves the scaffold while Stage 2 trains the risk and lateral channels on top. Missing runs are rendered as dashes rather than dropped.}
+\label{tab:enrichment_ablation}
+\small
+\begin{tabular}{lrrrrrr}
+\toprule
+ & val L_traj & val L_nav & μ_lat raw & max-scn crash & avg-scn crash & avg-scn speed (m/s) \\
+\midrule
+Stage 2 (unfrozen geometry) & $5.393$ & $13.145$ & --- & --- & --- & $17.10$ \\
+Stage 2 (frozen geometry) & $1.278$ & $10.279$ & $1.51$ & --- & --- & $22.45$ \\
+\bottomrule
+\end{tabular}
+\end{table}

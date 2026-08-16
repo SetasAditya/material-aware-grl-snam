@@ -1,0 +1,276 @@
+{
+  "design": {
+    "arms": {
+      "zero": "lambda_soft_used = gate * 0",
+      "learned": "lambda_soft_used = gate * checkpoint prediction",
+      "fixed": "lambda_soft_used = gate * 1.5"
+    },
+    "invariant": "lambda_hard and all other network outputs are unchanged",
+    "rellis_behavior_split": "sequence 00003 validation, R1 only",
+    "dfc_behavior_split": "held-out test"
+  },
+  "metrics": {
+    "DFC2018": {
+      "zero": {
+        "success": {
+          "mean": 1.0,
+          "ci95": 0.0
+        },
+        "path_length_ratio": {
+          "mean": 0.9595503266365341,
+          "ci95": 0.0
+        },
+        "risk_exposure": {
+          "mean": 6.559977006227906,
+          "ci95": 0.0
+        },
+        "mean_rho": {
+          "mean": 0.02564784153789406,
+          "ci95": 0.0
+        }
+      },
+      "learned": {
+        "success": {
+          "mean": 1.0,
+          "ci95": 0.0
+        },
+        "path_length_ratio": {
+          "mean": 0.9595503266365341,
+          "ci95": 0.0
+        },
+        "risk_exposure": {
+          "mean": 6.559977006227906,
+          "ci95": 0.0
+        },
+        "mean_rho": {
+          "mean": 0.02564784153789406,
+          "ci95": 0.0
+        }
+      },
+      "fixed": {
+        "success": {
+          "mean": 1.0,
+          "ci95": 0.0
+        },
+        "path_length_ratio": {
+          "mean": 0.9595503266365341,
+          "ci95": 0.0
+        },
+        "risk_exposure": {
+          "mean": 6.559977006227906,
+          "ci95": 0.0
+        },
+        "mean_rho": {
+          "mean": 0.02564784153789406,
+          "ci95": 0.0
+        }
+      }
+    },
+    "RELLIS-3D": {
+      "zero": {
+        "success": {
+          "mean": 1.0,
+          "ci95": 0.0
+        },
+        "path_length_ratio": {
+          "mean": 0.9034411351220105,
+          "ci95": 0.0
+        },
+        "risk_exposure": {
+          "mean": 14.88869000360811,
+          "ci95": 0.0
+        },
+        "mean_rho": {
+          "mean": 0.4541940791964346,
+          "ci95": 0.0
+        }
+      },
+      "learned": {
+        "success": {
+          "mean": 1.0,
+          "ci95": 0.0
+        },
+        "path_length_ratio": {
+          "mean": 0.9034411351220105,
+          "ci95": 0.0
+        },
+        "risk_exposure": {
+          "mean": 14.88869000360811,
+          "ci95": 0.0
+        },
+        "mean_rho": {
+          "mean": 0.4541940791964346,
+          "ci95": 0.0
+        }
+      },
+      "fixed": {
+        "success": {
+          "mean": 1.0,
+          "ci95": 0.0
+        },
+        "path_length_ratio": {
+          "mean": 0.9034411351220105,
+          "ci95": 0.0
+        },
+        "risk_exposure": {
+          "mean": 14.88869000360811,
+          "ci95": 0.0
+        },
+        "mean_rho": {
+          "mean": 0.4541940791964346,
+          "ci95": 0.0
+        }
+      }
+    }
+  },
+  "selectivity": {
+    "DFC2018": {
+      "zero": {
+        "correct_activation_rate": NaN,
+        "selectivity_ratio": NaN,
+        "positive_points": 0,
+        "all_points": 36
+      },
+      "learned": {
+        "correct_activation_rate": NaN,
+        "selectivity_ratio": NaN,
+        "positive_points": 0,
+        "all_points": 36
+      },
+      "fixed": {
+        "correct_activation_rate": NaN,
+        "selectivity_ratio": NaN,
+        "positive_points": 0,
+        "all_points": 36
+      }
+    },
+    "RELLIS-3D": {
+      "zero": {
+        "correct_activation_rate": NaN,
+        "selectivity_ratio": 0.0,
+        "positive_points": 0,
+        "all_points": 1783
+      },
+      "learned": {
+        "correct_activation_rate": NaN,
+        "selectivity_ratio": 0.0,
+        "positive_points": 0,
+        "all_points": 1783
+      },
+      "fixed": {
+        "correct_activation_rate": NaN,
+        "selectivity_ratio": 0.0,
+        "positive_points": 0,
+        "all_points": 1783
+      }
+    }
+  },
+  "lambda_soft_distribution": {
+    "DFC2018:soft-dominant-test": {
+      "n": 36,
+      "mean": 2.252556347184711,
+      "std": 0.07601667497124662,
+      "median": 2.26477313041687,
+      "q05": 2.058253288269043,
+      "q25": 2.261273205280304,
+      "q75": 2.301361322402954,
+      "q95": 2.3015849590301514
+    },
+    "RELLIS-3D:R1": {
+      "n": 5,
+      "mean": 0.11805364787578583,
+      "std": 0.015443127262956827,
+      "median": 0.11077593266963959,
+      "q05": 0.10237342715263367,
+      "q25": 0.10755136609077454,
+      "q75": 0.12715142965316772,
+      "q95": 0.14039874076843262
+    },
+    "RELLIS-3D:R2": {
+      "n": 897,
+      "mean": 0.10989357570940037,
+      "std": 0.014697371600742578,
+      "median": 0.10958780348300934,
+      "q05": 0.08128078281879425,
+      "q25": 0.10334905982017517,
+      "q75": 0.11798292398452759,
+      "q95": 0.1342988163232803
+    },
+    "RELLIS-3D:R3": {
+      "n": 881,
+      "mean": 0.10813561543213387,
+      "std": 0.018061563723816357,
+      "median": 0.11003729701042175,
+      "q05": 0.0704222172498703,
+      "q25": 0.10426708310842514,
+      "q75": 0.11944021284580231,
+      "q95": 0.13228510320186615
+    }
+  },
+  "delayed_escape_lambda_soft_distribution": {
+    "n": 6334,
+    "mean": 0.06138973490914073,
+    "std": 0.02801340130233456,
+    "median": 0.0579298697412014,
+    "q05": 0.02406611992046237,
+    "q25": 0.03720375429838896,
+    "q75": 0.08144916966557503,
+    "q95": 0.11090086437761781,
+    "source": "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv"
+  },
+  "paired_difference_means": {
+    "learned_minus_zero": {
+      "delta_success": 0.0,
+      "delta_path_length_ratio": 0.0,
+      "delta_risk_exposure": 0.0,
+      "delta_mean_rho": 0.0
+    },
+    "learned_minus_fixed": {
+      "delta_success": 0.0,
+      "delta_path_length_ratio": 0.0,
+      "delta_risk_exposure": 0.0,
+      "delta_mean_rho": 0.0
+    }
+  },
+  "provenance": {
+    "rellis_checkpoint": "/mnt/data/adityas/GRL-SNAM/exp-rellis/checkpoints/rellis_stage2_decision_mid_ep12/best.pt",
+    "rellis_checkpoint_sha256": "7ccb38ca448f56946f07c882c8efc8d5e193dd085e2d898d26b7044ff96dc090",
+    "dfc_checkpoint": "/mnt/data/adityas/GRL-SNAM/checkpoints/s2/best.pt",
+    "dfc_checkpoint_sha256": "61c4117d607cbda5f817c75d7d53462ac6f570eb95cd114d307846a6eebb86ce",
+    "arguments": {
+      "source_root": "/mnt/data/adityas/GRL-SNAM",
+      "rellis_checkpoint": "/mnt/data/adityas/GRL-SNAM/exp-rellis/checkpoints/rellis_stage2_decision_mid_ep12/best.pt",
+      "rellis_bev": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500",
+      "rellis_pairs": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_pairs_all_seqbalanced_2500_seq00003",
+      "dfc_checkpoint": "/mnt/data/adityas/GRL-SNAM/checkpoints/s2/best.pt",
+      "dfc_root": "/mnt/data/adityas/GRL-SNAM/data/dfc2018_stagewise",
+      "out": "rebuttal_experiments/results/exp9_smoke",
+      "datasets": [
+        "rellis",
+        "dfc"
+      ],
+      "fixed_lambda": 1.5,
+      "max_rellis_r1": 1,
+      "max_dfc": 1,
+      "steps_per_stage": 3,
+      "point_stride": 12,
+      "waypoint_stride": 6,
+      "patch_size": 32,
+      "obstacle_patch_size": 64,
+      "robot_radius": 1.5,
+      "margin_factor": 0.5,
+      "d_hat_sdf": 3.0,
+      "goal_tol_cells": 3.0,
+      "primitive_count": 16,
+      "primitive_horizon": 12,
+      "hard_margin": 1.0,
+      "improvement_margin": 0.05,
+      "material_trigger": 0.2,
+      "force_epsilon": 0.02,
+      "seed": 27370,
+      "device": "cpu",
+      "distribution_only": false,
+      "delayed_trace": "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv"
+    }
+  }
+}

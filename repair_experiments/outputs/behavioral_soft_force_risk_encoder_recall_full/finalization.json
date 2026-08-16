@@ -1,0 +1,29 @@
+{
+  "source_epoch_checkpoint": "/mnt/data/adityas/material-aware-grl-snam-clean/repair_experiments/outputs/behavioral_soft_force_risk_encoder_recall_full/epoch_006.pt",
+  "optimization_performed": false,
+  "validation_manifest": "/mnt/data/adityas/material-aware-grl-snam-clean/repair_experiments/splits/validation_static.json",
+  "validation_data": {
+    "episodes": 450,
+    "decisions": 10243,
+    "labels": {
+      "active": 2322,
+      "inactive": 7921
+    },
+    "labels_by_regime": {
+      "R1": {
+        "active": 2322,
+        "inactive": 1122
+      },
+      "R3": {
+        "active": 0,
+        "inactive": 3357
+      },
+      "R2": {
+        "active": 0,
+        "inactive": 3442
+      }
+    },
+    "seconds": 22.86665860901121
+  },
+  "encoding_seconds": 10.132780789019307
+}

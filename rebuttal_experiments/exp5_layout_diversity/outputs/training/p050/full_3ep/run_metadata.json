@@ -1,0 +1,17 @@
+{
+  "subset": "p050",
+  "seed": 27370,
+  "epochs": 3,
+  "batch_size": 64,
+  "learning_rate": 0.0001,
+  "device": "cpu",
+  "train_dataset_draws_per_epoch": 712,
+  "validation_dataset_draws": 345,
+  "training_seconds": 13.841270245000487,
+  "seconds_per_epoch": 4.613756748333496,
+  "initialization_sha256": "ad6a1bd6e64e32b4bb00d6a7ac666f6d4c349de0293fc817f602d5b1642eb821",
+  "parameter_count_total": 207254,
+  "parameter_count_trainable": 105682,
+  "training_path": "CoefEnergyNetMaterial + MaterialTrainer + selectivity_loss; risk encoder and lambda heads trainable; geometry frozen.",
+  "final_checkpoint": "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/exp5_layout_diversity/outputs/training/p050/full_3ep/epoch_002.pt"
+}

@@ -1,0 +1,5 @@
+comparison,dataset,delta_mean_rho,delta_path_length_ratio,delta_risk_exposure,delta_success,episode_id
+learned_minus_zero,DFC2018,0.0,0.0,0.0,0.0,0000
+learned_minus_fixed,DFC2018,0.0,0.0,0.0,0.0,0000
+learned_minus_zero,RELLIS-3D,0.0,0.0,0.0,0.0,00003_001631_00
+learned_minus_fixed,RELLIS-3D,0.0,0.0,0.0,0.0,00003_001631_00

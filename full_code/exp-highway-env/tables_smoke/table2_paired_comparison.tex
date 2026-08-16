@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Paired Stage 1 vs.\ Stage 2 across scenarios.} 20 paired episodes per scenario, identical seeds. Stage 2 preserves Stage 1's default-scenario performance; produces qualitatively new behavior on slow leader (lane change, no crash); correctly defers in boxed (no escape geometry).}
+\label{tab:paired_comparison}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrr}
+\toprule
+ & \multicolumn{2}{c}{Default} \\
+ & S1 & S2 \\
+\midrule
+Crash rate & $0.0%$ & $0.0%$ \\
+Mean speed (m/s) & $22.55\pm0.77$ & $22.61\pm1.29$ \\
+Lane changes/ep & $0.90\pm0.70$ & $0.50\pm0.87$ \\
+|a_lat| p95 & $1.17\pm0.40$ & $5.12\pm5.72$ \\
+LKE mean (m) & $1.94\pm1.78$ & $1.48\pm1.90$ \\
+Cum risk (eval) & $4.93\pm6.48$ & $5.60\pm5.78$ \\
+Min clearance (m) & $5.50\pm1.97$ & $4.44\pm2.47$ \\
+\bottomrule
+\end{tabular}
+\end{table}

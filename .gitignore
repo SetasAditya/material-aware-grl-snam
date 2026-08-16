@@ -1,0 +1,38 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Editor and OS files
+.DS_Store
+.idea/
+.vscode/
+*~
+
+# LaTeX scratch files (paper sources and deliberate PDFs remain tracked)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+texput.*
+
+# Local datasets, caches, checkpoints, and ad-hoc runs
+data/
+cache/
+runs/
+checkpoints/
+
+# Temporary animation frames
+.planner_*.png
+.rellis_case*.png

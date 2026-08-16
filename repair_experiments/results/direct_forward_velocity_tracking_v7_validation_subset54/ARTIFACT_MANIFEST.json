@@ -1,0 +1,11 @@
+{
+  "files": {
+    "config.json": "8677bccf7336457bb8f305acc15733d5230238e1de5499e2e342de09bc0ca17b",
+    "metrics.json": "c9363d704a0d2c500ad8c8b31d9384cadea914b8fafffe85feeb2fa1a7f7eb54",
+    "per_episode.csv": "ff707410bda7587586be202f6dc9bce3603747ea29f1ea0f4835f5985bc35983",
+    "per_episode.jsonl": "04c865f05bd82310a220428f12606b283342efce5ebca70cdac45049931509ea",
+    "per_step.csv": "c8dd8bc73e0cd742a83fad534fffb8f8c98aaec718f919c5bd8da96645d996a0",
+    "per_step.jsonl": "731b52d89b0bc070050700fdd2b5d39cb228d42258d7f37ce5ae701f8dbaf706"
+  },
+  "schema_version": "immutable-artifacts-v1"
+}
