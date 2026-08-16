@@ -1,0 +1,262 @@
+\section{Introduction}
+\label{sec:intro}
+
+Risk-aware navigation has a selectivity gap. When a lower-risk feasible
+maneuver exists, the robot should expose the evasive degree of freedom and
+take it; when the apparent escape is blocked, corrupted, or not yet open, it
+should suppress that same degree of freedom rather than hallucinate a detour.
+Classical planners~\citep{hart1968formal,karaman2011sampling},
+MPC/MPPI-style samplers~\citep{williams2017mppi}, reactive controllers, and
+learned policies~\citep{schulman2017proximalpolicyoptimizationalgorithms,haarnoja2018softactorcriticoffpolicymaximum}
+all address parts of this problem, but none make this
+activation/suppression asymmetry an explicit structural property: risk costs
+tend either to pull everywhere a gradient exists, causing false maneuvers, or
+to be damped enough that the system misses real escape opportunities.
+
+The issue is acute in off-road terrain and local traffic. A patch that looks
+clear from geometry alone may be wet clay; a corridor that looks low-risk in
+the semantic map may be physically blocked; a lane change may be useful behind
+a slow leader but unsafe when the adjacent lane is boxed in. The decision
+problem is therefore not just to reweight a scalar cost. The agent must decide
+which force channels should be active under the current local context, and
+which should remain latent.
+
+Our key observation is that a single additive Hamiltonian energy term can make
+this selectivity structural. Adding $\Ham_{\rm ctx}$ to a geometry-only
+port-Hamiltonian policy simultaneously creates (i) a context force channel
+in the momentum update, (ii) a parameter subspace and sensitivity stream for
+learning when that channel matters, and (iii) a route by which CVaR gradients
+from rare failures act directly on the closed-loop field.
+Proposition~\ref{prop:enrichment} formalizes this coupling: enrichment is not merely a
+new cost term, but a coordinated enlargement of the force field, learning
+pathway, and update timescale.
+
+The resulting policy remains a zero-replan local field. New sensory
+information changes the cotangent update, not an external planner or critic.
+A local affordance gate tests only the currently sensed patch: when a feasible
+lower-risk primitive exists, the soft-risk force bends the field toward it;
+when the candidate is blocked or insufficiently better, the soft channel is
+suppressed and the rollout stays near the geometry-only policy.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.98\textwidth]{NeurIPS_2026/figures/teaser_decision_field.png}
+    \caption{
+    \textbf{Selective reshaping of the decision field.}
+    \textbf{(A)} Geometrically feasible maneuvers can differ in material
+    risk. \textbf{(B)} Adding
+    \( -\tau \nabla_{\Pos} \Ham_{\mathrm{ctx}} \) to the cotangent update
+    creates a context-force channel. \textbf{(C)} The channel bends toward
+    a safer lane when one is feasible, but remains negligible when escape is
+    boxed in. Sec.~\ref{sec:experiments} measures this activation/suppression
+    signature directly.
+    }
+    \label{fig:teaser}
+\end{figure*}
+
+Prior Hamiltonian and port-Hamiltonian learners~\citep{greydanus2019hamiltonian,desai2021porthamiltonian,ellendula2025grlsnam}
+provide structured vector fields, but their geometry-only policy is blind to
+material/context risk. We extend that policy with soft-risk and hard-hazard
+force channels and train with CVaR to emphasize rare consequential
+transitions~\citep{chow2015risk}. The primary head-to-head benchmark is a
+delayed local escape: the lateral maneuver is blocked early, necessary later,
+and must be timed without global replanning.
+
+% A prior geometry-only Hamiltonian formulation~\citep{ellendula2025grlsnam} encodes goal
+% attraction, obstacle repulsion, and
+% dissipation, and outperforms reactive planners and deep RL baselines
+% under matched local sensing. But geometry-only structure is materially
+% blind: two trajectories with identical clearance receive identical
+% forces, even when one crosses water and the other crosses pavement.
+% This paper extends the formulation to the material-aware
+% risk-sensitive setting through three coordinated additions: (i) a
+% soft-risk potential $\Ham_{\mathrm{ctx}}^{\mathrm{soft}}$ and hard
+% hazard barrier $\Ham_{\mathrm{haz}}^{\mathrm{hard}}$ that introduce
+% material force channels directly into the $\Mom$-update; (ii) a CVaR
+% tail-risk objective that drives episodic gradient updates against
+% catastrophic outcomes rather than expected
+% cost~\citep{chow2015risk}; and (iii) a three-loop adaptation
+% hierarchy operating at segment, episode, and curriculum timescales.
+% These additions are not independent. We show that they are linked by
+% a \emph{learnable energy enrichment principle}: a single new additive
+% energy term in $\Ham$ induces a corresponding force channel, parameter
+% subspace, gradient pathway, and update timescale. The context-enriched learner is
+% therefore a
+% structurally consistent enlargement of the geometry-only learner
+% along four coupled axes. The resulting field can be evaluated through
+% selectivity metrics: material force channels should be active when the local
+% geometry admits a lower-risk alternative and negligible otherwise.
+% In this sense, the context-enriched field learns not only how much to value each risk term,
+% but which context-conditioned degrees of freedom the closed-loop system
+% should expose.
+
+% We validate this with three kinds of evidence. \emph{Static
+% semantic-risk reduction:} on the DFC2018-derived material-aware
+% benchmark, context-enriched field substantially improves the learned geometry-only
+% scaffold, reducing hard-hazard length, cumulative risk exposure, and
+% oscillation while preserving path efficiency. We also compare against
+% representative risk-aware planners and an oracle reference, and report
+% where these planners remain stronger on raw static-map risk. \emph{Dynamic
+% context-sensitive behavior:} in highway-env scenarios with moving
+% traffic, context-enriched field produces lane changes when a slow leader admits a
+% safer adjacent lane, removes default off-road failures, and remains
+% conservative when no adjacent lane is available. \emph{Mechanistic
+% agreement:} the per-step force decomposition shows that the lateral
+% component of the material force is selective in exactly the way the
+% behavior is -- large in the escape-available regime, near-zero in the
+% escape-blocked regime, and near-zero on benign default scenes.
+
+Our contributions are:
+\begin{itemize}
+  \item \textbf{Selective risk-field enrichment.} One additive
+        context-energy term creates a force channel that activates
+        when the local scene admits a lower-risk feasible maneuver and
+        suppresses when it does not. This turns risk adaptation into a
+        context-conditioned change in the closed-loop field, rather
+        than a uniform reweighting of a scalar cost.
+
+  \item \textbf{A learnable energy enrichment principle.} We prove
+        (Proposition~\ref{prop:enrichment}) that, within the class of
+        port-Hamiltonian learners considered here, a new additive
+        energy term induces a new force channel, parameter subspace,
+        sensitivity stream, and update timescale. The context-enriched
+        enlargement is structurally consistent rather than ad hoc.
+
+  \item \textbf{Falsifiable evaluation across four settings.} We lead with a
+        delayed-required-escape benchmark where the method reduces premature
+        activation while increasing success with zero replans, then measure
+        spatial selectivity (CAR/FAR/SR), temporal selectivity (false
+        pre-activation, suppress rate, reaction delay), and empirical
+        tail-risk reduction (violation CVaR) across RELLIS-3D, RELLIS-Dyn,
+        DFC2018, and highway-env.
+\end{itemize}
+
+The central message of the paper is not that the learner becomes
+risk-aware. It is that the learner becomes risk-aware
+\emph{selectively}: reshaping the decision field exactly when the
+geometry of the situation permits a safer alternative, exposing only the
+useful degrees of freedom, and leaving the geometry-only behavior unchanged otherwise.
+
+
+
+
+% \section{Introduction}
+% \label{sec:intro}
+
+% Consider an agent navigating terrain whose risk structure is revealed
+% only locally: a stretch of road that looks identical from above may be
+% asphalt or wet clay, a corridor between two obstacles may be a safe
+% shortcut or a soft shoulder that fails under load. Two maneuvers that
+% are geometrically feasible — both clear of obstacles, both reaching
+% the goal — are not equally good when one carries higher latent
+% material risk. The agent's task is not to find a feasible path once,
+% but to \emph{continually shift its behavior toward lower-risk feasible
+% paths} as material structure is revealed through experience, and to
+% do so under the same local-information regime in which it must
+% already act.
+
+% Existing methods address parts of this problem but each leaves
+% something fixed. Classical planners~\citep{hart1968formal,karaman2011sampling}
+% and risk-aware MPC~\citep{williams2017mppi} adapt the \emph{path}
+% against a given cost map. Deep reinforcement
+% learning~\citep{schulman2017proximalpolicyoptimizationalgorithms,
+% haarnoja2018softactorcriticoffpolicymaximum} adapts the \emph{policy}
+% weights against a fixed reward. Safe and risk-sensitive
+% RL~\citep{achiam2017constrained,chow2015risk} adapt the
+% \emph{constraint set} or the \emph{risk-weighted cost}. In each case,
+% the closed-loop decision field — the vector field that actually
+% determines how the agent moves at every state — is typically reshaped
+% only indirectly, through an external planner, critic, or cost
+% evaluator that sits outside the dynamics. The decision field itself
+% is not the object being learned.
+
+% We take the opposite view. We represent the policy as the time-$\Delta
+% t$ flow map of a reduced port-Hamiltonian energy
+% $\Ham : T^*\mathcal{Q} \to \mathbb{R}$, so that the decision field
+% \emph{is} the Hamiltonian vector field, and adapting behavior
+% \emph{is} reshaping that field. The cotangent variable $\Mom$ — the
+% generalized momentum — acts as an internal evaluator, predictor, and
+% guide: new sensory information enters by modifying $\Mom$, which in
+% turn shapes the force balance that drives the next configuration
+% update. There is no external critic and no external replanner; the
+% risk assessment enters through the same dynamics that generate motion.
+
+% \begin{figure*}[t]
+%     \centering
+%     \includegraphics[width=0.98\textwidth]{Master_s_Thesis/figs/teaser_decision_field.png}
+%     \caption{
+%     \textbf{Reshaping the decision field under local material risk.}
+%     \textbf{(A)} Two maneuvers can be geometrically feasible yet materially different in risk.
+%     \textbf{(B)} Our method injects local material risk directly into the cotangent update through the added term
+%     \( -\tau \nabla_{\Pos} \Ham_{\mathrm{ctx}} \), thereby reshaping the decision field itself.
+%     \textbf{(C)} Under the same local information, this yields a lower-risk feasible path than a material-blind baseline, with comparable path efficiency and fewer oscillations.
+%     }
+%     \label{fig:teaser}
+% \end{figure*}
+
+% In the geometry-only GRL-SNAM
+% formulation~\citep{ellendula2025grlsnam}, this field encodes goal
+% attraction, obstacle repulsion, and dissipation, and the resulting
+% learner outperforms reactive planners and deep RL baselines under
+% matched local sensing. But geometry-only structure is materially
+% blind: two trajectories with identical clearance receive identical
+% forces, even when one crosses water and the other crosses pavement.
+% The learner has no force channel through which material risk can act
+% on the dynamics, no objective that concentrates gradient on rare
+% catastrophic outcomes, and no parameter subspace in which
+% material-specific corrections can be stored.
+
+% This paper extends the formulation to the material-aware
+% risk-sensitive setting through three coordinated additions: (i) a
+% soft-risk potential $\Ham_{\mathrm{ctx}}^{\mathrm{soft}}$ and hard
+% hazard barrier $\Ham_{\mathrm{haz}}^{\mathrm{hard}}$ that introduce
+% material force channels directly into the $\Mom$-update; (ii) a CVaR
+% tail-risk objective that drives episodic gradient updates against
+% catastrophic outcomes rather than expected
+% cost~\citep{chow2015risk}; and (iii) a three-loop adaptation
+% hierarchy operating at segment, episode, and curriculum timescales.
+% These additions are not independent. We show that they are linked by
+% a \emph{learnable energy enrichment principle}: a single new additive
+% energy term in $\Ham$ induces a corresponding force channel,
+% parameter subspace, gradient pathway, and update timescale. The
+% resulting context-enriched learner is therefore not
+% the geometry-only learner with risk costs bolted on — it is a
+% structurally consistent enlargement of the geometry-only learner
+% along four coupled axes.
+% Figure~\ref{fig:intro:internal_evaluator} makes the contrast
+% concrete: the $\Mom$-update gains exactly one additive term, and
+% every other change in the algorithm follows from it.
+
+% Our contributions are:
+% \begin{itemize}
+%   \item \textbf{Material-aware continual Hamiltonian learning under
+%         local information.} A structured navigation method in which
+%         the policy is a port-Hamiltonian phase-space flow continually
+%         reshaped by material-aware force channels, with $\Mom$ as the
+%         internal evaluator rather than an external critic or
+%         replanner.
+%   \item \textbf{Risk-improving field adaptation, not just
+%         risk-weighted cost.} The added force channels and CVaR-driven
+%         episodic updates change the induced vector field so that the
+%         learner continually shifts toward lower-risk feasible
+%         trajectories under the same local geometric scaffold — a
+%         behavioral, not just representational, change.
+%   \item \textbf{A learnable energy enrichment principle.} We prove
+%         (Theorem~\ref{thm:enrichment}) that a new additive energy
+%         term induces a new force channel, parameter subspace,
+%         sensitivity stream, and update timescale, making the context-enriched field
+%         enlargement structurally consistent rather than ad hoc.
+%   \item \textbf{Empirical gains under matched local information.} On
+%         DFC2018-derived material-aware navigation, the proposed
+%         method reduces cumulative risk by $56.4\%$ over the
+%         geometry-only baseline, outperforms same-information local
+%         baselines (risk-weighted DWA, CBF+risk cost, local risk-A*),
+%         generalizes to the full held-out test set, and degrades
+%         gracefully under noisy risk maps.
+% \end{itemize}
+
+% The central message of the paper is not that the learner becomes
+% material-aware. It is that material-awareness emerges from a
+% continually reshaped internal decision field, and that this
+% reshaping is the right object of learning when the environment's
+% risk structure is revealed only through experience.

@@ -1,0 +1,4 @@
+# Dependencies for scripts/explore_grss_dataset.py
+numpy
+matplotlib
+Pillow

@@ -1,0 +1,377 @@
+{
+  "validation": {
+    "gateoff_k_invariance": true,
+    "four_k_values_present": true,
+    "same_100_episode_ids": true,
+    "all_gate_on": true,
+    "same_checkpoint": true,
+    "same_non_k_rollout_arguments": true
+  },
+  "gateoff_invariance": {
+    "tested_k": [
+      4,
+      32
+    ],
+    "tested_episodes": 2,
+    "trace_rows_each": 115,
+    "compared_non_gate_trace_fields": 20,
+    "non_gate_trace_mismatches": 0,
+    "outcome_metric_mismatches_excluding_compute_and_gate_diagnostic": 0,
+    "validated": true,
+    "sharing": "gate-off outcomes are taken once from exp1_gate_ablation_100 (K=16); K changes diagnostic gate computation but cannot enter lam_soft_used=lam_soft_learned or the integrator"
+  },
+  "monotonicity": {
+    "candidate_sets_nested_at_identical_state": true,
+    "closed_loop_activation_rate_nondecreasing": true,
+    "closed_loop_false_pre_episode_rate_nondecreasing": true,
+    "closed_loop_post_open_miss_rate_nonincreasing": true,
+    "episodes_with_nondecreasing_activation_rate": 100,
+    "n_episodes": 100,
+    "caution": "Nested directions imply monotonic permissiveness only at the same state. Closed-loop trajectories diverge after K-dependent gates."
+  },
+  "summaries": [
+    {
+      "k": 4,
+      "n_episodes": 100,
+      "activation_rate": 0.024786864540574678,
+      "activation_rate_ci_low": 0.016466112968262645,
+      "activation_rate_ci_high": 0.03437208918087751,
+      "false_preactivation_episode": 0.03,
+      "false_preactivation_episode_ci_low": 0.0,
+      "false_preactivation_episode_ci_high": 0.07,
+      "post_opening_no_activation_episode": 0.66,
+      "post_opening_no_activation_episode_ci_low": 0.57,
+      "post_opening_no_activation_episode_ci_high": 0.75,
+      "success": 1.0,
+      "success_ci_low": 1.0,
+      "success_ci_high": 1.0,
+      "cvar20_violation": 2.351966282386453,
+      "cvar20_violation_ci_low": 2.260969065612285,
+      "cvar20_violation_ci_high": 2.437374860475383,
+      "hard_contacts": 12.43,
+      "hard_contacts_ci_low": 11.15,
+      "hard_contacts_ci_high": 13.73,
+      "compute_ms_per_step": 7.984750996962349,
+      "compute_ms_per_step_ci_low": 7.783731809323144,
+      "compute_ms_per_step_ci_high": 8.202488228046105,
+      "agreement_directional_cosine": 0.7257051649990781,
+      "agreement_clearance_rate": 0.5586206896551724,
+      "agreement_hard_disagreement_rate": 0.19310344827586207
+    },
+    {
+      "k": 8,
+      "n_episodes": 100,
+      "activation_rate": 0.0629933691190401,
+      "activation_rate_ci_low": 0.04783215679011876,
+      "activation_rate_ci_high": 0.0799685842845501,
+      "false_preactivation_episode": 0.15,
+      "false_preactivation_episode_ci_low": 0.08,
+      "false_preactivation_episode_ci_high": 0.22,
+      "post_opening_no_activation_episode": 0.38,
+      "post_opening_no_activation_episode_ci_low": 0.29,
+      "post_opening_no_activation_episode_ci_high": 0.48,
+      "success": 1.0,
+      "success_ci_low": 1.0,
+      "success_ci_high": 1.0,
+      "cvar20_violation": 2.35196628870054,
+      "cvar20_violation_ci_low": 2.260907056075807,
+      "cvar20_violation_ci_high": 2.437002552054142,
+      "hard_contacts": 12.43,
+      "hard_contacts_ci_low": 11.17,
+      "hard_contacts_ci_high": 13.73,
+      "compute_ms_per_step": 7.670742688595389,
+      "compute_ms_per_step_ci_low": 7.610726144721282,
+      "compute_ms_per_step_ci_high": 7.726319636071801,
+      "agreement_directional_cosine": 0.7117342067151498,
+      "agreement_clearance_rate": 0.5789473684210527,
+      "agreement_hard_disagreement_rate": 0.23268698060941828
+    },
+    {
+      "k": 16,
+      "n_episodes": 100,
+      "activation_rate": 0.07767603410167351,
+      "activation_rate_ci_low": 0.061593960363494425,
+      "activation_rate_ci_high": 0.09530709051392519,
+      "false_preactivation_episode": 0.17,
+      "false_preactivation_episode_ci_low": 0.1,
+      "false_preactivation_episode_ci_high": 0.25,
+      "post_opening_no_activation_episode": 0.27,
+      "post_opening_no_activation_episode_ci_low": 0.18,
+      "post_opening_no_activation_episode_ci_high": 0.36,
+      "success": 1.0,
+      "success_ci_low": 1.0,
+      "success_ci_high": 1.0,
+      "cvar20_violation": 2.351966278903124,
+      "cvar20_violation_ci_low": 2.264621189945405,
+      "cvar20_violation_ci_high": 2.4351756974720056,
+      "hard_contacts": 12.43,
+      "hard_contacts_ci_low": 11.17,
+      "hard_contacts_ci_high": 13.77,
+      "compute_ms_per_step": 8.021246249114203,
+      "compute_ms_per_step_ci_low": 7.966367248924894,
+      "compute_ms_per_step_ci_high": 8.076760361984425,
+      "agreement_directional_cosine": 0.705103913839447,
+      "agreement_clearance_rate": 0.5563063063063063,
+      "agreement_hard_disagreement_rate": 0.25900900900900903
+    },
+    {
+      "k": 32,
+      "n_episodes": 100,
+      "activation_rate": 0.0903062835491001,
+      "activation_rate_ci_low": 0.07234340683525314,
+      "activation_rate_ci_high": 0.11034658627414548,
+      "false_preactivation_episode": 0.2,
+      "false_preactivation_episode_ci_low": 0.12,
+      "false_preactivation_episode_ci_high": 0.28,
+      "post_opening_no_activation_episode": 0.25,
+      "post_opening_no_activation_episode_ci_low": 0.17,
+      "post_opening_no_activation_episode_ci_high": 0.34,
+      "success": 1.0,
+      "success_ci_low": 1.0,
+      "success_ci_high": 1.0,
+      "cvar20_violation": 2.3519662711085436,
+      "cvar20_violation_ci_low": 2.264869380800068,
+      "cvar20_violation_ci_high": 2.4358682229215636,
+      "hard_contacts": 12.43,
+      "hard_contacts_ci_low": 11.16975,
+      "hard_contacts_ci_high": 13.74,
+      "compute_ms_per_step": 8.674321417120934,
+      "compute_ms_per_step_ci_low": 8.62840636847701,
+      "compute_ms_per_step_ci_high": 8.719781511446776,
+      "agreement_directional_cosine": 0.6886910799214434,
+      "agreement_clearance_rate": 0.5484496124031008,
+      "agreement_hard_disagreement_rate": 0.2751937984496124
+    }
+  ],
+  "paired_differences_vs_k16": [
+    {
+      "k": 4,
+      "reference_k": 16,
+      "metric": "activation_rate",
+      "mean_paired_difference": -0.05656071906601153,
+      "ci_low": -0.0718532238897145,
+      "ci_high": -0.04255172479527705,
+      "n": 100
+    },
+    {
+      "k": 4,
+      "reference_k": 16,
+      "metric": "false_preactivation_episode",
+      "mean_paired_difference": -0.14,
+      "ci_low": -0.21,
+      "ci_high": -0.08,
+      "n": 100
+    },
+    {
+      "k": 4,
+      "reference_k": 16,
+      "metric": "post_opening_no_activation_episode",
+      "mean_paired_difference": 0.39,
+      "ci_low": 0.3,
+      "ci_high": 0.48,
+      "n": 100
+    },
+    {
+      "k": 4,
+      "reference_k": 16,
+      "metric": "success",
+      "mean_paired_difference": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 4,
+      "reference_k": 16,
+      "metric": "cvar20_violation",
+      "mean_paired_difference": 3.483328177011913e-09,
+      "ci_low": -1.0542340552133211e-07,
+      "ci_high": 1.1613514440617081e-07,
+      "n": 100
+    },
+    {
+      "k": 4,
+      "reference_k": 16,
+      "metric": "hard_contacts",
+      "mean_paired_difference": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 4,
+      "reference_k": 16,
+      "metric": "compute_ms_per_step",
+      "mean_paired_difference": -0.036495252151852745,
+      "ci_low": -0.21918685175756464,
+      "ci_high": 0.1581697188885251,
+      "n": 100
+    },
+    {
+      "k": 8,
+      "reference_k": 16,
+      "metric": "activation_rate",
+      "mean_paired_difference": -0.014653407380945244,
+      "ci_low": -0.01947357498646921,
+      "ci_high": -0.010486166870505714,
+      "n": 100
+    },
+    {
+      "k": 8,
+      "reference_k": 16,
+      "metric": "false_preactivation_episode",
+      "mean_paired_difference": -0.02,
+      "ci_low": -0.05,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 8,
+      "reference_k": 16,
+      "metric": "post_opening_no_activation_episode",
+      "mean_paired_difference": 0.11,
+      "ci_low": 0.05,
+      "ci_high": 0.17,
+      "n": 100
+    },
+    {
+      "k": 8,
+      "reference_k": 16,
+      "metric": "success",
+      "mean_paired_difference": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 8,
+      "reference_k": 16,
+      "metric": "cvar20_violation",
+      "mean_paired_difference": 9.797415496670681e-09,
+      "ci_low": -4.301971389236714e-08,
+      "ci_high": 6.396992366936024e-08,
+      "n": 100
+    },
+    {
+      "k": 8,
+      "reference_k": 16,
+      "metric": "hard_contacts",
+      "mean_paired_difference": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 8,
+      "reference_k": 16,
+      "metric": "compute_ms_per_step",
+      "mean_paired_difference": -0.3505035605188124,
+      "ci_low": -0.37766101030382787,
+      "ci_high": -0.3231732384303681,
+      "n": 100
+    },
+    {
+      "k": 32,
+      "reference_k": 16,
+      "metric": "activation_rate",
+      "mean_paired_difference": 0.013299168734598316,
+      "ci_low": 0.0094337016908331,
+      "ci_high": 0.017739950382935687,
+      "n": 100
+    },
+    {
+      "k": 32,
+      "reference_k": 16,
+      "metric": "false_preactivation_episode",
+      "mean_paired_difference": 0.03,
+      "ci_low": 0.0,
+      "ci_high": 0.07,
+      "n": 100
+    },
+    {
+      "k": 32,
+      "reference_k": 16,
+      "metric": "post_opening_no_activation_episode",
+      "mean_paired_difference": -0.02,
+      "ci_low": -0.05,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 32,
+      "reference_k": 16,
+      "metric": "success",
+      "mean_paired_difference": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 32,
+      "reference_k": 16,
+      "metric": "cvar20_violation",
+      "mean_paired_difference": -7.794580323405853e-09,
+      "ci_low": -3.773383556554543e-08,
+      "ci_high": 2.2184839016059498e-08,
+      "n": 100
+    },
+    {
+      "k": 32,
+      "reference_k": 16,
+      "metric": "hard_contacts",
+      "mean_paired_difference": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "n": 100
+    },
+    {
+      "k": 32,
+      "reference_k": 16,
+      "metric": "compute_ms_per_step",
+      "mean_paired_difference": 0.6530751680067327,
+      "ci_low": 0.5981049765613083,
+      "ci_high": 0.7079920799066226,
+      "n": 100
+    }
+  ],
+  "provenance": {
+    "ks": [
+      4,
+      8,
+      16,
+      32
+    ],
+    "max_episodes": 100,
+    "bootstrap_reps": 5000,
+    "bootstrap_seed": 27370,
+    "checkpoint_sha256": "7ccb38ca448f56946f07c882c8efc8d5e193dd085e2d898d26b7044ff96dc090",
+    "per_k": {
+      "4": {
+        "config_sha256": "45220edd90d5f76b83295edcf35eb239bf640631f1a4420e2aef0d68dc246af1",
+        "metrics_sha256": "a365fac99d9d46709288acfe8ddeb887cfebeb25c5e63fee6e614c98b0149b60",
+        "traces_sha256": "7c4b43795c46cf1253f34954a36cb3cb3268b2b8f892862615d06f12ae677332"
+      },
+      "8": {
+        "config_sha256": "0fc6ec8c8ac4b3187c1bd602b95688a78e6362f71d460f0fa373f93163d7d790",
+        "metrics_sha256": "c4cbd738b2ffc43b400e3ee8088118b9fea29a947b6d3417dbf73bd47d3373e4",
+        "traces_sha256": "8cdf309f459488352bd436a529525751bfe8ed8379a29f42dcfbc8aaeb86ba44"
+      },
+      "16": {
+        "config_sha256": "66a8ae6589852c18298b61f1e1610257e49311fb157c4ab4668d2ab0ea35e58a",
+        "metrics_sha256": "f1417d10366c5471b517fb8174bf49b71f5caaa15c2f3dd8f01504362f49ae4c",
+        "traces_sha256": "cc21bf3fc96534990804d9224917fab4b2b4fdb6e9f978c1ea13eb7e0a92f079"
+      },
+      "32": {
+        "config_sha256": "f5d3fe6faf34739d2ce1edb81fa31c9b9102a2744b6c326810c7b6d23eb2ba97",
+        "metrics_sha256": "075fa7b25ea63c760938679cf7046a2e78e1d447feb58fb274bdf5a6faa59e40",
+        "traces_sha256": "6b008315613e40da43480579b7363a5e692f863107bd7200fd04ba7b8fcf983d"
+      }
+    },
+    "paired_uncertainty": "episode bootstrap; paired K-minus-K16 differences resample the same episode indices",
+    "shared_gateoff_reference": {
+      "path": "rebuttal_experiments/results/exp1_gate_ablation_100/per_episode_metrics.csv",
+      "sha256": "8ca107e5ff7d08e53f9139641eec2925f1b3d2ebd61eca49c8eb801d49c7d05a",
+      "role": "single K-invariant gate-off reference; per-K table reports gate-on sensitivity only"
+    }
+  }
+}

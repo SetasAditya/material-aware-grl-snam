@@ -1,0 +1,83 @@
+% Teaser: Progressive Hamiltonian Landscape Learning under Local Sensing
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  box/.style={draw, rounded corners=2pt, very thick, inner sep=1pt, fill=black!1},
+  rowtag/.style={draw, rounded corners=6pt, fill=black!6, inner xsep=6pt, inner ysep=2pt,
+                 font=\scriptsize\bfseries, align=center},
+  header/.style={draw, rounded corners=3pt, fill=black!10, very thick,
+                 inner xsep=6pt, inner ysep=3pt, font=\scriptsize\bfseries, align=center},
+  legendbox/.style={draw, rounded corners=2pt, thick, fill=white, inner sep=5pt},
+  arrow/.style={->, very thick},
+  accent/.style={draw=RoyalBlue, very thick},
+  accent2/.style={draw=Crimson,  very thick},
+  accent3/.style={draw=ForestGreen, very thick},
+  alabel/.style={font=\scriptsize, fill=white, rounded corners=2pt, inner sep=2pt}
+]
+
+% ------------------- 2-column grid: Physical | Energy -------------------
+\matrix (G) [matrix,
+             row sep=10mm,
+             column sep=38mm,
+             nodes={anchor=center}] at (0,0) {
+
+  \node[box] (phys0) {\includegraphics[width=7.0cm,height=2.35cm,keepaspectratio]{figs/phys_try1.png}}; &
+  \node[box] (eng0)  {\includegraphics[width=7.0cm,height=2.35cm,keepaspectratio]{figs/energy_try1.png}}; \\
+
+  \node[box] (phys1) {\includegraphics[width=7.0cm,height=2.35cm,keepaspectratio]{figs/phys_try2.png}}; &
+  \node[box] (eng1)  {\includegraphics[width=7.0cm,height=2.35cm,keepaspectratio]{figs/energy_try2.png}}; \\
+
+  \node[box] (phys2) {\includegraphics[width=7.0cm,height=2.35cm,keepaspectratio]{figs/phys_try3.png}}; &
+  \node[box] (eng2)  {\includegraphics[width=7.0cm,height=2.35cm,keepaspectratio]{figs/energy_try3.png}}; \\
+};
+
+\node[header, text width=4.5cm, anchor=south] (colL) at ($(phys0.north)+(0,7mm)$)
+{Physical space\\(unknown $\rightarrow$ revealed by local sensing)};
+
+\node[header, text width=4.0cm, anchor=south] (colR) at ($(eng0.north)+(0,7mm)$)
+{Hamiltonian energy terrain\\(learned progressively)};
+
+% ------------------- Title -------------------
+\node[
+  font=\small\bfseries,
+  anchor=south,
+  text width=13cm,
+  align=center
+]
+at ($(colL.north)!0.5!(colR.north)+(0,2.5mm)$)
+{Progressive Hamiltonian Landscape Learning from Local Sensing\\
+along Hamiltonian geodesic pathways};
+
+% ------------------- Vertical progression arrows -------------------
+\draw[arrow] (phys0.south) -- (phys1.north);
+\draw[arrow] (phys1.south) -- (phys2.north);
+\draw[arrow] (eng0.south) -- (eng1.north);
+\draw[arrow] (eng1.south) -- (eng2.north);
+
+% ------------------- Cross-column arrows + boxed labels -------------------
+\draw[arrow, accent] (phys0.east) -- (eng0.west)
+  node[midway, above=2mm, alabel] {scan local env $\Rightarrow$ build initial $H_{\tau}$};
+
+\draw[arrow, accent2] (phys1.east) -- (eng1.west)
+  node[midway, above=2mm, alabel] {Try 1 feedback $\Rightarrow$ update $H_{\tau}$};
+
+\draw[arrow, accent3] (phys2.east) -- (eng2.west)
+  node[midway, above=2mm, alabel] {Try 2 feedback $\Rightarrow$ refine $H_{\tau}$};
+
+% ------------------- Bottom idea box -------------------
+\node[draw, rounded corners=2pt, thick, fill=black!1,
+      inner sep=6pt, text width=13cm, align=center, anchor=north]
+  at ($(G.south)+(0,-11mm)$) {
+  \textbf{Idea:} In an unknown environment, the agent repeatedly senses a \emph{local} neighborhood,
+  attempts to reach the stage goal, and incrementally learns a Hamiltonian energy landscape whose valleys guide future attempts under partial observability.
+};
+
+\end{tikzpicture}
+\caption{\textbf{Conceptual overview: progressive energy-landscape shaping from local sensing.}
+\textit{Left}: the physical workspace is initially unknown and is revealed only through local sensing around the agent, producing a partial view of nearby obstacles and a stage goal.
+\textit{Right}: from this partial context, the agent builds an initial internal “energy terrain” and then repeatedly attempts a short plan toward the stage goal; each attempt produces simple feedback (e.g., collisions/clearance and progress), which is used to refine the terrain. Over successive refinements, the terrain becomes smoother and its low-energy valleys align with traversable corridors, guiding future attempts even under partial observability.}
+
+\label{fig:teaser_progressive_landscape}
+\end{figure}

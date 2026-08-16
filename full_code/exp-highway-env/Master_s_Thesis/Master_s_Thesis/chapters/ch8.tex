@@ -1,0 +1,181 @@
+% =============================================================
+%  Chapter 8 — Conclusion
+% =============================================================
+
+\chapter{Conclusion}
+\label{chap:conclusion}
+
+% -----------------------------------------------------------------------
+\section{Revisiting the Thesis Problem}
+\label{sec:ch8:problem}
+% -----------------------------------------------------------------------
+
+Autonomous agents operating in unknown environments cannot rely on
+fixed policies, fixed rewards, or fixed planners.
+They must act before the full structure of the world is known, update
+their behavior as geometry and risk are revealed, and do so without
+destabilizing the decisions already learned.
+This requires not merely a learned mapping from observations to actions,
+but a \emph{continually correctable decision dynamics}: a vector field
+over the agent's state space whose topology can be reshaped as new
+information arrives.
+
+Existing paradigms provide important pieces of this capability.
+Imitation learning offers sample efficiency; reinforcement learning
+offers long-horizon optimization; classical planning offers explicit
+structure; safety-critical control offers formal invariance guarantees;
+Hamiltonian and port-Hamiltonian learning offers structured,
+passivity-regularized dynamics.
+But no single paradigm provides all four simultaneously: structured
+dynamics, continual adaptation, passivity-monitored updates, and
+risk-sensitive objectives.
+
+We studied that gap through the lens of
+\textbf{continual Hamiltonian learning}: decision-making modeled as a
+structured phase-space dynamics whose energy landscape is progressively
+reshaped by geometry, material properties, and risk.
+The policy is the flow map of a reduced Hamiltonian; adapting the
+policy means reshaping the energy landscape, not relearning a flat
+action mapping.
+
+% -----------------------------------------------------------------------
+\section{Summary of Contributions}
+\label{sec:ch8:contributions}
+% -----------------------------------------------------------------------
+
+We developed this viewpoint through two stages, connected by a
+formal enrichment principle, and validated empirically.
+
+\paragraph{Stage 1 — Geometry-only structured navigation (Chapter~\ref{chap:grlsnam}).}
+GRL-SNAM established that navigation can be cast as learning a reduced
+Hamiltonian $H = H_{\mathrm{kin}} + H_{\mathrm{geom}}$ under local
+sensing alone.
+The policy is the symplectic flow map; a three-module architecture
+coordinates sensing, frame motion, and shape control at different
+timescales; online geometric alignment updates barrier weights from
+rollout feedback without catastrophic relearning.
+Empirically, this geometry-only learner outperforms reactive planners
+and deep RL baselines by a large margin under matched sensing
+constraints, and does so at fraction of the workspace coverage
+required by global planners.
+
+\paragraph{Stage 2 — Material-aware risk-sensitive learning (Chapter~\ref{chap:material}).}
+The richer learner enlarged the stored energy with soft-risk and
+hard-hazard barrier terms, the objective with a CVaR tail-risk
+criterion, the coefficient space with material force heads, and the
+adaptation hierarchy with a three-loop curriculum.
+Every addition followed the same structural chain: a new energy term
+inducing a new force channel, a new coefficient, a new objective term,
+a new gradient pathway, and a new update law.
+Empirically, this reduces cumulative risk exposure by 56.4\% over the
+geometry-only baseline and $7\times$ the oscillation count, while
+path length increases by only 1.1\%.
+
+\paragraph{The enrichment principle (Chapter~\ref{chap:hierarchy}).}
+Theorem~\ref{thm:ch5:enrichment} formalized the progression:
+any new energy term forces five downstream consequences, making each
+transition between stages a structural necessity rather than an
+implementation choice.
+Backward-compatible initialization guarantees that passivity is
+preserved at the start of each enrichment, and the passivity-guided
+curriculum monitors stability throughout.
+
+\paragraph{Experimental validation (Chapter~\ref{chap:experiments}).}
+The ablation study confirmed that every added structural component
+resolves a specific failure mode soft-risk energy removes hazard
+drift, CVaR removes catastrophic tail encounters, the passivity
+criterion prevents unstable phase advancement, and the explicit
+dissipative port eliminates oscillation.
+The one-to-one correspondence between structure and failure mode is
+the strongest empirical evidence that the hierarchy is not superficial.
+
+\paragraph{Research agenda (Chapter~\ref{chap:limitations}).}
+Five theoretical open problems passivity-preserving update guarantees,
+multi-timescale convergence rates, basin-of-competence volume bounds,
+force-decomposition identifiability, and Sobolev field regularity 
+frame the next stages of the research program.
+
+% -----------------------------------------------------------------------
+\section{Central Lessons and Conceptual Takeaways}
+\label{sec:ch8:lessons}
+% -----------------------------------------------------------------------
+
+\paragraph{Lesson 1: The right object to learn is the field, not the policy.}
+Our primary reframing is that the policy should be identified
+with the flow map of a structured energy landscape, not with an
+unstructured action distribution.
+This identification makes the force-field topology explicit, exposes
+stability through passivity analysis, and provides a principled handle
+for continual adaptation: reshaping the energy landscape rather than
+retraining a black box.
+
+\paragraph{Lesson 2: Added complexity should be added structurally.}
+We demonstrate that when the environment becomes harder when
+geometry-only sensing is insufficient for safe navigation the correct
+response is not to add a new module on top of an existing system, but
+to \emph{enlarge the learner} along four coupled axes simultaneously:
+stored energy, coefficient space, objective, and adaptation timescale.
+Enlarging one axis without the others produces the failure modes
+documented in the ablation study: hazard drift without the material
+energy term, catastrophic tail encounters without CVaR, instability
+without the passivity criterion.
+
+\paragraph{Lesson 3: The progression itself is the contribution.}
+The individual navigation numbers—98.7\% success on geometry, 56.4\%
+risk reduction on material—are evidence, not the claim.
+The claim is the enrichment principle: that a structured phase-space
+learner can be progressively enlarged in a way that is principled,
+backward-compatible, and passivity-regularized (empirically stability-monitored).
+That principle is what makes the framework a \emph{research program}
+rather than a pair of navigation systems.
+
+\paragraph{Lesson 4: Passivity is a practical stability language.}
+The port-Hamiltonian separation of stored energy and dissipative port,
+combined with the passivity surrogate $\mathcal{L}_{\mathrm{pass}}$,
+provided an actionable stability monitor throughout training.
+It is not a full Lyapunov certificate that remains an open problem 
+but it is precise enough to guide curriculum advancement, detect
+instability early, and prevent the phase transitions that most
+destabilize continual learning.
+
+% -----------------------------------------------------------------------
+\section{Final Outlook}
+\label{sec:ch8:outlook}
+% -----------------------------------------------------------------------
+
+We have shown that structured Hamiltonian learning provides a
+principled route into the unknown-environment navigation problem.
+It does not claim to solve that problem fully.
+Oracle material access, simple observer dynamics, isotropic geometry,
+and empirical coverage surrogates are honest limitations.
+But the framework's organizing principle that each new source of
+environmental complexity should be matched by a structural enlargement
+of the energy landscape, the coefficient space, the objective, and the
+update hierarchy is general enough to extend beyond these limitations.
+
+Stage~3 of the ladder (perception-led material inference), Stage~4
+(belief-state observer and anisotropic metric), and the theoretical
+program of convergence guarantees and identifiability analysis are
+not distant aspirations.
+They are the next applications of the same enrichment chain that
+connected Stage~1 to Stage~2.
+The structure of what needs to be done is visible because the
+enrichment principle makes it visible.
+
+\begin{quote}\itshape
+We studied navigation in unknown environments through the
+lens of continual Hamiltonian learning.
+Rather than treating decision-making as the one-shot learning of a
+fixed policy or reward, we developed a structured phase-space
+viewpoint in which geometry, safety, and semantic risk act by
+reshaping an energy-driven vector field.
+Beginning from a geometry-only foundation and extending to a richer
+material-aware risk-sensitive learner, we showed how added
+complexity in the environment should be matched by added structure
+in the stored energy, the objective, and the update laws.
+The broader contribution is not only a stronger navigation method,
+but a principled framework for progressively enriching decision
+dynamics while preserving interpretability, stability, and
+continual adaptability and a formal account of why that progression
+is structurally necessary rather than incidentally convenient.
+\end{quote}

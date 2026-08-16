@@ -1,0 +1,2 @@
+mode,scope,method_a,method_b,paired_observations,method_a_only,method_b_only,complete_pairing,min_observations_per_cluster,max_observations_per_cluster
+static,static,stage2_directional_head,s2_model_lambda,13553,0,0,True,1,1

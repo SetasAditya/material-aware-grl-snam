@@ -1,0 +1,156 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  masterthesis.tex, to be compiled with pdfLaTeX.		     %
+%%  19 January 2023	Version 5				     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Writing a Master's Thesis with LaTeX at		     %
+%%	the University of Texas at Austin			     %
+%%  (Modify this template for your own thesis.)	     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,12pt]{report}	% The documentclass must be ``report''.
+
+% Includes the utformat.sty file, but also additional packages and some commands.
+% See `structural/preamble.tex`.
+\input{structural/preamble}  
+
+% Important! Need to update the information in `structural/about.tex`!
+\input{structural/about} 
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{matrix,calc,positioning,fit,backgrounds,shadows.blur,arrows.meta}
+\usepackage{makecell}          % \makecell in table headers
+\usepackage{enumerate}         % (i), (ii) list style  ← already in paper, double-check
+\usepackage{pifont}            % \full / \none / \partially symbols ← already in paper
+
+% ── Figures & graphics ───────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{caption}
+\graphicspath{{./figs/}}
+\usepackage{mdframed}
+% ── Tables ───────────────────────────────────────────────────────────────
+\usepackage{booktabs}          % \toprule \midrule \bottomrule
+\usepackage{multirow}
+\usepackage{makecell}          % \makecell in headers  ← NEW for thesis
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{adjustbox}
+% xcolor already loaded with [table,dvipsnames] in preamble.tex
+
+% ── TikZ ─────────────────────────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{
+  matrix, calc, positioning, fit,
+  backgrounds, shadows.blur,
+  arrows.meta,                 % {Stealth} arrow tips
+  shapes.geometric,            % ellipse etc.
+  decorations.pathreplacing,   % braces
+}
+
+% ── Algorithms ───────────────────────────────────────────────────────────
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% Compatibility aliases so old-style \STATE, \FOR etc. work alongside \State, \For
+\let\STATE\State
+\newcommand{\FOR}[1]{\For{#1}}
+\newcommand{\ENDFOR}{\EndFor}
+\newcommand{\IF}[1]{\If{#1}}
+\newcommand{\ENDIF}{\EndIf}
+\newcommand{\ELSE}{\Else}
+\newcommand{\RETURN}{\Return}
+\newcommand{\REQUIRE}{\Require}
+\newcommand{\ENSURE}{\Ensure}
+
+
+% ── Lists & enumerations ─────────────────────────────────────────────────
+\usepackage{enumerate}         % (i), (ii) style
+
+% ── Symbols ──────────────────────────────────────────────────────────────
+\usepackage{pifont}            % \ding{} symbols
+
+% ── Cross-references & hyperlinks ────────────────────────────────────────
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=teal!70!black,
+  urlcolor=blue!50!black
+]{hyperref}
+\usepackage[capitalize, noabbrev]{cleveref}   % \cref, \Cref
+% ── Bibliography ─────────────────────────────────────────────────────────
+\usepackage{natbib}            % \citep \citet — matches iclr bst
+% \bibliographystyle{iclr2026_conference}  % use your iclr .bst
+
+% ── Theorem environments ─────────────────────────────────────────────────
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Thesis-level macros (consistent with GRL-SNAM paper) ─────────────────
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Energy}{\mathcal{E}}
+\newcommand{\Potential}{\mathcal{R}}
+\newcommand{\Constraints}{\mathcal{C}}
+\newcommand{\Navigator}{\mathsf{N}}
+\newcommand{\PhaseState}{z}
+\newcommand{\Pos}{q}
+\newcommand{\Mom}{p}
+\newcommand{\Mass}{\mathrm{M}}
+\newcommand{\J}{\mathbb{J}}
+\newcommand{\Lag}{\mathscr{L}}
+\newcommand{\mult}{\boldsymbol{\lambda}}
+\newcommand{\pen}{\boldsymbol{\rho}}
+% Comparison table symbols (from iclr paper)
+\newcommand{\full}{\(\checkmark\)}
+\newcommand{\none}{\(\times\)}
+\newcommand{\partially}{\(\triangle\)}
+
+\usepackage{tcolorbox}  % in preamble
+\tcbuselibrary{skins, breakable}
+
+% Convenience
+\let\vec=\boldsymbol
+\newcommand{\eps}{\epsilon}
+\newcommand{\cvar}[1]{\mathrm{CVaR}_{#1}}
+
+% ── Colors (matching iclr paper) ─────────────────────────────────────────
+\definecolor{sensorcolor}{RGB}{65,105,225}
+\definecolor{framecolor}{RGB}{220,20,60}
+\definecolor{shapecolor}{RGB}{34,139,34}
+\definecolor{navcolor}{RGB}{255,140,0}
+\definecolor{Crimson}{rgb}{0.86, 0.08, 0.24}
+% TikZ libraries not yet loaded in the paper:
+\usetikzlibrary{shapes.geometric}   % not strictly required but safe to have
+
+
+
+
+% Please update your degree and degree abbreviation here, if needed.
+\degree{Master of Science}
+\degreeabbr{MS} 
+% See the Catalog for the current list.
+% catalog.utexas.edu/graduate/graduate-study/graduate-degrees/
+
+% Uncomment ONLY the line below that corresponds to the type of document you are writing.
+%
+\masterthesis
+% \masterreport
+% \dissertation  % the default if none of the options are set
+% \treatise
+
+
+\begin{document}
+
+% See `structural/body.tex` for updating/adding/removing content.
+\input{structural/body}
+
+\end{document}

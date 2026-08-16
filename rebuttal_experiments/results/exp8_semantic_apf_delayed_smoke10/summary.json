@@ -1,0 +1,113 @@
+{
+  "config": {
+    "bev_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500",
+    "pairs_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_pairs_all_seqbalanced_2500_loso",
+    "out": "rebuttal_experiments/results/exp8_semantic_apf_delayed_smoke10",
+    "event_types": [
+      "delayed_required_escape"
+    ],
+    "methods": [
+      "semantic_apf",
+      "route_aware_stage2",
+      "dwa_semantic"
+    ],
+    "max_episodes": 10,
+    "event_fraction": 0.38,
+    "event_duration": 80,
+    "max_steps": 140,
+    "replan_period": 8,
+    "risk_weight": 18.0,
+    "hard_margin_m": 1.0,
+    "route_horizon": 18,
+    "improvement_margin": 0.25,
+    "hard_violation_penalty": 2.0,
+    "progress_every": 2
+  },
+  "num_episodes": 10,
+  "num_rows": 30,
+  "event_types": [
+    "delayed_required_escape"
+  ],
+  "methods": [
+    "semantic_apf",
+    "route_aware_stage2",
+    "dwa_semantic"
+  ],
+  "overall": [
+    {
+      "method": "dwa_semantic",
+      "n": 10.0,
+      "success": 0.9,
+      "post_event_cvar_risk": 0.7665458189779129,
+      "post_event_cvar_violation": 0.7665458189779129,
+      "full_episode_cvar_risk": 0.717212486691176,
+      "full_episode_cvar_violation": 0.717212486691176,
+      "event_window_cvar_risk": 0.7688899351249984,
+      "event_window_cvar_violation": 0.7688899351249984,
+      "post_event_mean_risk": 0.5505121580776172,
+      "event_window_mean_risk": 0.5494354323420619,
+      "post_event_risk_exposure": 22.754835554039634,
+      "event_window_risk_exposure": 20.355048147246993,
+      "reaction_delay": 1.2,
+      "route_deviation_delay": 3.2,
+      "opportunity_normalized_delay": 0.015000000000000003,
+      "stale_exposure": 0.32170101942837237,
+      "replans": 0.0,
+      "compute_ms": 0.18171574026886544,
+      "curvature_energy": 70.69104152280252,
+      "stuck": 0.3,
+      "hard_hazard_length_m": 0.0,
+      "path_length_ratio": 1.4034002859582224
+    },
+    {
+      "method": "route_aware_stage2",
+      "n": 10.0,
+      "success": 0.8,
+      "post_event_cvar_risk": 0.824157301343836,
+      "post_event_cvar_violation": 0.824157301343836,
+      "full_episode_cvar_risk": 0.7849510906886215,
+      "full_episode_cvar_violation": 0.7849510906886215,
+      "event_window_cvar_risk": 0.824157301343836,
+      "event_window_cvar_violation": 0.824157301343836,
+      "post_event_mean_risk": 0.5921940018014197,
+      "event_window_mean_risk": 0.589647311562858,
+      "post_event_risk_exposure": 22.276028928737936,
+      "event_window_risk_exposure": 19.28352570293456,
+      "reaction_delay": 2.1,
+      "route_deviation_delay": 7.5,
+      "opportunity_normalized_delay": 0.026250000000000002,
+      "stale_exposure": 0.5561763912439346,
+      "replans": 0.0,
+      "compute_ms": 7.5678747759185345,
+      "curvature_energy": 239.152851643896,
+      "stuck": 0.3,
+      "hard_hazard_length_m": 0.0,
+      "path_length_ratio": 1.2839844815095796
+    },
+    {
+      "method": "semantic_apf",
+      "n": 10.0,
+      "success": 0.0,
+      "post_event_cvar_risk": 0.9349982867001929,
+      "post_event_cvar_violation": 0.9349982867001929,
+      "full_episode_cvar_risk": 0.9346904300479725,
+      "full_episode_cvar_violation": 0.9346904300479725,
+      "event_window_cvar_risk": 0.9357549921723214,
+      "event_window_cvar_violation": 0.9357549921723214,
+      "post_event_mean_risk": 0.8808932005024166,
+      "event_window_mean_risk": 0.8622812036694201,
+      "post_event_risk_exposure": 52.20225635114208,
+      "event_window_risk_exposure": 36.533880924711376,
+      "reaction_delay": 2.2,
+      "route_deviation_delay": 14.2,
+      "opportunity_normalized_delay": 0.027500000000000004,
+      "stale_exposure": 0.5963232714629173,
+      "replans": 0.0,
+      "compute_ms": 0.14548337500725342,
+      "curvature_energy": 1021.8124806502801,
+      "stuck": 1.0,
+      "hard_hazard_length_m": 0.0,
+      "path_length_ratio": 1.9705328587550859
+    }
+  ]
+}

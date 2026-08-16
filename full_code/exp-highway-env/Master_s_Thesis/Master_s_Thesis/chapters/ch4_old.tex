@@ -1,0 +1,828 @@
+% =============================================================
+%  Chapter 4 — Material-Aware Risk-Sensitive
+%              Continual Hamiltonian Learning
+% =============================================================
+
+\chapter{Material-Aware Risk-Sensitive Continual Hamiltonian Learning}
+\label{chap:material}
+
+\providecommand{\Ham}{\mathcal{H}}
+\providecommand{\Potential}{\mathcal{R}}
+\providecommand{\PhaseState}{z}
+\providecommand{\Pos}{q}
+\providecommand{\Mom}{p}
+\providecommand{\Mass}{\mathrm{M}}
+\providecommand{\J}{\mathbb{J}}
+
+% -----------------------------------------------------------------------
+\section{Why a Richer Learner Is Needed}
+\label{sec:ch4:motivation}
+% -----------------------------------------------------------------------
+
+Chapter~\ref{chap:grlsnam} established that a geometry-only Hamiltonian
+learner can navigate effectively under local sensing: it avoids obstacles,
+reaches goals efficiently, and adapts its force-field coefficients online.
+Yet three structural gaps remain, each arising from the same root cause:
+the potential $\Potential(\vec{q};\mathcal{E})$ responds \emph{only} to
+signed geometric clearances.
+
+A region of soft mud from geometrically traversable but materially dangerous terrain 
+that immobilizes the robot, a shallow river that disables electronics,
+a railway crossing invisible to LiDAR receives the same energy as clear
+grass.
+The force field has no channel for material risk, no tail-risk objective,
+and no coefficient slot for semantic enrichment.
+These are not tuning failures; they are architectural gaps.
+
+The challenge of this chapter is therefore:
+
+\begin{quote}\itshape
+Not to replace the geometry-only framework, but to \textbf{enlarge it}
+along four coupled axes of stored energy, coefficient space, objective, and
+adaptation hierarchy so that the same structured phase-space learner also
+responds to latent risk structure while remaining stable, smooth, and
+progressively valid over a broader configuration space.
+\end{quote}
+
+Each axis of enlargement is not independent: adding a new energy term
+$H_{\mathrm{mat}}$ induces a new force channel $F_{\mathrm{mat}}$, which
+requires a new coefficient $(\lambda_s, \lambda_h)$, which opens a new
+gradient pathway in the learning law, which demands a new timescale in
+the adaptation hierarchy.
+The rest of this chapter gives the mathematics of that chain, from the
+enriched Hamiltonian through the gradient-field learning law to the
+three-loop curriculum optimizer.
+
+% -----------------------------------------------------------------------
+\section{Enriched Problem Setting}
+\label{sec:ch4:setting}
+% -----------------------------------------------------------------------
+
+\paragraph{Same task, richer context.}
+The navigation task is identical to Chapter~\ref{chap:grlsnam}:
+reach $\vec{x}_g$ from $\vec{q}_0$ through an unknown workspace.
+The enrichment lies entirely in the environment context
+$\mathcal{E}_\tau$.
+In the geometry-only case, $\mathcal{E}_\tau$ contained only obstacle
+clearances.
+Here it additionally contains:
+
+\begin{equation}
+  \mathcal{E}_\tau
+  = \bigl\{
+      \vec{c}_{\mathrm{target}},\;
+      \{d_i\}_{i=1}^{C},\;
+      \underbrace{\tilde{r}(\vec{c})}_{\text{soft risk field}},\;
+      \underbrace{\phi(\vec{c})}_{\text{hard hazard SDF}},\;
+      \underbrace{P_t(\vec{q}) \in \mathbb{R}^{6\times P\times P}}_{\text{local risk patch}}
+    \bigr\},
+  \label{eq:ch4:context}
+\end{equation}
+where $\tilde{r} : \mathcal{Q}_f \to [0,1]$ is a continuous soft-risk
+field (e.g., material-class risk score), and
+$\phi : \mathcal{Q}_f \to \mathbb{R}$ is the signed-distance function
+to hard hazard zones $\mathcal{H}$ (regions where contact is catastrophic).
+The local risk patch $P_t(\vec{q})$ is a $6$-channel crop
+re-centred at $\vec{q}$ on every integration step, carrying
+$(\tilde{r}, \partial_x\tilde{r}, \partial_y\tilde{r},
+   h_{\mathrm{mask}}, \phi, \|\nabla\phi\|)$.
+
+\paragraph{Oracle material access.}
+In the current chapter, $\tilde{r}$ and $\phi$ are provided by an oracle
+(pre-computed from ground-truth material maps, e.g., the DFC2018 Houston
+aerial dataset).
+This matches \emph{Setting 2} of the thesis scope: the learner has true
+material information and must learn to use it; perception-led material
+inference from raw imagery is the natural next step, deferred to future
+work.
+
+Fig.~\ref{fig:teaser} summarizes our setting and motivation: under partial observability, a static prior is hazard-blind, while our belief-guided structured learner uses local RGB--IR observations to infer material risk and improve navigation over repeated experience.
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figs/teaser.png}
+    \caption{
+    \textbf{From hazard-blind planning to belief-guided structured navigation.}
+    Static planners take short but unsafe routes because material hazards are latent. 
+    Our continual learner uses local RGB--IR evidence to infer uncertain material beliefs, 
+    combines them with geometry and dissipation in a factored structured flow, and improves 
+    with experience into safer, smoother navigation.
+    }
+    \label{fig:teaser}
+\end{figure*}
+
+% -----------------------------------------------------------------------
+\section{Hierarchy of Complexity: Four Coupled Enrichments}
+\label{sec:ch4:hierarchy}
+% -----------------------------------------------------------------------
+
+The core thesis claim is that the geometry-only learner is enlarged in
+\emph{four coupled ways}, not in one.
+Table~\ref{tab:ch4:hierarchy} makes this explicit.
+
+\begin{table}[t]
+\centering
+\caption{%
+  \textbf{Hierarchy of enrichments from Stage~1 to Stage~2.}
+  Each new energy term induces a chain of consequences through
+  force channels, coefficients, objective terms, and update laws.
+  This chain is not cosmetic: removing any link breaks the others.
+}
+\label{tab:ch4:hierarchy}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.35}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllll}
+\toprule
+\textbf{Added term} &
+\textbf{New force channel} &
+\textbf{New coefficient} &
+\textbf{New objective term} &
+\textbf{New update law} \\
+\midrule
+$H_{\mathrm{geom}}$ (Ch.~\ref{chap:grlsnam})
+  & $F_{\mathrm{goal}}, F_{\mathrm{bar}}$
+  & $\beta, \{\alpha_i\}$
+  & $\mathcal{L}_{\mathrm{traj}}, \mathcal{L}_{\mathrm{clear}}$
+  & Online $\alpha_i$ update \\
+\midrule
+$H_{\mathrm{mat}}^{\mathrm{soft}}$
+  & $F_{\mathrm{soft}} = -\lambda_s\nabla\tilde{r}$
+  & $\lambda_s$
+  & $w_r\sum_t \tilde{r}(\vec{c}_t)\Delta s_t$
+  & Episode CVaR grad.\  \\
+$H_{\mathrm{mat}}^{\mathrm{hard}}$
+  & $F_{\mathrm{hard}} = -\lambda_h\nabla b(\phi)$
+  & $\lambda_h$
+  & $w_h\sum_t \mathbf{1}[\phi(\vec{c}_t)<1\,\text{m}]$
+  & Episode CVaR grad.\  \\
+$R_\theta$ (dissipative port)
+  & $-R_\theta = -\gamma\Mass^{-1}\Mom$
+  & $\gamma$
+  & $\mathcal{L}_{\mathrm{fric}} = |\gamma-\gamma_0|^2$
+  & Friction alignment \\
+\midrule
+\textbf{Total (Stage 2)}
+  & $F_{\mathrm{tot}} = F_{\mathrm{goal}}+F_{\mathrm{bar}}$
+  & $(\beta,\lambda_s,\lambda_h,$
+  & $\mathcal{L}_{\mathrm{P2}} = \mathcal{L}_{\mathrm{nav}}$
+  & 3-timescale loop \\
+  & $\quad + F_{\mathrm{soft}}+F_{\mathrm{hard}}-R_\theta$
+  & $\quad\{\alpha_i\},\gamma)$
+  & $\quad+0.3\,\mathcal{L}_{\mathrm{geom}}+w_\lambda\mathcal{L}_\lambda$
+  & (§\ref{sec:ch4:multiscale}) \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+The key message of Table~\ref{tab:ch4:hierarchy} is that this is
+\emph{not a simple extension}: adding $H_{\mathrm{mat}}^{\mathrm{soft}}$
+is not just "another loss term."
+It creates a new force acting on every integration step, a new coefficient
+that must be learned, a new gradient pathway through the rollout, and a new
+term in the objective that requires a tail-risk criterion rather than an
+expected-value surrogate.
+
+% -----------------------------------------------------------------------
+\section{Port-Hamiltonian State and Observer Processes}
+\label{sec:ch4:portham}
+% -----------------------------------------------------------------------
+
+\subsection{Phase-Space Dynamics with Explicit Dissipation}
+\label{subsec:ch4:dynamics}
+
+The phase-space state is $\PhaseState_t = (\vec{q}_t, \Mom_t)$ as before.
+The key departure from Chapter~\ref{chap:grlsnam} is that dissipation
+is now a \emph{separate port}, not buried inside the Hamiltonian.
+The discrete-time dynamics are:
+\begin{align}
+  \Mom_{t+1}
+  &= \Mom_t
+     - \tau\,\nabla_{\vec{q}} H_\theta(\vec{q}_t,\Mom_t)
+     - \tau\,R_\theta(\vec{q}_t,\Mom_t),
+  \label{eq:ch4:p_update} \\
+  \vec{q}_{t+1}
+  &= \vec{q}_t + \tau\,\Mass^{-1}\Mom_{t+1},
+  \label{eq:ch4:q_update}
+\end{align}
+where the \textbf{dissipative port} is:
+\begin{equation}
+  R_\theta(\vec{q},\Mom) = \gamma\,\Mass^{-1}\Mom,
+  \qquad \gamma \geq 0.
+  \label{eq:ch4:dissipation}
+\end{equation}
+This separation is important.
+In a port-Hamiltonian system, the stored energy $H_\theta$ and the
+dissipation $R_\theta$ play distinct roles: $H_\theta$ defines the
+conservative flow topology (basins, barriers), while $R_\theta$ removes
+excess kinetic energy.
+Conflating them would make the stability analysis unclear and the
+gradient pathways entangled.
+
+The energy balance along any trajectory is:
+\begin{equation}
+  \Delta H_t
+  := H_\theta(\vec{q}_{t+1},\Mom_{t+1}) - H_\theta(\vec{q}_t,\Mom_t)
+  = -\tau(\Mom_t)^\top R_\theta(\vec{q}_t,\Mom_t)
+    + \tau(\Mom_t)^\top \mathbf{B} u_t
+  \;\leq\; \tau(\Mom_t)^\top \mathbf{B} u_t,
+  \label{eq:ch4:energy_balance}
+\end{equation}
+which is the discrete passivity condition:
+when no external control signal $u_t$ is applied, the stored energy
+is non-increasing.
+This is monitored as a curriculum criterion (§\ref{sec:ch4:multiscale}).
+
+\subsection{Observer and Progress Monitoring}
+\label{subsec:ch4:observer}
+
+The learner actively senses both the environment and its own progress.
+The context update between stages is:
+\begin{equation}
+  y_{t+1} = \Psi(y_t, \vec{q}_{t+1};\, Z^{(1)}, P_{t+1}),
+  \label{eq:ch4:observer}
+\end{equation}
+where $\Psi$ re-centres the local obstacle extractor and risk patch at
+$\vec{q}_{t+1}$.
+In the oracle setting, $\Psi$ reduces to extracting the new $\{d_i\}$
+from $Z^{(1)}$ and reading $\tilde{r}, \phi$ from $Z^{(2)}$ at
+$\vec{q}_{t+1}$.
+
+Additionally, the learner monitors two progress scalars at each step:
+\begin{equation}
+  s_t^{\mathrm{seg}} = |\vec{q}_t - \vec{g}_k|,
+  \qquad
+  s_t^{\mathrm{pass}} = \Delta H_t,
+  \label{eq:ch4:progress}
+\end{equation}
+where $\vec{g}_k$ is the current segment goal.
+$s_t^{\mathrm{seg}}$ tracks spatial progress; $s_t^{\mathrm{pass}}$
+tracks energy dissipation (a proxy for dynamical stability).
+Both are used in the adaptation loops of §\ref{sec:ch4:multiscale}.
+
+% -----------------------------------------------------------------------
+\section{Factored Stored Energy and Force Decomposition}
+\label{sec:ch4:energy}
+% -----------------------------------------------------------------------
+
+\subsection{Factored Hamiltonian}
+\label{subsec:ch4:hamiltonian}
+
+The stored energy decomposes additively:
+\begin{equation}
+  H_\theta(\vec{q},\Mom)
+  = \underbrace{\tfrac{1}{2}\Mom^\top\Mass^{-1}\Mom}_{H_{\mathrm{kin}}}
+  + \underbrace{H_{\mathrm{geom}}(\vec{q};\mathcal{E})}_{H_{\mathrm{geom}}}
+  + \underbrace{H_{\mathrm{mat}}^{\mathrm{soft}}(\vec{q}) + H_{\mathrm{mat}}^{\mathrm{hard}}(\vec{q})}_{H_{\mathrm{mat}}},
+  \label{eq:ch4:ham_factored}
+\end{equation}
+with $R_\theta$ a \emph{separate} dissipative port (not part of
+$H_\theta$).
+
+\paragraph{Geometry sub-Hamiltonian.}
+\begin{equation}
+  H_{\mathrm{geom}}(\vec{q};\mathcal{E})
+  = \beta\,D_{\mathcal{G}}(\vec{q},\vec{g})
+    + \sum_{j}\alpha_j\,b_{\mathrm{IPC}}\!\bigl(d_j(\vec{q};\mathcal{E})\bigr),
+  \label{eq:ch4:H_geom}
+\end{equation}
+where $D_{\mathcal{G}}(\vec{q},\vec{g}) = \|\vec{c}-\vec{g}\|^2$ is
+goal attraction and $b_{\mathrm{IPC}}$ is an IPC-style log-barrier.
+This is the geometry-only potential of Chapter~\ref{chap:grlsnam},
+carried forward unchanged.
+
+\paragraph{Soft material-risk sub-Hamiltonian.}
+\begin{equation}
+  H_{\mathrm{mat}}^{\mathrm{soft}}(\vec{q})
+  = \lambda_s\,\tilde{r}(\vec{c}),
+  \label{eq:ch4:H_mat_soft}
+\end{equation}
+where $\tilde{r}(\vec{c}) \in [0,1]$ is the soft-risk field at the
+robot's center-of-mass position.
+The induced force is $F_{\mathrm{soft}} = -\lambda_s\nabla_{\vec{c}}\tilde{r}$,
+which deflects the trajectory away from high-risk terrain.
+
+\paragraph{Hard hazard-barrier sub-Hamiltonian.}
+\begin{equation}
+  H_{\mathrm{mat}}^{\mathrm{hard}}(\vec{q})
+  = \lambda_h\,b_{\mathrm{sp}}\!\bigl(\phi(\vec{c})\bigr),
+  \label{eq:ch4:H_mat_hard}
+\end{equation}
+where $\phi$ is the signed-distance to hard hazard zones $\mathcal{H}$,
+and $b_{\mathrm{sp}}(s) = \mathrm{softplus}(-s/\sigma_\phi)$ grows large
+as $\phi \to 0$.
+The induced force $F_{\mathrm{hard}} = -\lambda_h\nabla_{\vec{c}}b_{\mathrm{sp}}(\phi)$
+provides forward invariance of $\{\phi > 0\}$ in the spirit of
+Definition~\ref{def:cbf}.
+
+\subsection{Total Force Decomposition}
+\label{subsec:ch4:forces}
+
+The total force on the momentum is:
+\begin{equation}
+  F_{\mathrm{tot}}(\vec{q}_t,\Mom_t)
+  = \underbrace{F_{\mathrm{goal}}}_{{-\beta\nabla D_\mathcal{G}}}
+  + \underbrace{F_{\mathrm{bar}}}_{{-\sum_j\alpha_j\nabla b_{\mathrm{IPC}}}}
+  + \underbrace{F_{\mathrm{soft}}}_{{-\lambda_s\nabla\tilde{r}}}
+  + \underbrace{F_{\mathrm{hard}}}_{{-\lambda_h\nabla b_{\mathrm{sp}}}}
+  - \underbrace{R_\theta}_{\gamma\Mass^{-1}\Mom},
+  \label{eq:ch4:F_tot}
+\end{equation}
+so the momentum update \eqref{eq:ch4:p_update} becomes
+$\Mom_{t+1} = \Mom_t + \tau\,F_{\mathrm{tot}}(\vec{q}_t,\Mom_t)$.
+
+% -----------------------------------------------------------------------
+\section{Multi-Term Phase-Space Objective}
+\label{sec:ch4:objective}
+% -----------------------------------------------------------------------
+
+\subsection{Episode Cost and CVaR Objective}
+\label{subsec:ch4:cvar}
+
+The episode cost accumulates over all integration steps:
+\begin{equation}
+  J(\theta)
+  = w_g\,D_{\mathcal{G}}(\vec{q}_T,\vec{g})
+  + w_\ell\,\ell
+  + w_r\sum_t \tilde{r}(\vec{c}_t)\Delta s_t
+  + w_h\sum_t \mathbf{1}[\phi(\vec{c}_t) < 1\,\text{m}],
+  \label{eq:ch4:J}
+\end{equation}
+where $\ell = \sum_t \|\vec{q}_{t+1} - \vec{q}_t\|$ is path length and
+$\Delta s_t$ is the step displacement.
+The four terms correspond to: terminal goal error, travel efficiency,
+cumulative soft-risk exposure, and hard-hazard incursion count.
+
+The primary navigation loss is the \textbf{CVaR at level $\beta=0.95$}:
+\begin{equation}
+  \mathcal{L}_{\mathrm{nav}}(\theta)
+  = \mathrm{CVaR}_{0.95}\!\bigl(J(\theta)\bigr)
+  = \mathbb{E}\!\left[J \;\big|\; J \geq \mathrm{VaR}_{0.95}(J)\right].
+  \label{eq:ch4:Lnav}
+\end{equation}
+This optimizes the \emph{worst 5\% of rollouts}: it directly penalizes
+rare catastrophic material encounters, not just their expected frequency.
+An expected-cost surrogate ($\mathbb{E}[J]$) would underweight these
+rare events; CVaR does not.
+
+\subsection{Full Phase Objectives}
+\label{subsec:ch4:phase_obj}
+
+The geometry component is retained from Chapter~\ref{chap:grlsnam}:
+\begin{equation}
+  \mathcal{L}_{\mathrm{geom}}
+  = w_t\,\mathcal{L}_{\mathrm{traj}}
+  + w_v\,\mathcal{L}_{\mathrm{vel}}
+  + w_\gamma\,|\gamma - \gamma_0|^2
+  + w_c\,\mathcal{L}_{\mathrm{clear}}
+  + w_m\,\mathcal{L}_{\mathrm{multi}}.
+  \label{eq:ch4:L_geom}
+\end{equation}
+
+The two training phases use:
+\begin{align}
+  \mathcal{L}_{\mathrm{P1}}
+  &= \mathcal{L}_{\mathrm{geom}},
+  \label{eq:ch4:LP1} \\
+  \mathcal{L}_{\mathrm{P2}}
+  &= \mathcal{L}_{\mathrm{nav}}
+    + 0.3\,\mathcal{L}_{\mathrm{geom}}
+    + w_\lambda\,\mathcal{L}_\lambda,
+  \label{eq:ch4:LP2}
+\end{align}
+where $\mathcal{L}_\lambda = \|\lambda_s\|^2 + \|\lambda_h\|^2$ is a
+coefficient regularizer preventing material heads from dominating the
+geometry terms prematurely.
+The $0.3$ weight on $\mathcal{L}_{\mathrm{geom}}$ in Phase~2 retains
+the geometric structure learned in Phase~1 as a scaffold.
+
+% -----------------------------------------------------------------------
+\section{Gradient-Field Learning Law}
+\label{sec:ch4:gradients}
+% -----------------------------------------------------------------------
+
+\begin{quote}\itshape
+The policy is the integrated vector field induced by the factored
+Hamiltonian, so learning proceeds by reshaping that field rather than
+only attaching losses to final trajectories.
+\end{quote}
+
+\subsection{Rollout Sensitivity Recursion}
+\label{subsec:ch4:sensitivity}
+
+Because the policy is a numerical integrator applied to
+$\dot\PhaseState = F_{\mathrm{tot}}(\PhaseState;\theta)$,
+the gradient of any rollout-dependent loss requires propagating
+sensitivity through the integrator.
+Differentiating \eqref{eq:ch4:p_update}--\eqref{eq:ch4:q_update}
+with respect to $\theta$:
+
+\begin{align}
+  \frac{\partial \Mom_{t+1}}{\partial\theta}
+  &= \frac{\partial \Mom_t}{\partial\theta}
+  - \tau\!\left(
+      \frac{\partial \nabla_{\vec{q}} H_\theta}{\partial \PhaseState_t}
+      \frac{\partial \PhaseState_t}{\partial\theta}
+      + \frac{\partial \nabla_{\vec{q}} H_\theta}{\partial\theta}
+      + \frac{\partial R_\theta}{\partial \PhaseState_t}
+        \frac{\partial \PhaseState_t}{\partial\theta}
+      + \frac{\partial R_\theta}{\partial\theta}
+    \right),
+  \label{eq:ch4:dp_dtheta} \\
+  \frac{\partial \vec{q}_{t+1}}{\partial\theta}
+  &= \frac{\partial \vec{q}_t}{\partial\theta}
+  + \tau\,\Mass^{-1}\frac{\partial \Mom_{t+1}}{\partial\theta}.
+  \label{eq:ch4:dq_dtheta}
+\end{align}
+
+This is a forward-mode sensitivity ODE: initialized at
+$(\partial\PhaseState_0/\partial\theta) = 0$,
+it propagates how small changes in $\theta$ alter the entire trajectory.
+Crucially, because $R_\theta$ is a separate port, its gradient
+$\partial R_\theta/\partial\theta$ enters the recursion independently
+of $\partial\nabla_{\vec{q}} H_\theta/\partial\theta$.
+The two gradient streams are decoupled, which is why separating the
+port is architecturally important.
+
+\subsection{Component-wise Gradient Channels}
+\label{subsec:ch4:grad_channels}
+
+The five force channels in \eqref{eq:ch4:F_tot} each contribute a
+distinct gradient pathway:
+
+\begin{align}
+  \frac{\partial\mathcal{L}}{\partial\beta}
+  &= \sum_t \frac{\partial\mathcal{L}}{\partial F_{\mathrm{goal},t}}
+     \cdot (-\nabla_{\vec{c}} D_\mathcal{G}),
+  \label{eq:ch4:dL_dbeta} \\
+  \frac{\partial\mathcal{L}}{\partial\alpha_j}
+  &= \sum_t \frac{\partial\mathcal{L}}{\partial F_{\mathrm{bar},t}}
+     \cdot (-\nabla_{\vec{q}} b_{\mathrm{IPC}}(d_j)),
+  \label{eq:ch4:dL_dalpha} \\
+  \frac{\partial\mathcal{L}}{\partial\lambda_s}
+  &= \sum_t \frac{\partial\mathcal{L}}{\partial F_{\mathrm{soft},t}}
+     \cdot (-\nabla_{\vec{c}}\tilde{r}),
+  \label{eq:ch4:dL_dlambda_s} \\
+  \frac{\partial\mathcal{L}}{\partial\lambda_h}
+  &= \sum_t \frac{\partial\mathcal{L}}{\partial F_{\mathrm{hard},t}}
+     \cdot (-\nabla_{\vec{c}} b_{\mathrm{sp}}(\phi)),
+  \label{eq:ch4:dL_dlambda_h} \\
+  \frac{\partial\mathcal{L}}{\partial\gamma}
+  &= \sum_t \frac{\partial\mathcal{L}}{\partial(-R_{\theta,t})}
+     \cdot (-\Mass^{-1}\Mom_t).
+  \label{eq:ch4:dL_dgamma}
+\end{align}
+
+Each equation says: the gradient with respect to a coefficient equals the
+sum over time of the loss sensitivity to that force channel times the
+channel's analytical Jacobian.
+Because the Jacobians are explicit (they are $\nabla\tilde{r}$,
+$\nabla b_{\mathrm{IPC}}$, etc.), the backpropagation through the
+integrator carries interpretable structure rather than opaque chain rules.
+
+% -----------------------------------------------------------------------
+\section{Double Regularization and Smoothness of Updates}
+\label{sec:ch4:regularization}
+% -----------------------------------------------------------------------
+
+Learning to reshape a force field requires not only a task objective but
+also regularization of \emph{the field itself}.
+Two levels of regularization are used.
+
+\paragraph{Energy-level regularization $\mathcal{R}_H$.}
+Penalizes drift in the learned dissipation coefficient and in the
+material force magnitudes:
+\begin{equation}
+  \mathcal{R}_H(\theta)
+  = w_\gamma\,|\gamma - \gamma_0|^2
+  + w_\lambda\,(\|\lambda_s\|^2 + \|\lambda_h\|^2).
+  \label{eq:ch4:R_H}
+\end{equation}
+The first term anchors the dissipation near a reference value,
+preventing under-damping (passivity violation).
+The second term prevents material force heads from overpowering the
+geometry backbone before the risk field has been sufficiently explored.
+
+\paragraph{Gradient-field regularization $\mathcal{R}_{\nabla H}$.}
+Penalizes non-smooth and near-constraint behavior of the force field:
+\begin{equation}
+  \mathcal{R}_{\nabla H}(\theta)
+  = w_c\,\mathcal{L}_{\mathrm{clear}}
+  + w_m\,\mathcal{L}_{\mathrm{multi}},
+  \label{eq:ch4:R_nablaH}
+\end{equation}
+where $\mathcal{L}_{\mathrm{clear}}$ penalizes barrier violations along
+the rollout and $\mathcal{L}_{\mathrm{multi}}$ trains near-contact
+robustness via perturbed short rollouts.
+
+In principle, the smoothest regularizer is the strong-form Jacobian
+penalty on the total force field:
+\begin{equation}
+  \mathcal{R}_{\mathrm{Jac}}(\theta)
+  = w_J\,\frac{1}{T}\sum_t
+    \|\nabla_{\vec{q}} F_{\mathrm{tot}}(\vec{q}_t,\Mom_t)\|_F^2,
+  \label{eq:ch4:R_Jac}
+\end{equation}
+which penalizes large spatial gradients in the force field itself,
+not just in its output.
+Computing \eqref{eq:ch4:R_Jac} exactly requires second-order
+differentiation through the integrator, which is expensive.
+The thesis uses $\mathcal{R}_{\nabla H}$ as a tractable surrogate,
+with $\mathcal{R}_{\mathrm{Jac}}$ identified as a direction for future
+work.
+
+\paragraph{Total loss.}
+\begin{equation}
+  \mathcal{L}_{\mathrm{total}}(\theta)
+  = \mathcal{L}_{\mathrm{task}}
+  + \mathcal{R}_H(\theta)
+  + \mathcal{R}_{\nabla H}(\theta),
+  \label{eq:ch4:L_total}
+\end{equation}
+where $\mathcal{L}_{\mathrm{task}} \in \{\mathcal{L}_{\mathrm{P1}},
+\mathcal{L}_{\mathrm{P2}}\}$ depending on the training phase.
+
+% -----------------------------------------------------------------------
+\section{Multi-Timescale Optimization}
+\label{sec:ch4:multiscale}
+% -----------------------------------------------------------------------
+
+The material-aware learner operates at three nested timescales.
+Figure~\ref{fig:prelim:timescales} from Chapter~\ref{chap:background}
+already illustrated their nesting; here we give the concrete update laws.
+
+\subsection{Segment Timescale: Local Coefficient Alignment}
+\label{subsec:ch4:segment}
+
+Within each navigation segment $k$, the response signal
+$\Delta \vec{o}_k^{\mathrm{des}} = \vec{o}_k^{\mathrm{des}} - \vec{o}_k$
+(desired vs. observed state at the segment endpoint) drives a local
+Gauss-Newton update on the current coefficient vector $\theta_k$:
+\begin{equation}
+  \Delta\theta_k
+  = (J_k^\top J_k + \lambda_J I)^{-1} J_k^\top\,\Delta\vec{o}_k^{\mathrm{des}},
+  \qquad
+  \theta_{k+1} = \Pi_\Theta(\theta_k + \kappa\,\Delta\theta_k),
+  \label{eq:ch4:segment_update}
+\end{equation}
+where $J_k = \partial\vec{o}_k/\partial\theta$ is the segment-level
+sensitivity Jacobian, $\lambda_J$ is a Tikhonov damping term, and
+$\Pi_\Theta$ projects onto the feasible coefficient set
+(e.g., $\alpha_j, \lambda_s, \lambda_h, \gamma \geq 0$).
+This is a fast, local correction that does not require full
+backpropagation through the episode.
+
+\subsection{Episode Timescale: CVaR Gradient Descent}
+\label{subsec:ch4:episode}
+
+After each complete episode, the full loss \eqref{eq:ch4:L_total} is
+differentiated through the rollout sensitivity recursion
+\eqref{eq:ch4:dp_dtheta}--\eqref{eq:ch4:dq_dtheta} and the parameters
+are updated:
+\begin{equation}
+  \theta \leftarrow \theta - \eta\,\nabla_\theta\,\mathcal{L}_{\mathrm{total}}.
+  \label{eq:ch4:episode_update}
+\end{equation}
+Because $\mathcal{L}_{\mathrm{nav}}$ is a CVaR loss, the gradient
+concentrates on the worst-performing episodes in the batch, focusing
+learning effort on failure modes rather than average behavior.
+
+\subsection{Curriculum Timescale: Passivity-Guided Advancement}
+\label{subsec:ch4:curriculum}
+
+The outermost loop governs when the learner transitions from
+Phase~1 (geometry-only) to Phase~2 (material-aware), and which
+start–goal pairs are sampled at each stage.
+
+\paragraph{Passivity criterion.}
+The discrete passivity surrogate is:
+\begin{equation}
+  \mathcal{L}_{\mathrm{pass}}
+  = \frac{1}{T}\sum_t \mathrm{softplus}(\Delta H_t),
+  \label{eq:ch4:L_pass}
+\end{equation}
+where $\Delta H_t = H_\theta(\PhaseState_{t+1}) - H_\theta(\PhaseState_t)$.
+$\mathcal{L}_{\mathrm{pass}} \approx 0$ means the stored energy is
+non-increasing (passive); large values indicate the learner is
+injecting energy—a sign of instability.
+
+\paragraph{Coverage criterion.}
+A start–goal pair $(\vec{q}_0, \vec{g})$ is considered
+\emph{conquered} in episode $e$ if:
+\begin{equation}
+  \hat{c}_e(\vec{q}_0,\vec{g})
+  = \mathbf{1}\!\left[
+      \mathcal{L}_{\mathrm{pass}} \leq \epsilon_{\mathrm{pass}}
+      \;\wedge\;
+      |\vec{q}_T - \vec{g}| \leq \epsilon_{\mathrm{goal}}
+    \right].
+  \label{eq:ch4:conquest}
+\end{equation}
+The overall coverage at episode $e$ is:
+\begin{equation}
+  \mathcal{C}(\mathcal{D}_e)
+  = \frac{1}{|\mathcal{D}_e|}
+    \sum_{(\vec{q}_0,\vec{g})\in\mathcal{D}_e}
+    \hat{c}_e(\vec{q}_0,\vec{g}).
+  \label{eq:ch4:coverage}
+\end{equation}
+
+\paragraph{Sampling and advancement.}
+The curriculum re-weights the sampling distribution toward
+unconquered pairs:
+\begin{equation}
+  \Pi_{\mathrm{curr}}^{e+1}(\vec{q}_0,\vec{g})
+  \;\propto\; 1 - \hat{c}_e(\vec{q}_0,\vec{g}).
+  \label{eq:ch4:sampling}
+\end{equation}
+Phase advancement from P1 $\to$ P2 occurs when:
+\begin{equation}
+  \mathcal{L}_{\mathrm{pass}} \leq \epsilon_{\mathrm{pass}}
+  \quad\text{and}\quad
+  \mathcal{C}(\mathcal{D}_e) \geq \rho_{\mathrm{cover}}.
+  \label{eq:ch4:advance}
+\end{equation}
+This criterion answers the question: \emph{when has a region been
+sufficiently conquered?}
+The learner must be both passive (stable) and broadly successful
+(covering $\rho_{\mathrm{cover}}$ of the sampled configurations)
+before the curriculum advances.
+
+% -----------------------------------------------------------------------
+\section{Algorithm}
+\label{sec:ch4:algorithm}
+% -----------------------------------------------------------------------
+
+Algorithm~\ref{algo:ch4:material} operationalizes the three-timescale
+structure.
+The outer loop iterates over curriculum episodes; within each episode,
+an inner segment loop executes the dynamics and local updates; after
+each episode the CVaR gradient step and passivity check run.
+
+\begin{algorithm}[t]
+\caption{Material-Aware Continual Hamiltonian Learning}
+\label{algo:ch4:material}
+\begin{algorithmic}[1]
+\State \textbf{Input:} $(\vec{q}_0,\vec{g})$, geometry $Z^{(1)}$,
+       oracle material $Z^{(2)}$, phase $\phi\in\{\mathrm{P1},\mathrm{P2}\}$
+\State \textbf{Init:} $\theta \leftarrow \theta_{\mathrm{geom}}$ (P1) or
+       warm-started from P1 (P2); $\mathcal{D} \leftarrow$ initial
+       start–goal distribution; $e \leftarrow 0$
+\While{$e < E_{\max}$ \textbf{and} phase not completed}
+  \State Sample $(\vec{q}_0,\vec{g}) \sim \Pi_{\mathrm{curr}}^e$
+  \State Initialize $\PhaseState_0 = (\vec{q}_0, \mathbf{0})$;
+         compute $\{g_k\}$ via geometry-only A$^*$ scaffold
+  \State $J_{\mathrm{ep}} \leftarrow 0$,\;
+         $\mathcal{L}_{\mathrm{pass}} \leftarrow 0$
+  \For{segment $k = 1, \ldots, K$}
+    \State Query $f_\theta(\mathcal{E}_k, P_k) \to
+           (\beta,\{\alpha_j\},\lambda_s,\lambda_h,\gamma)$ \hfill
+           $\triangleright$ CoefEnergyNetMaterial
+    \For{step $t = 1, \ldots, T_k$}
+      \State Compute $F_{\mathrm{tot}}$ via \eqref{eq:ch4:F_tot}
+      \State $\Mom_{t+1} \leftarrow \Mom_t + \tau\,F_{\mathrm{tot}}$;\;
+             $\vec{q}_{t+1} \leftarrow \vec{q}_t + \tau\Mass^{-1}\Mom_{t+1}$
+      \State Accumulate $J_{\mathrm{ep}} \mathrel{+}= j_t$;\;
+             $\mathcal{L}_{\mathrm{pass}} \mathrel{+}= \mathrm{softplus}(\Delta H_t)/T$
+      \State Update observer: $y_{t+1} = \Psi(y_t,\vec{q}_{t+1})$
+    \EndFor
+    \State \textbf{Segment update:} $\theta \leftarrow \Pi_\Theta(\theta
+           + \kappa\,\Delta\theta_k)$ via \eqref{eq:ch4:segment_update}
+  \EndFor
+  \State \textbf{Episode update:}
+         $\theta \leftarrow \theta - \eta\,\nabla_\theta\mathcal{L}_{\mathrm{total}}$
+         via \eqref{eq:ch4:episode_update}
+  \State Mark $(\vec{q}_0,\vec{g})$ conquered if \eqref{eq:ch4:conquest}
+         holds
+  \State Update $\Pi_{\mathrm{curr}}^{e+1}$ via \eqref{eq:ch4:sampling}
+  \If{\eqref{eq:ch4:advance} holds and $\phi = \mathrm{P1}$}
+    \State Advance to P2: unfreeze $(\lambda_s,\lambda_h)$
+  \EndIf
+  \State $e \leftarrow e + 1$
+\EndWhile
+\State \textbf{Return:} learned $\theta$, trajectory archive
+\end{algorithmic}
+\end{algorithm}
+
+% -----------------------------------------------------------------------
+\section{Instantiation: CoefEnergyNetMaterial}
+\label{sec:ch4:implementation}
+% -----------------------------------------------------------------------
+
+\paragraph{Architecture.}
+\textbf{CoefEnergyNetMaterial} extends the geometry backbone of
+Chapter~\ref{chap:grlsnam} with a risk encoder and two material
+coefficient heads:
+\begin{itemize}
+  \item \textbf{Geometry branch.}
+        A Transformer operating on the local obstacle token set
+        $\{(d_j, \vec{n}_j)\}$, producing geometry embeddings
+        $\vec{h}_{\mathrm{geom}}$.
+        Outputs: $(\beta, \{\alpha_j\}, \gamma)$.
+  \item \textbf{Risk CNN encoder.}
+        A small CNN operating on the $6$-channel risk patch
+        $P_t(\vec{q}) \in \mathbb{R}^{6\times P\times P}$,
+        producing a risk embedding $\vec{h}_{\mathrm{risk}}$.
+  \item \textbf{Material heads.}
+        Two linear heads from $[\vec{h}_{\mathrm{geom}}; \vec{h}_{\mathrm{risk}}]$
+        producing $\lambda_s \geq 0$ and $\lambda_h \geq 0$
+        (via softplus activations).
+\end{itemize}
+
+\paragraph{Barrier definitions.}
+The IPC-style geometry barrier is
+$b_{\mathrm{IPC}}(d) = -\log(d/d_{\mathrm{hat}})$ for $d < d_{\mathrm{hat}}$,
+$0$ otherwise.
+The hazard SDF barrier is
+$b_{\mathrm{sp}}(\phi) = \mathrm{softplus}(-\phi/\sigma_\phi)$
+with $\sigma_\phi = 1\,\text{m}$.
+
+\paragraph{Two-phase training.}
+\begin{itemize}
+  \item \textbf{Phase~1.}
+        Train with $\mathcal{L}_{\mathrm{P1}}$; material heads
+        $(\lambda_s, \lambda_h)$ are frozen at $0$.
+        The curriculum advances when $\mathcal{L}_{\mathrm{pass}}
+        \leq \epsilon_{\mathrm{pass}}$ and
+        $\mathcal{C} \geq \rho_{\mathrm{cover}}$.
+  \item \textbf{Phase~2.}
+        Initialize from Phase~1 weights; unfreeze
+        $(\lambda_s, \lambda_h)$; train with $\mathcal{L}_{\mathrm{P2}}$.
+        The geometry backbone is retained as a scaffold.
+\end{itemize}
+
+% \paragraph{Phase~3 (deferred).}
+% Learning the material map $\tilde{r}$ from raw RGB-IR imagery—replacing
+% oracle access with learned perception—is the natural next step but
+% is beyond the current chapter's scope.
+
+% -----------------------------------------------------------------------
+\section{What the Richer Learner Achieves}
+\label{sec:ch4:results}
+% -----------------------------------------------------------------------
+
+The material-aware learner is validated on the DFC2018 Houston aerial
+dataset, where surface materials (water, highways, railways) create
+latent hazards invisible to LiDAR geometry.
+
+\paragraph{Risk reduction.}
+Across 20 held-out test episodes, Stage~2 reduces cumulative soft-risk
+exposure by \textbf{56.4\%} relative to the geometry-only Stage~1
+model and by \textbf{17.4\%} relative to a material-blind Dijkstra
+baseline, closing 27\% of the gap to the oracle upper bound.
+
+\paragraph{Hazard elimination.}
+Hard-hazard incursion count drops by 91\% from Stage~1 to Stage~2:
+the hard-hazard barrier $F_{\mathrm{hard}}$ successfully enforces
+forward invariance of the hazard-free set, as predicted by the
+port-Hamiltonian analysis.
+
+\paragraph{Geometry retained.}
+Path length and SPL are within 3\% of Stage~1 on geometry-only test
+cases, confirming that the material risk heads do not degrade the
+geometry backbone when $\tilde{r} \approx 0$.
+
+\paragraph{Stability.}
+The passivity criterion $\mathcal{L}_{\mathrm{pass}} \leq 0.01$ is
+satisfied at convergence, and the limit-cycle oscillations observed
+in Stage~1 on narrow passages are eliminated—consistent with the
+separate dissipative port providing a clean damping channel.
+
+% -----------------------------------------------------------------------
+\section{Chapter Summary}
+\label{sec:ch4:summary}
+% -----------------------------------------------------------------------
+
+This chapter enlarged the geometry-only learner of
+Chapter~\ref{chap:grlsnam} along four coupled axes:
+
+\begin{enumerate}
+  \item \textbf{Stored energy.}
+        $H_\theta$ now carries soft-risk and hard-hazard barrier terms
+        in addition to geometry; the dissipative port $R_\theta$ is
+        separated explicitly (\S\ref{sec:ch4:energy}).
+  \item \textbf{Coefficient space.}
+        Two new coefficients $(\lambda_s, \lambda_h)$ are added, each
+        with its own gradient pathway through the rollout sensitivity
+        recursion (\S\ref{sec:ch4:gradients}).
+  \item \textbf{Objective.}
+        A CVaR tail-risk loss replaces the expected-cost surrogate,
+        directly optimizing rare material-hazard encounters
+        (\S\ref{sec:ch4:objective}).
+  \item \textbf{Adaptation hierarchy.}
+        Three nested loops: segment Gauss-Newton, episode CVaR descent,
+        and passivity-guided curriculum provide stable continual
+        learning across timescales (\S\ref{sec:ch4:multiscale}).
+\end{enumerate}
+
+These four enrichments are coupled: each new energy term requires its
+own force channel, coefficient, objective term, and update law.
+The chain from $H_i \to F_i \to \vartheta_i \to \mathcal{L}_i \to
+\text{update law}_i$ is the structural principle that makes this
+a coherent richer learner rather than a collection of independent
+additions.
+
+Chapter~\ref{chap:hierarchy} will show that this chain is not specific
+to the geometry-to-material transition, but is an instance of a general
+\emph{enrichment principle} that can extend the framework further.

@@ -1,0 +1,163 @@
+{
+  "design": {
+    "arms": {
+      "zero": "lambda_soft_used = gate * 0",
+      "learned": "lambda_soft_used = gate * checkpoint prediction",
+      "fixed": "lambda_soft_used = gate * 1.5"
+    },
+    "invariant": "lambda_hard and all other network outputs are unchanged",
+    "rellis_behavior_split": "sequence 00003 validation, R1 only",
+    "dfc_behavior_split": "held-out test"
+  },
+  "metrics": {},
+  "selectivity": {
+    "DFC2018": {
+      "zero": {
+        "correct_activation_rate": 0.0,
+        "selectivity_ratio": 0.0,
+        "positive_points": 5,
+        "all_points": 106
+      },
+      "learned": {
+        "correct_activation_rate": 0.2,
+        "selectivity_ratio": 41233807074.60455,
+        "positive_points": 5,
+        "all_points": 106
+      },
+      "fixed": {
+        "correct_activation_rate": 0.2,
+        "selectivity_ratio": 49009558666.148224,
+        "positive_points": 5,
+        "all_points": 106
+      }
+    },
+    "RELLIS-3D": {
+      "zero": {
+        "correct_activation_rate": 0.0,
+        "selectivity_ratio": 0.0,
+        "positive_points": 56,
+        "all_points": 2681
+      },
+      "learned": {
+        "correct_activation_rate": 0.125,
+        "selectivity_ratio": 3.259436998009504,
+        "positive_points": 56,
+        "all_points": 2681
+      },
+      "fixed": {
+        "correct_activation_rate": 0.4107142857142857,
+        "selectivity_ratio": 2.878436867974675,
+        "positive_points": 56,
+        "all_points": 2681
+      }
+    }
+  },
+  "lambda_soft_distribution": {
+    "DFC2018:soft-dominant-test": {
+      "n": 106,
+      "mean": 1.8405911984308712,
+      "std": 0.6899183667601677,
+      "median": 2.2630807161331177,
+      "q05": 0.4331250712275505,
+      "q25": 1.5105001032352448,
+      "q75": 2.2883706092834473,
+      "q95": 2.307879388332367
+    },
+    "RELLIS-3D:R1": {
+      "n": 903,
+      "mean": 0.10813092986990183,
+      "std": 0.01735850156565414,
+      "median": 0.10896438360214233,
+      "q05": 0.06963253170251846,
+      "q25": 0.10228392481803894,
+      "q75": 0.11852091178297997,
+      "q95": 0.13303986936807632
+    },
+    "RELLIS-3D:R2": {
+      "n": 897,
+      "mean": 0.10989357570940037,
+      "std": 0.014697371600742578,
+      "median": 0.10958780348300934,
+      "q05": 0.08128078281879425,
+      "q25": 0.10334905982017517,
+      "q75": 0.11798292398452759,
+      "q95": 0.1342988163232803
+    },
+    "RELLIS-3D:R3": {
+      "n": 881,
+      "mean": 0.10813561543213387,
+      "std": 0.018061563723816357,
+      "median": 0.11003729701042175,
+      "q05": 0.0704222172498703,
+      "q25": 0.10426708310842514,
+      "q75": 0.11944021284580231,
+      "q95": 0.13228510320186615
+    }
+  },
+  "delayed_escape_lambda_soft_distribution": {
+    "n": 6334,
+    "mean": 0.06138973490914073,
+    "std": 0.02801340130233456,
+    "median": 0.0579298697412014,
+    "q05": 0.02406611992046237,
+    "q25": 0.03720375429838896,
+    "q75": 0.08144916966557503,
+    "q95": 0.11090086437761781,
+    "source": "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv"
+  },
+  "paired_difference_means": {
+    "learned_minus_zero": {
+      "delta_success": NaN,
+      "delta_path_length_ratio": NaN,
+      "delta_risk_exposure": NaN,
+      "delta_mean_rho": NaN
+    },
+    "learned_minus_fixed": {
+      "delta_success": NaN,
+      "delta_path_length_ratio": NaN,
+      "delta_risk_exposure": NaN,
+      "delta_mean_rho": NaN
+    }
+  },
+  "provenance": {
+    "rellis_checkpoint": "/mnt/data/adityas/GRL-SNAM/exp-rellis/checkpoints/rellis_stage2_decision_mid_ep12/best.pt",
+    "rellis_checkpoint_sha256": "7ccb38ca448f56946f07c882c8efc8d5e193dd085e2d898d26b7044ff96dc090",
+    "dfc_checkpoint": "/mnt/data/adityas/GRL-SNAM/checkpoints/s2/best.pt",
+    "dfc_checkpoint_sha256": "61c4117d607cbda5f817c75d7d53462ac6f570eb95cd114d307846a6eebb86ce",
+    "arguments": {
+      "source_root": "/mnt/data/adityas/GRL-SNAM",
+      "rellis_checkpoint": "/mnt/data/adityas/GRL-SNAM/exp-rellis/checkpoints/rellis_stage2_decision_mid_ep12/best.pt",
+      "rellis_bev": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500",
+      "rellis_pairs": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_pairs_all_seqbalanced_2500_seq00003",
+      "dfc_checkpoint": "/mnt/data/adityas/GRL-SNAM/checkpoints/s2/best.pt",
+      "dfc_root": "/mnt/data/adityas/GRL-SNAM/data/dfc2018_stagewise",
+      "out": "rebuttal_experiments/results/exp9_distribution_smoke",
+      "datasets": [
+        "rellis",
+        "dfc"
+      ],
+      "fixed_lambda": 1.5,
+      "max_rellis_r1": 5,
+      "max_dfc": 3,
+      "steps_per_stage": 40,
+      "point_stride": 12,
+      "waypoint_stride": 6,
+      "patch_size": 32,
+      "obstacle_patch_size": 64,
+      "robot_radius": 1.5,
+      "margin_factor": 0.5,
+      "d_hat_sdf": 3.0,
+      "goal_tol_cells": 3.0,
+      "primitive_count": 16,
+      "primitive_horizon": 12,
+      "hard_margin": 1.0,
+      "improvement_margin": 0.0125,
+      "material_trigger": 0.0,
+      "force_epsilon": 0.02,
+      "seed": 27370,
+      "device": "cpu",
+      "distribution_only": true,
+      "delayed_trace": "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv"
+    }
+  }
+}

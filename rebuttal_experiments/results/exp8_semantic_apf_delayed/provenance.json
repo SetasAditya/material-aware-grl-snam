@@ -1,0 +1,46 @@
+{
+  "experiment": "exp8_semantic_apf",
+  "canonical_baseline": "semantic_apf",
+  "deprecated_input_alias": "neural_potential_field",
+  "baseline_is_learned": false,
+  "description": "Fixed one-step, 8-connected semantic artificial potential field using goal attraction, semantic risk, hard clearance, and progress.",
+  "paired_episode_count": 100,
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 27370,
+  "delayed_run_config": {
+    "bev_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500",
+    "pairs_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_pairs_all_seqbalanced_2500_loso",
+    "out": "rebuttal_experiments/results/exp8_semantic_apf_delayed",
+    "event_types": [
+      "delayed_required_escape"
+    ],
+    "methods": [
+      "semantic_apf",
+      "route_aware_stage2",
+      "dwa_semantic"
+    ],
+    "max_episodes": 100,
+    "event_fraction": 0.38,
+    "event_duration": 80,
+    "max_steps": 140,
+    "replan_period": 8,
+    "risk_weight": 18.0,
+    "hard_margin_m": 1.0,
+    "route_horizon": 18,
+    "improvement_margin": 0.25,
+    "hard_violation_penalty": 2.0,
+    "progress_every": 10
+  },
+  "historical_8event_is_preliminary": true,
+  "sha256": {
+    "rebuttal_experiments/results/exp8_semantic_apf_delayed/dynamic_rollouts.csv": "25d2c0f3758f1147e1a9e10b6834896d050b81336de8d60cb2c95ab7177ed44f",
+    "rebuttal_experiments/results/exp8_semantic_apf_delayed/summary.json": "a96132f971430aac501cebff4a847d87d649d70cc9863005fd5b2272756e65d8",
+    "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_dyn_8events_fast_100/dynamic_summary_by_event.csv": "57e1936af2f2311028a40ba7eb9b3f09b805530bb42c820456ed96b4b0ec3645",
+    "/mnt/data/adityas/GRL-SNAM/exp-rellis/runs/rellis_dyn_8events_fast_100/summary.json": "d01ba6c6e4be560bf9504dd8dc6056a8d0c7e4aad422aa3132b305eb8504c1a6",
+    "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500/manifest.json": "744e0c92c290b8235d7395226e4e7a15c6c1ecb5be42aa1ab588ce34d2975ccf",
+    "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_pairs_all_seqbalanced_2500_loso/manifest.json": "9026af6c9dc6d931d6017d4944c424974842fd5f76e99c4957a023be221a9586",
+    "/mnt/data/adityas/material-aware-grl-snam-clean/full_code/exp-rellis/eval_rellis_dyn.py": "24e464909b86b8205f5e6bdfe987b1131bc695bbbfe69c56b77a2f78596b99f2",
+    "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/summarize_exp8_semantic_apf.py": "86131aae06763673cb13ce59edd5c6785a1dc739a711f71d988309ec2ee6e8d5",
+    "/mnt/data/adityas/GRL-SNAM/exp-rellis/eval_rellis_dyn.py": "defcb324ab4275db9b60208675399ace5c601c6c99ccf5b5d11fb003b5ad3c43"
+  }
+}

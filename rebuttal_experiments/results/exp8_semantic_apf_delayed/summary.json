@@ -1,0 +1,113 @@
+{
+  "config": {
+    "bev_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500",
+    "pairs_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_pairs_all_seqbalanced_2500_loso",
+    "out": "rebuttal_experiments/results/exp8_semantic_apf_delayed",
+    "event_types": [
+      "delayed_required_escape"
+    ],
+    "methods": [
+      "semantic_apf",
+      "route_aware_stage2",
+      "dwa_semantic"
+    ],
+    "max_episodes": 100,
+    "event_fraction": 0.38,
+    "event_duration": 80,
+    "max_steps": 140,
+    "replan_period": 8,
+    "risk_weight": 18.0,
+    "hard_margin_m": 1.0,
+    "route_horizon": 18,
+    "improvement_margin": 0.25,
+    "hard_violation_penalty": 2.0,
+    "progress_every": 10
+  },
+  "num_episodes": 100,
+  "num_rows": 300,
+  "event_types": [
+    "delayed_required_escape"
+  ],
+  "methods": [
+    "semantic_apf",
+    "route_aware_stage2",
+    "dwa_semantic"
+  ],
+  "overall": [
+    {
+      "method": "dwa_semantic",
+      "n": 100.0,
+      "success": 0.48,
+      "post_event_cvar_risk": 0.6713541048560876,
+      "post_event_cvar_violation": 0.6949817109703764,
+      "full_episode_cvar_risk": 0.6499137091402933,
+      "full_episode_cvar_violation": 0.6647695088865554,
+      "event_window_cvar_risk": 0.6752421751462595,
+      "event_window_cvar_violation": 0.6988697812605483,
+      "post_event_mean_risk": 0.49530834925370626,
+      "event_window_mean_risk": 0.4941361650968162,
+      "post_event_risk_exposure": 23.49025496765666,
+      "event_window_risk_exposure": 19.345898060957907,
+      "reaction_delay": 2.26,
+      "route_deviation_delay": 1.96,
+      "opportunity_normalized_delay": 0.028250000000000008,
+      "stale_exposure": 0.6880714929381161,
+      "replans": 0.0,
+      "compute_ms": 0.17859445538279803,
+      "curvature_energy": 209.0937377398286,
+      "stuck": 0.59,
+      "hard_hazard_length_m": 0.061568,
+      "path_length_ratio": 1.4987125269695776
+    },
+    {
+      "method": "route_aware_stage2",
+      "n": 100.0,
+      "success": 0.61,
+      "post_event_cvar_risk": 0.8268498216064222,
+      "post_event_cvar_violation": 0.8400858992965251,
+      "full_episode_cvar_risk": 0.7960230472623597,
+      "full_episode_cvar_violation": 0.8053924812598418,
+      "event_window_cvar_risk": 0.8293670459943008,
+      "event_window_cvar_violation": 0.8446270157524555,
+      "post_event_mean_risk": 0.610843135873626,
+      "event_window_mean_risk": 0.605716431003586,
+      "post_event_risk_exposure": 28.77077195804583,
+      "event_window_risk_exposure": 23.564302057794137,
+      "reaction_delay": 2.85,
+      "route_deviation_delay": 13.04,
+      "opportunity_normalized_delay": 0.035625,
+      "stale_exposure": 0.7825709263028204,
+      "replans": 0.0,
+      "compute_ms": 7.690829030892128,
+      "curvature_energy": 385.43272587354136,
+      "stuck": 0.48,
+      "hard_hazard_length_m": 0.059497,
+      "path_length_ratio": 1.3861960664150355
+    },
+    {
+      "method": "semantic_apf",
+      "n": 100.0,
+      "success": 0.11,
+      "post_event_cvar_risk": 0.9091268227844475,
+      "post_event_cvar_violation": 0.9158525861362341,
+      "full_episode_cvar_risk": 0.9030458446165608,
+      "full_episode_cvar_violation": 0.9079616172752577,
+      "event_window_cvar_risk": 0.9115948110163943,
+      "event_window_cvar_violation": 0.9196265813013962,
+      "post_event_mean_risk": 0.827134561045282,
+      "event_window_mean_risk": 0.810944324303588,
+      "post_event_risk_exposure": 48.07252645174147,
+      "event_window_risk_exposure": 34.65758817874612,
+      "reaction_delay": 3.34,
+      "route_deviation_delay": 18.19,
+      "opportunity_normalized_delay": 0.041749999999999995,
+      "stale_exposure": 0.8819754445713758,
+      "replans": 0.0,
+      "compute_ms": 0.13395359305685373,
+      "curvature_energy": 877.1398813888317,
+      "stuck": 0.9,
+      "hard_hazard_length_m": 0.033284,
+      "path_length_ratio": 1.7382790392842782
+    }
+  ]
+}

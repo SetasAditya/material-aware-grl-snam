@@ -1,0 +1,492 @@
+% =============================================================
+%  Appendix A — Formal Mathematical Results
+%  Theorems A–L referenced throughout the thesis.
+%  Each result is stated precisely with the assumptions required.
+% =============================================================
+
+\chapter{Formal Mathematical Results}
+\label{app:theorems}
+
+This appendix collects the formal lemmas, theorems, and propositions
+referenced throughout the thesis.
+They are grouped by function: well-posedness (§\ref{app:wp}),
+passivity (§\ref{app:pass}), safety (§\ref{app:safety}),
+adaptation (§\ref{app:adapt}), enrichment (§\ref{app:enrich}),
+risk (§\ref{app:risk}), and computational complexity
+(§\ref{app:complexity}).
+
+% ---------------------------------------------------------------
+\section{Well-Posedness of the Learned Hamiltonian Flow}
+\label{app:wp}
+% ---------------------------------------------------------------
+
+\begin{lemma}[Local existence and uniqueness -- Result A]
+\label{app:lem:wellposed}
+Fix an active obstacle set $\mathcal{C}$, a learned coefficient
+vector $\theta$ with $\|\theta\|<\infty$, and a positive-definite
+mass matrix $\Mass\succ 0$.
+Suppose the potential $V(\vec{q};\mathcal{E},\theta)\in C^2$ on the
+interior of the safe set
+$\mathcal{S}=\{\vec{q}: d_i(\vec{q})>0,\;\forall i\in\mathcal{C}\}$.
+Then the port-Hamiltonian vector field
+\[
+  \dot{z} = (\mathbb{J} - \mathbf{D}_\theta)\nabla H_\theta(z) + B u,
+  \qquad
+  \mathbb{J} = \begin{pmatrix}0&I\\-I&0\end{pmatrix},\;
+  \mathbf{D}_\theta \succeq 0,
+\]
+is locally Lipschitz on $\mathcal{S}\times\mathbb{R}^n$.
+Consequently, for any initial condition $z_0\in\mathcal{S}
+\times\mathbb{R}^n$ and bounded port input $u$, a unique solution
+$z(t)$ exists on a maximal interval $[0,T^*)$, where $T^*$ is the
+first time the trajectory reaches $\partial\mathcal{S}$ or the
+active set changes.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Under the stated assumptions, $\nabla H_\theta$ is $C^1$ on
+$\mathcal{S}\times\mathbb{R}^n$, so the right-hand side is locally
+Lipschitz by composition.
+Existence and uniqueness follow from the Picard–Lindelöf theorem.
+The active-set-change stopping time is finite whenever a clearance
+$d_i(\vec{q}(t))\to 0$, which triggers a discrete re-initialization
+of $\mathcal{C}$ by the sensing procedure.
+\end{proof}
+
+\begin{remark}
+Global existence requires either: (i) an infinite barrier
+($b_i(d)\to+\infty$ as $d\to 0$) and bounded energy, or (ii) a
+discrete CBF projection that prevents boundary contact.
+The thesis uses finite-step integration, so Lemma~\ref{app:lem:wellposed}
+applies segment-by-segment between sensing events.
+\end{remark}
+
+% ---------------------------------------------------------------
+\section{Passivity: Continuous and Discrete}
+\label{app:pass}
+% ---------------------------------------------------------------
+
+\begin{theorem}[Continuous-time port-Hamiltonian passivity -- Result B]
+\label{thm:passivity_cont}
+Under the dynamics of Lemma~\ref{app:lem:wellposed}, if
+$\mathbf{D}_\theta(z)\succeq 0$ everywhere, then:
+\[
+  \dot{H}_\theta(z)
+  = -(\nabla_z H_\theta)^\top \mathbf{D}_\theta\,\nabla_z H_\theta
+    + y^\top u
+  \;\leq\; y^\top u,
+  \qquad
+  y = B^\top\nabla_z H_\theta.
+\]
+In particular, when $u=0$, the stored energy $H_\theta(z(t))$ is
+non-increasing.
+The system is therefore \emph{passive} from port input $u$ to
+output $y$ with storage function $H_\theta$.
+\end{theorem}
+
+\begin{proof}
+Differentiate $H_\theta(z(t))$ along trajectories using the
+chain rule and substitute the dynamics:
+\[
+  \dot H_\theta
+  = (\nabla_z H_\theta)^\top \dot z
+  = (\nabla_z H_\theta)^\top
+    \bigl[(\mathbb{J}-\mathbf{D}_\theta)\nabla_z H_\theta + Bu\bigr].
+\]
+Since $\mathbb{J}$ is skew-symmetric,
+$(\nabla_z H_\theta)^\top \mathbb{J}\,\nabla_z H_\theta = 0$,
+giving $\dot H_\theta
+= -(\nabla_z H_\theta)^\top\mathbf{D}_\theta\nabla_z H_\theta
++ y^\top u$.
+Non-negativity of $\mathbf{D}_\theta$ completes the proof.
+\end{proof}
+
+\begin{theorem}[Discrete-time energy inequality -- Result C]
+\label{thm:passivity_disc}
+Assume $H_\theta \in C^2$ with $\|\nabla^2 H_\theta\|\leq L_H$ on the
+reachable set, and that $\mathbf{D}_\theta$ and $B$ are bounded.
+Let the split symplectic-dissipative integrator advance the state as
+$z_{n+1} = \Phi_{\mathrm{cons},\tau}\circ\Phi_{\mathrm{diss},\tau}(z_n)
++ \tau Bu_n$,
+where $\Phi_{\mathrm{cons},\tau}$ is the $\tau$-step leapfrog map
+for the conservative sub-Hamiltonian $H_0 = \frac{1}{2}p^\top M^{-1}p$
+and $\Phi_{\mathrm{diss},\tau}$ is a forward-Euler dissipation step.
+Then for step-size $\tau\leq h_0$ (where $h_0$ depends on $L_H$
+and the discrete-gradient consistency condition~\citep{hairer2006geometric}):
+\[
+  H_\theta(z_{n+1}) - H_\theta(z_n)
+  \leq \tau\, y_n^\top u_n + C_H\tau^2,
+\]
+where $C_H$ depends on $\|\nabla^2 H_\theta\|$ and $\|\mathbf{D}_\theta\|$.
+If a discrete-gradient integrator is used instead, the inequality
+holds with $C_H = 0$ (exact discrete balance).
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Taylor-expand $H_\theta(z_{n+1})$ around $z_n$.
+The conservative substep contributes $O(\tau^2)$ energy error
+(standard leapfrog accuracy); the dissipative substep contributes
+$-\tau(\nabla H_\theta)^\top\mathbf{D}_\theta\nabla H_\theta + O(\tau^2)$;
+the port input contributes $\tau y_n^\top u_n$.
+Collecting gives the stated inequality.
+\end{proof}
+
+% ---------------------------------------------------------------
+\section{Barrier Safety}
+\label{app:safety}
+% ---------------------------------------------------------------
+
+\begin{theorem}[Energy-barrier forward invariance -- Result D]
+\label{app:thm:barrier_safety}
+Let $\mathcal{S} = \{\vec{q}: d_i(\vec{q})>0,\;\forall i\}$ and
+suppose each barrier potential satisfies $b_i(d)\to+\infty$ as
+$d\downarrow 0$.
+If (i) the initial stored energy is bounded, $H_\theta(z(0))\leq B<\infty$,
+(ii) the port input is energy-bounded so that $H_\theta(z(t))\leq B$
+for all $t$ (e.g., $u=0$ and passivity holds), and (iii) the
+continuous-time solution exists, then $\vec{q}(t)\in\mathcal{S}$
+for all $t\geq 0$.
+
+\noindent\textit{Discrete variant.}
+Under the leapfrog integrator of Theorem~\ref{thm:passivity_disc},
+replace condition~(ii) with: (ii') $\tau\leq h_{\mathrm{safe}}$
+where $h_{\mathrm{safe}}$ is chosen so that $H_\theta(z_{n+1})\leq
+B + C_H\tau$ for all $n$.
+Alternatively, apply a CBF projection
+$\hat u_n = \operatorname*{arg\,min}_u \|u\|^2$ s.t.\
+$h(q_{n+1}) - h(q_n) \geq -\alpha h(q_n)$ after each step~\citep{ames2016control}.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+If $\vec{q}(t)$ were to reach $\partial\mathcal{S}$, some
+$d_i(\vec{q}(t))\to 0$, so $b_i\to+\infty$ and
+$H_\theta(z(t))\to+\infty$.
+This contradicts the energy bound $H_\theta(z(t))\leq B$.
+\end{proof}
+
+\begin{remark}
+The soft-risk and hard-hazard barriers in Stage~2 are smooth but
+finite; they do not by themselves guarantee forward invariance.
+Theorem~\ref{app:thm:barrier_safety} applies to the obstacle barriers
+$b_i(d_i)$ under the energy-bound assumption.
+The Stage~2 hard-hazard potential is better described as a
+\emph{steep repulsive barrier} (see §\ref{subsec:ch4:dynamics}).
+\end{remark}
+
+% ---------------------------------------------------------------
+\section{Adaptation: Online Coefficient Correction}
+\label{app:adapt}
+% ---------------------------------------------------------------
+
+\begin{lemma}[Tikhonov Gauss--Newton step -- Result E, part 1]
+\label{app:lem:tikhonov}
+The regularized least-squares update
+\[
+  \Delta\zeta
+  = (J_t^\top J_t + \lambda I)^{-1}J_t^\top r_t
+\]
+is the unique minimizer of
+$\min_{\Delta}\;\|J_t\Delta - r_t\|^2 + \lambda\|\Delta\|^2$.
+It satisfies $\|\Delta\zeta\|\leq \|r_t\|/\sqrt{\lambda}$.
+\end{lemma}
+
+\begin{theorem}[Local observable residual reduction -- Result E, part 2]
+\label{app:thm:residual_decrease}
+Let the observable map $y(\zeta)$ be $C^1$, let $J_t$ approximate
+$\partial y/\partial\zeta$ at $\zeta_t$ with error
+$\|J_t - \partial y/\partial\zeta\|_F\leq\epsilon_J$, and let the
+step size $\kappa>0$ be sufficiently small.
+Then the update $\zeta_{t+1} = \zeta_t + \kappa\Delta\zeta_t$ satisfies:
+\[
+  \|y(\zeta_{t+1}) - y^\star\|^2
+  \leq \|y(\zeta_t) - y^\star\|^2
+       - c\kappa\|J_t^\top r_t\|^2
+       + O(\kappa^2 + \kappa\epsilon_J),
+\]
+where $c>0$ and $r_t = y^\star - y(\zeta_t)$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+First-order Taylor expansion of $y(\zeta_{t+1})$ around $\zeta_t$
+and substitution of the step formula, followed by Young's inequality
+to separate the quadratic and cross terms.
+The $\epsilon_J$ term bounds the error from Jacobian approximation.
+\end{proof}
+
+% ---------------------------------------------------------------
+\section{Enrichment Stability}
+\label{app:enrich}
+% ---------------------------------------------------------------
+
+\begin{theorem}[Small-enrichment stability continuity -- Result F]
+\label{thm:enrich_stability}
+Suppose Stage~$k$ satisfies $\mathcal{L}_{\mathrm{pass}}^{(k)}\leq\epsilon$
+under the same initial conditions, integrator, and dissipation coefficient.
+Let a new energy term $H_{\mathrm{new}}$ with bounded gradient
+$\|\nabla_{\vec{q}} H_{\mathrm{new}}(\vec{q})\|\leq G$ be added with
+coefficient $|\lambda_{\mathrm{new}}|\leq\delta$.
+Then the passivity surrogate of Stage~$(k+1)$ satisfies:
+\[
+  \mathcal{L}_{\mathrm{pass}}^{(k+1)}
+  \leq \mathcal{L}_{\mathrm{pass}}^{(k)} + C_G\delta + O(\tau^2),
+\]
+where $C_G>0$ depends on $G$ and the integrator step-size $\tau$.
+In particular, initializing $\lambda_{\mathrm{new}}=0$ gives
+$\mathcal{L}_{\mathrm{pass}}^{(k+1)} = \mathcal{L}_{\mathrm{pass}}^{(k)}
++ O(\tau^2)$, i.e., backward-compatible enrichment introduces
+only integrator-order passivity error.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The new force channel contributes an additive term
+$-\tau\lambda_{\mathrm{new}}\nabla_{\vec{q}} H_{\mathrm{new}}$ to the
+$p$-update.
+Bounding the change in $\Delta H_t$ using $\|\nabla H_{\mathrm{new}}\|\leq G$
+and summing over $T$ steps gives the $C_G\delta$ bound.
+\end{proof}
+
+\begin{theorem}[Additive learnable energy implies force and sensitivity channels -- Result G]
+\label{thm:enrichment_rigorous}
+Let $H_{\theta'} = H_\theta + \vartheta H_{\mathrm{new}}(\vec{q};\mathcal{E})$
+for a scalar learnable coefficient $\vartheta$.
+Then:
+\begin{enumerate}[(i)]
+  \item \emph{New force channel:}
+        $F_{\theta'} = F_\theta - \vartheta\nabla_{\vec{q}}H_{\mathrm{new}}$.
+  \item \emph{New sensitivity stream:} The rollout gradient with respect to
+        $\vartheta$ along any trajectory $\{z_t\}$ is
+        \[
+          \frac{\partial J}{\partial\vartheta}
+          = -\sum_t
+            \frac{\partial J}{\partial\Mom_{t+1}}
+            \cdot
+            \tau\nabla_{\vec{q}}H_{\mathrm{new}}(\vec{q}_t;\mathcal{E}).
+        \]
+  \item \emph{Identifiability:} $\vartheta$ is locally identifiable
+        from rollout observations if and only if the Gram matrix
+        $G_{\mathrm{new}} = \sum_t
+        \bigl(\nabla_{\vec{q}}H_{\mathrm{new}}(\vec{q}_t)\bigr)
+        \bigl(\nabla_{\vec{q}}H_{\mathrm{new}}(\vec{q}_t)\bigr)^\top$
+        is nonsingular over the training trajectories.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+(i) is immediate from $\nabla_{\vec{q}}H_{\theta'} =
+\nabla_{\vec{q}}H_\theta + \vartheta\nabla_{\vec{q}}H_{\mathrm{new}}$.
+(ii) follows from differentiating the rollout recurrence with respect
+to $\vartheta$ using the chain rule.
+(iii) follows from the standard identifiability condition for linear
+least squares applied to the sensitivity (ii).
+\end{proof}
+
+% ---------------------------------------------------------------
+\section{Risk: CVaR Gradient and Sample Complexity}
+\label{app:risk}
+% ---------------------------------------------------------------
+
+\begin{theorem}[Empirical CVaR subgradient -- Result H]
+\label{app:thm:cvar_gradient}
+For bounded episode cost $J_\theta\in[0,J_{\max}]$, the CVaR objective
+$\mathrm{CVaR}_\beta(J_\theta) = \min_\nu
+\bigl[\nu + \tfrac{1}{1-\beta}\mathbb{E}(J_\theta-\nu)_+\bigr]$
+has a subgradient with respect to $\theta$:
+\[
+  \nabla_\theta\,\mathrm{CVaR}_\beta(J_\theta)
+  = \frac{1}{1-\beta}\,\mathbb{E}\!\bigl[
+    \mathbf{1}\{J_\theta\geq\nu^\star\}\,\nabla_\theta J_\theta
+  \bigr],
+\]
+where $\nu^\star = \mathrm{VaR}_\beta(J_\theta)$ and tie-breaking at
+the quantile uses standard measure-zero conventions.
+The empirical estimator from a batch $\{J_i\}_{i=1}^B$ is
+$\widehat{\mathrm{CVaR}}_\beta = \hat\nu
++ \tfrac{1}{(1-\beta)B}\sum_i(J_i-\hat\nu)_+$,
+with gradient approximation
+$\frac{1}{(1-\beta)B}\sum_i\mathbf{1}\{J_i\geq\hat\nu\}\nabla_\theta J_i$.
+\end{theorem}
+
+\begin{proof}
+This follows from the Rockafellar--Uryasev variational representation
+\citep{rockafellar2002cvar} and standard interchange of subdifferential
+and expectation under bounded cost.
+\end{proof}
+
+\begin{lemma}[CVaR concentration -- Result I]
+\label{app:lem:cvar_concentration}
+If $J\in[0,J_{\max}]$, then for $B$ i.i.d.\ episode samples, with
+probability at least $1-\delta$:
+\[
+  \bigl|\widehat{\mathrm{CVaR}}_\beta - \mathrm{CVaR}_\beta(J)\bigr|
+  \leq
+  \frac{J_{\max}}{1-\beta}
+  \sqrt{\frac{2\log(2/\delta)}{B}}.
+\]
+Consequently, to achieve $\epsilon$ accuracy with probability $1-\delta$,
+it suffices to collect
+$B\geq \frac{2J_{\max}^2\log(2/\delta)}{(1-\beta)^2\epsilon^2}$ episodes.
+\end{lemma}
+
+\begin{proof}
+Apply the bounded-difference inequality (McDiarmid) to the empirical
+CVaR viewed as a function of $B$ independent samples, then note
+that each sample affects the empirical CVaR by at most
+$J_{\max}/((1-\beta)B)$.
+\end{proof}
+
+\begin{theorem}[Finite-sample PAC coverage lower bound -- Result J]
+\label{thm:pac_coverage}
+Suppose $m$ start--goal pairs are sampled i.i.d.\ from the curriculum
+distribution and $s$ are flagged as conquered
+($\hat c=1$, see \eqref{eq:ch4:conquest}).
+Then with probability at least $1-\delta$, the true conquest probability
+satisfies:
+\[
+  p_{\mathrm{conquer}}
+  \geq \mathrm{LCB}_\delta(s, m)
+  := \inf\!\Bigl\{p : \sum_{k=s}^{m}\binom{m}{k}p^k(1-p)^{m-k}
+     \geq 1-\delta\Bigr\},
+\]
+where $\mathrm{LCB}_\delta$ is the Clopper--Pearson lower confidence
+bound.
+A Wilson lower bound provides a closed-form approximation:
+$\mathrm{LCB}_\delta \approx
+\frac{s + \frac{z^2}{2} - z\sqrt{\frac{s(m-s)}{m}+\frac{z^2}{4}}}{m+z^2}$,
+where $z = \Phi^{-1}(1-\delta/2)$.
+\end{theorem}
+
+\begin{proof}
+Standard binomial confidence interval construction (Clopper--Pearson).
+\end{proof}
+
+% ---------------------------------------------------------------
+\section{Identifiability and Complexity}
+\label{app:complexity}
+% ---------------------------------------------------------------
+
+\begin{theorem}[Local coefficient identifiability -- Result K]
+\label{app:thm:identifiability}
+Let the force decomposition be
+$F_\theta(\vec{q}) = \sum_{k} \theta_k \phi_k(\vec{q})$,
+where $\phi_k = -\nabla_{\vec{q}} H_k(\vec{q})$ are the individual
+force channels (goal, sensor-barrier, soft-risk, hard-hazard).
+Define the Gram matrix
+$G_{jk} = \sum_t \phi_j(\vec{q}_t)^\top\phi_k(\vec{q}_t)$.
+If $G$ is full rank over the training trajectories (persistent
+excitation condition), then the coefficient vector
+$\theta = (\beta, \lambda_s, \lambda_h, \{\alpha_i\}, \gamma)$
+is locally identifiable from rollout observations up to measurement
+noise.
+Global identifiability would require persistent excitation over
+all of $\mathcal{Q}$, which is not assumed here.
+\end{theorem}
+
+\begin{proof}
+Identifiability of $\theta$ from linear force observations is
+equivalent to invertibility of $G$, which is the standard persistent
+excitation condition for linear least squares in adaptive systems
+identification.
+\end{proof}
+
+\begin{proposition}[Per-step computational complexity -- Result L]
+\label{app:prop:complexity}
+Let $m = |\mathcal{C}_t|$ be the active obstacle count, $n$ the
+state dimension, and $k = m + O(1)$ the coefficient dimension.
+One integration step of the Stage~2 dynamics costs:
+\begin{align*}
+  O(mn) &\quad\text{for force evaluation (one gradient per obstacle)},\\
+  O(k^2) &\quad\text{for the rank-1 Jacobian update (Broyden)},\\
+  O(k^3) &\quad\text{for the Tikhonov solve (or }O(k^2)\text{ with
+           rank-1 factorization)}.
+\end{align*}
+The total per-step cost is $O(mn + k^3)$, compared to $O(N^3)$ for
+global replanning on an $N$-cell occupancy map.
+For typical values ($m\leq 20$, $k\leq 25$, $n=4$), this is
+effectively $O(1)$ per step regardless of workspace size.
+\end{proposition}
+
+% ---------------------------------------------------------------
+\section{Risk-Deflection and CVaR Descent}
+\label{app:risk_deflect_cvar}
+% ---------------------------------------------------------------
+
+\begin{lemma}[Local risk-deflection -- Result M]
+\label{app:lem:risk_deflect}
+Let $v_1,v_2\in T_{\vec{q}}\mathcal{Q}$ be feasible directions with
+$\langle\nabla_{\vec{q}}H_{\mathrm{geom}},v_1\rangle =
+ \langle\nabla_{\vec{q}}H_{\mathrm{geom}},v_2\rangle$
+and
+$\langle\nabla\tilde{r}(\vec{q}),v_1\rangle >
+ \langle\nabla\tilde{r}(\vec{q}),v_2\rangle$.
+Then
+\[
+  \langle\Mom_{t+1}^{(\mathrm{S2})}-\Mom_{t+1}^{(\mathrm{S1})},\;
+         v_1-v_2\rangle
+  = -\tau\lambda_s\langle\nabla\tilde{r},\,v_1-v_2\rangle
+    -\tau\lambda_h\langle\nabla b_{\mathrm{sp}},\,v_1-v_2\rangle
+  < 0.
+\]
+\end{lemma}
+\begin{proof}
+From the discrete $p$-update \eqref{eq:ch4:p_update}, the
+Stage~2 minus Stage~1 momentum difference is
+\[
+  \Mom_{t+1}^{(\mathrm{S2})}-\Mom_{t+1}^{(\mathrm{S1})}
+  = -\tau\lambda_s\nabla\tilde{r}(\vec{q}_t)
+    -\tau\lambda_h\nabla b_{\mathrm{sp}}(\phi(\vec{q}_t)).
+\]
+Taking the inner product with $v_1-v_2$:
+\[
+  \langle\cdot,\,v_1-v_2\rangle
+  = -\tau\lambda_s\underbrace{
+      \langle\nabla\tilde{r},\,v_1-v_2\rangle}_{>0}
+    -\tau\lambda_h\langle\nabla b_{\mathrm{sp}},\,v_1-v_2\rangle.
+\]
+The first term is strictly negative since $\lambda_s>0$ (Stage~2
+convergence) and $\langle\nabla\tilde{r},v_1\rangle>
+\langle\nabla\tilde{r},v_2\rangle$ by hypothesis.
+The second term reinforces this whenever $v_1$ points toward a
+higher-hazard region; if not, the strict inequality is carried by the
+first term alone.
+The configuration-step bias
+$\vec{q}_{t+1}=\vec{q}_t+\tau\Mass^{-1}\Mom_{t+1}$
+inherits the momentum bias, completing the proof.
+\end{proof}
+
+\begin{proposition}[CVaR subgradient descent to stationarity -- Result N]
+\label{app:prop:cvar_descent}
+Let $\hat{\mathcal{L}}_\beta(\theta)=\widehat{\mathrm{CVaR}}_\beta(J(\theta))$
+and $\hat{g}_k\in\partial_\theta\hat{\mathcal{L}}_\beta(\theta_k)$
+with $\|\hat{g}_k\|\leq G$.
+Under $\theta_{k+1}=\theta_k-\eta_k\hat{g}_k$ with
+$\eta_k=\eta/\sqrt{k}$, each step satisfies the first-order descent
+condition
+\[
+  \hat{\mathcal{L}}_\beta(\theta_{k+1})
+  \leq \hat{\mathcal{L}}_\beta(\theta_k) + O(\eta_k^2),
+\]
+and the iterates converge to a stationary point of
+$\hat{\mathcal{L}}_\beta$ at rate
+\[
+  \min_{k\leq K}\|\hat{g}_k\| \leq \frac{C}{\sqrt{K}},
+  \quad C = G\sqrt{2(\hat{\mathcal{L}}_\beta(\theta_1)-\hat{\mathcal{L}}_\beta^{\,\mathrm{inf}})/\eta}.
+\]
+\end{proposition}
+\begin{proof}
+$\mathrm{CVaR}_\beta(J)$ is convex in the scalar $J$
+\citep{rockafellar2002cvar}, but the composition
+$\theta\mapsto\mathrm{CVaR}_\beta(J(\theta))$ is generally nonconvex
+because $J(\theta)$ is nonlinear in $\theta$ through the
+port-Hamiltonian rollout dynamics.
+$J$ is differentiable in $\theta$ via the rollout sensitivity
+recursion \eqref{eq:ch4:dL_dlambda_s}--\eqref{eq:ch4:dL_dlambda_h},
+and the passivity constraint $\mathcal{L}_{\mathrm{pass}}\leq
+\varepsilon_{\mathrm{pass}}$ bounds $\|\nabla_{\vec{q}}H_\theta\|$,
+hence $\|\nabla_\theta J\|$, hence $G$.
+For a Lipschitz nonconvex objective with bounded subgradient,
+the diminishing-step subgradient method converges to a stationary point
+at rate $O(1/\sqrt{K})$ in the minimum subgradient norm
+(standard nonconvex subgradient analysis).
+Global minimum convergence would require convexity of $J(\theta)$,
+which is not assumed here.
+\end{proof}

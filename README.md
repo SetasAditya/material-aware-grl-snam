@@ -1,13 +1,26 @@
-# Anonymous Submission Code
+# Material-Aware GRL-SNAM
 
-This folder contains the code and compact result artifacts needed to reproduce
-the RELLIS-3D and RELLIS-Dyn experiments reported in the submission. It is a
-cleaned reviewer bundle, not a full research checkout. Raw datasets, large
-caches, and checkpoints are intentionally not included.
+This repository contains the paper-facing implementation, rebuttal experiments,
+compact result artifacts, and visualization tools for the material-aware
+extension of GRL-SNAM. The method augments an inherited geometry-only
+port-Hamiltonian navigation field with an explicit material-risk force, an
+always-on hard-hazard force, and a local feasibility-witness gate controlling
+when the material force is exposed.
+
+The executed field is
+
+```text
+F = F_geom + g(context) * lambda_soft(context) * f_material
+             + lambda_hard(context) * f_hazard
+```
+
+with highway-specific lateral and time-to-collision channels for deciding
+between passing and braking. Raw datasets and large BEV caches are not
+redistributed.
 
 ## Contents
 
-- `rellis/`: RELLIS-3D BEV construction, static selectivity evaluation,
+- `rellis/`: compact reviewer-facing RELLIS-3D BEV construction, static selectivity evaluation,
   RELLIS-Dyn event generation/evaluation, and figure/table artifact scripts.
 - `rellis/grl_rellis/`: local BEV, semantic-risk ontology, and dynamic event
   utilities.
@@ -17,6 +30,17 @@ caches, and checkpoints are intentionally not included.
   missing-ablation diagnostics.
 - `paper_generated/`: generated LaTeX table fragments and selected figures used
   in the submission.
+- `full_code/`: imported full implementation, including DFC2018, RELLIS, and
+  highway-env code. See `full_code/IMPORT_MANIFEST.md` for provenance and
+  `full_code/README.md` for the original implementation entry points.
+- `rebuttal_experiments/`: one-factor gate, witness, coefficient, perception,
+  and paired-bootstrap experiments with tests and saved summaries.
+- `repair_experiments/`: stagewise controller repairs, evaluation code, locked
+  splits, and the frozen v7 artifact described in `FROZEN_V7_STATE.md`.
+- `rq_visualizations/`: reproducible RQ1--RQ5 figures and closed-loop GIF
+  renderers. Generated figures include per-file provenance records.
+- `69fce49f7b741296914475ad/`: current LaTeX manuscript snapshot and figures.
+- `site/`: self-contained visualization page using the generated GIFs.
 
 ## Setup
 
@@ -33,6 +57,10 @@ Run commands from this directory with:
 ```bash
 export PYTHONPATH="$PWD:$PWD/rellis"
 ```
+
+The highway renderer additionally uses the vendored environment under
+`full_code/exp-highway-env/HighwayEnv`. Some full experiment reruns require
+PyTorch and domain-specific dependencies documented in `full_code/README.md`.
 
 ## Data
 
@@ -135,11 +163,72 @@ tables:
 These files are included so reviewers can inspect the exact aggregate values
 without rerunning the full dataset pipeline.
 
+## Rebuttal And Repair Tests
+
+Run the lightweight experiment tests from the repository root:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 pytest -p no:cacheprovider \
+  rebuttal_experiments repair_experiments
+```
+
+The frozen controller, retained files, limitations, and hashes are documented
+in `FROZEN_V7_STATE.md`. In particular, the repaired v7 controller did not pass
+its efficacy stage gate; its artifacts are retained for reproducibility and
+must not be presented as a positive held-out result.
+
+## RQ1--RQ5 Figures
+
+Generate all static research-question figures with:
+
+```bash
+MPLCONFIGDIR=/tmp/material-aware-mpl \
+python rq_visualizations/make_all.py
+```
+
+Outputs are written to `rq_visualizations/output/` as PDF, PNG, and provenance
+JSON. See `rq_visualizations/README.md` for the exact measured-versus-rendered
+scope of every panel.
+
+## Behavioral GIFs
+
+Generate the paired RELLIS-Dyn examples:
+
+```bash
+MPLCONFIGDIR=/tmp/material-aware-mpl \
+python rq_visualizations/gifs/make_behavioral_rellis_gifs.py
+```
+
+Generate the enlarged highway comparisons (open passing lane and boxed lane):
+
+```bash
+bash rq_visualizations/gifs/make_behavioral_highway_gifs.sh
+```
+
+Generate the same-event comparison against semantic DWA, MPPI, and budgeted
+MPC:
+
+```bash
+MPLCONFIGDIR=/tmp/material-aware-mpl \
+python rq_visualizations/gifs/make_planner_comparison_gif.py
+```
+
+The generated GIFs are in `rq_visualizations/gifs/behavioral/`. They show
+selected closed-loop examples and should accompany, not replace, the paired
+aggregate statistics in the manuscript. Detailed generation notes and claim
+boundaries are in `rq_visualizations/gifs/README.md`.
+
+To preview the included visualization page locally:
+
+```bash
+python -m http.server 8000 --directory site
+```
+
 ## Notes On Scope
 
-This bundle focuses on the RELLIS-3D static and dynamic material-risk
-experiments because they are the primary code-heavy additions in the submission.
-The raw RELLIS data, large BEV caches, trained checkpoints, and full LaTeX
-source are excluded for size and anonymity. The included scripts are sufficient
-to rebuild caches, rerun the local evaluations, and regenerate the RELLIS tables
-and figures once the external dataset is available.
+The compact root pipeline remains the simplest reviewer entry point. The
+`full_code/` tree is included for implementation completeness but retains its
+original experiment-specific organization. Large external datasets, local
+caches, and most training checkpoints remain excluded. Saved visualizations are
+qualitative examples; quantitative claims should be taken from paired result
+tables and their confidence intervals.

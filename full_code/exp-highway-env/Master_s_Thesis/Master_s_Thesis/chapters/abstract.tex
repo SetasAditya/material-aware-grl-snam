@@ -1,0 +1,40 @@
+Autonomous agents operating in unknown environments must act before the
+full structure of the world is known, revise their behavior as geometry
+and risk are revealed, and do so without destabilizing previously learned
+competencies. Existing approaches address parts of this challenge, but
+often hold fixed one of the very quantities that must remain adaptable in
+changing environments: the policy, the objective, the planner, or the
+underlying decision dynamics.
+
+This thesis studies that gap through the lens of \textbf{continual
+Hamiltonian learning}, in which an agent's policy is identified with the
+flow map of a structured phase-space energy whose landscape is
+progressively reshaped by new geometric and risk information. Under this
+view, adaptation is expressed not as relearning a flat action map, but as
+updating the force-field coefficients, objectives, and correction laws
+that govern the induced dynamics.
+
+The thesis develops this viewpoint in two stages. \textbf{Stage~1}
+establishes a geometry-only foundation for structured navigation under
+local sensing, showing that phase-space energy shaping can support stable
+goal-seeking, obstacle avoidance, and online correction without requiring
+a globally complete map. \textbf{Stage~2} enlarges this learner to the
+material-aware risk-sensitive setting by introducing semantic risk terms
+into the stored energy, CVaR-based tail-risk optimization into the
+objective, and a passivity- and coverage-guided hierarchy of updates
+across segment, episode, and curriculum timescales. On a 20-episode high-risk subset of the DFC2018
+Houston benchmark (oracle material maps, spatially held-out test region),
+the resulting material-aware learner reduces cumulative
+risk exposure by 56.4\% relative to the geometry-only baseline and by 17.4\%
+over a material-blind Dijkstra reference, while maintaining comparable path
+efficiency (Stage~2 path length is 1.1\% shorter than Stage~1).
+
+A central thesis-level insight is that enriching the learner with a new
+energy term also enlarges the associated force channels, coefficient
+space, objective, gradient pathways, and update laws required to train
+it. This makes the transition from geometry-only to material-aware
+learning structurally necessary rather than an ad hoc design choice.
+Taken together, the results support continual Hamiltonian learning as a
+promising framework for progressively enriching decision dynamics while
+preserving interpretability, stability, and adaptability in unknown
+environments.

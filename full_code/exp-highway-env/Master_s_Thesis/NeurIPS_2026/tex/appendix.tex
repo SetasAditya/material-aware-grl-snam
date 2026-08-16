@@ -1,0 +1,914 @@
+
+% ============================================================
+% Appendix: Theoretical Guarantees for Contextual Hamiltonian Enrichment
+% Drop this file into the NeurIPS source and include with:
+%   \input{appendix_theory}
+%
+% Required packages in the main preamble:
+%   \usepackage{amsmath,amssymb,amsthm,mathtools}
+%   \usepackage{natbib}
+%
+% Optional theorem environments if not already defined:
+%   \newtheorem{theorem}{Theorem}
+%   \newtheorem{lemma}{Lemma}
+%   \newtheorem{proposition}{Proposition}
+%   \newtheorem{corollary}{Corollary}
+%   \theoremstyle{definition}
+%   \newtheorem{assumption}{Assumption}
+%   \newtheorem{remark}{Remark}
+% ============================================================
+
+\section{Theoretical Guarantees for Contextual Hamiltonian Enrichment}
+\label{app:theory}
+
+This appendix collects the formal properties used in Section~3.6.
+The goal is not to claim unconditional safety or global optimality. Instead, we prove
+that contextual Hamiltonian enrichment has five conditional properties aligned with
+the central claims of the paper: (i) an added energy term induces a new force and
+sensitivity channel; (ii) the enriched system preserves the port-Hamiltonian
+dissipativity structure; (iii) the discrete rollout is practically dissipative for small
+enough step size; (iv) when context gradients vanish, the context-enriched field remains close to the
+geometry scaffold and cannot generate a spurious lateral escape; and (v) when a
+projected risk-gradient margin exists, the contextual force activates and locally
+reduces risk. We also justify the detached-quantile CVaR gradient used in the
+episode loop. The passivity arguments follow the standard port-Hamiltonian energy
+balance~\citep{vanDerSchaftJeltsema2014,Desai2021PortHNN}; the CVaR argument
+uses the Rockafellar--Uryasev variational representation~\citep{RockafellarUryasev2000}
+and standard empirical quantile sensitivity arguments~\citep{HongHuLiu2014}.
+
+
+
+
+
+\subsection{Setup and notation}
+\label{app:setup}
+
+Let \(q \in \mathbb R^d\) denote the configuration coordinate and \(p\in\mathbb R^d\)
+its cotangent variable. Let \(x=(q,p)\), let \(M\succ 0\) be the mass matrix, and
+write
+\[
+    v = M^{-1}p .
+\]
+The geometry-scaffold Hamiltonian is
+\[
+    H_1(q,p)
+    =
+    \frac12 p^\top M^{-1}p + H_{\mathrm{geom}}(q),
+\]
+where \(H_{\mathrm{geom}}\) contains the goal and geometric barrier terms. The context-enriched field
+adds the context Hamiltonian
+\[
+    H_{\mathrm{ctx}}(q;z)
+    =
+    \lambda_s \widetilde r(\mathbf c;z)
+    +
+    \lambda_h b_{\mathrm{sp}}(\phi(\mathbf c;z)),
+\]
+where \(\mathbf c\) is the workspace position component of \(q\), \(z\) denotes the
+locally sensed context patch, \(\widetilde r\) is the smoothed soft-risk field, and
+\(\phi\) is the signed-distance field for hard hazards. Thus
+\[
+    H_2(q,p;z)
+    =
+    H_1(q,p)+H_{\mathrm{ctx}}(q;z).
+\]
+The corresponding context force is
+\[
+    F_{\mathrm{ctx}}(q;z)
+    =
+    -\nabla_q H_{\mathrm{ctx}}(q;z)
+    =
+    -\lambda_s \nabla_q \widetilde r(\mathbf c;z)
+    -
+    \lambda_h b_{\mathrm{sp}}'(\phi(\mathbf c;z))\nabla_q \phi(\mathbf c;z).
+\]
+This is exactly the soft-risk plus hard-hazard force decomposition used in the main
+paper.
+
+The continuous-time enriched port-Hamiltonian dynamics are
+\begin{align}
+    \dot q &= \nabla_p H_2(q,p;z)=M^{-1}p, \label{eq:ct_q}\\
+    \dot p &=
+    -\nabla_q H_2(q,p;z)
+    -
+    D(q,p;z)M^{-1}p
+    +
+    B(q,p;z)u , \label{eq:ct_p}
+\end{align}
+where \(D(q,p;z)\succeq 0\) is the dissipative port. The rollout used in the paper is
+the semi-implicit update
+\begin{align}
+    p_{t+1}
+    &=
+    p_t
+    -\tau\nabla_q H_{\mathrm{geom}}(q_t)
+    -\tau\nabla_q H_{\mathrm{ctx}}(q_t;z_t)
+    -\tau D_tM^{-1}p_t
+    +\tau B_tu_t, \label{eq:disc_p}\\
+    q_{t+1}
+    &=
+    q_t+\tau M^{-1}p_{t+1}. \label{eq:disc_q}
+\end{align}
+When \(D_tM^{-1}p_t\) is implemented as the scalar dissipative port
+\(R_\theta(q_t,p_t)=\gamma M^{-1}p_t\), this reduces to the update in the main text.
+
+\begin{assumption}[Rollout regularity]
+\label{ass:regularity}
+There exists a compact rollout tube \(\mathcal K\subset \mathbb R^{2d}\) such that
+the geometry scaffold and context-enriched field trajectories remain in \(\mathcal K\) for the horizon under
+analysis. On \(\mathcal K\), \(H_{\mathrm{geom}}\) and \(H_{\mathrm{ctx}}\) are \(C^2\),
+and their gradients are Lipschitz.
+\end{assumption}
+
+\begin{assumption}[Bounded context force]
+\label{ass:bounded_ctx}
+There exists \(G_{\mathrm{ctx}}<\infty\) such that
+\[
+    \|\nabla_q H_{\mathrm{ctx}}(q;z)\|\le G_{\mathrm{ctx}}
+\]
+for all \((q,p)\in\mathcal K\) and all context patches considered.
+\end{assumption}
+
+\begin{assumption}[Dissipative port]
+\label{ass:diss}
+There exists \(\rho\ge 0\) such that
+\[
+    D(q,p;z)\succeq \rho I
+\]
+on \(\mathcal K\). When \(\rho>0\), the system is strictly dissipative in velocity.
+\end{assumption}
+
+\begin{assumption}[Local Lipschitz rollout map]
+\label{ass:lipschitz_rollout}
+The shared geometry-scaffold update map is locally Lipschitz on \(\mathcal K\): there exists
+\(L_\Phi\ge 0\) such that one step of the shared dynamics amplifies state errors by at
+most \(1+\tau L_\Phi\).
+\end{assumption}
+
+\subsection{Energy enrichment induces force and sensitivity channels}
+
+\begin{lemma}[Energy enrichment induces force, sensitivity, and excitation channels]
+\label{lem:enrichment_channels}
+Let
+\[
+    H_2(q,p;\theta,\vartheta)
+    =
+    H_1(q,p;\theta)+\vartheta H_{\mathrm{new}}(q),
+\]
+where \(H_{\mathrm{new}}\in C^1\) and \(\vartheta\in\mathbb R\) is a learnable scalar.
+Then:
+\begin{enumerate}
+    \item the enriched momentum equation contains the new force channel
+    \[
+        F_{\mathrm{new}}(q)=-\vartheta\nabla_q H_{\mathrm{new}}(q);
+    \]
+    \item differentiating a rollout-dependent loss \(J\) through the discrete update
+    creates the direct sensitivity stream
+    \[
+        \frac{\partial J}{\partial \vartheta}
+        =
+        -\tau\sum_t
+        \left\langle
+        \frac{\partial J}{\partial p_{t+1}},
+        \nabla_qH_{\mathrm{new}}(q_t)
+        \right\rangle
+        +
+        \textnormal{recursive terms};
+    \]
+    \item local identifiability of \(\vartheta\) from force observations requires
+    non-degenerate excitation of the new channel, i.e. the empirical Gram matrix
+    over \(\{\nabla_qH_{\mathrm{new}}(q_t)\}_t\) must be nonsingular on the
+    observed force subspace.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Since
+\[
+    \nabla_q H_2
+    =
+    \nabla_q H_1+\vartheta\nabla_qH_{\mathrm{new}},
+\]
+Hamilton's momentum equation contains
+\[
+    -\nabla_qH_2
+    =
+    -\nabla_qH_1-\vartheta\nabla_qH_{\mathrm{new}}.
+\]
+Thus the added term contributes the force channel
+\(F_{\mathrm{new}}=-\vartheta\nabla_qH_{\mathrm{new}}\).
+
+For the sensitivity statement, consider the discrete momentum update
+\[
+    p_{t+1}
+    =
+    p_t-\tau\nabla_qH_1(q_t,p_t)
+    -\tau\vartheta\nabla_qH_{\mathrm{new}}(q_t)+\cdots .
+\]
+Differentiating with respect to \(\vartheta\) gives
+\[
+    \frac{\partial p_{t+1}}{\partial\vartheta}
+    =
+    \frac{\partial p_t}{\partial\vartheta}
+    -\tau\nabla_qH_{\mathrm{new}}(q_t)
+    -\tau\nabla_q^2H_2(q_t,p_t)
+        \frac{\partial q_t}{\partial\vartheta}
+    +\cdots .
+\]
+Applying the chain rule to any rollout loss \(J\) yields
+\[
+    \frac{\partial J}{\partial\vartheta}
+    =
+    \sum_t
+    \left\langle
+    \frac{\partial J}{\partial p_{t+1}},
+    \frac{\partial p_{t+1}}{\partial\vartheta}
+    \right\rangle
+    +
+    \sum_t
+    \left\langle
+    \frac{\partial J}{\partial q_{t+1}},
+    \frac{\partial q_{t+1}}{\partial\vartheta}
+    \right\rangle .
+\]
+The displayed direct stream is the term produced by
+\(-\tau\nabla_qH_{\mathrm{new}}(q_t)\); the remaining terms are recursive
+contributions through \(\partial q_t/\partial\vartheta\) and
+\(\partial p_t/\partial\vartheta\).
+
+For identifiability, suppose two coefficients \(\vartheta,\vartheta'\) induce the same
+observed force on the rollout. Then
+\[
+    (\vartheta-\vartheta')\nabla_qH_{\mathrm{new}}(q_t)=0
+\]
+in all observed force directions. A nonzero coefficient difference is impossible only
+when the observed gradients span the relevant force subspace. Equivalently, the
+corresponding empirical Gram matrix is nonsingular on that subspace.
+\end{proof}
+
+\subsection{Passivity and practical discrete dissipativity}
+
+\begin{theorem}[Contextual Hamiltonian enrichment preserves dissipativity]
+\label{thm:continuous_passivity}
+Assume~\ref{ass:regularity}--\ref{ass:diss}. If the context \(z\) is
+fixed and \(u=0\), then along solutions of \eqref{eq:ct_q}--\eqref{eq:ct_p},
+\[
+    \frac{d}{dt}H_2(q(t),p(t);z)
+    =
+    -v(t)^\top D(q(t),p(t);z)v(t)
+    \le
+    -\rho\|v(t)\|^2
+    \le 0 .
+\]
+Thus the addition of \(H_{\mathrm{ctx}}\) preserves the port-Hamiltonian dissipativity
+structure. If \(z=z(t)\) and \(u\neq0\), then
+\[
+    \frac{d}{dt}H_2
+    =
+    -v^\top Dv
+    +
+    \left\langle \nabla_zH_{\mathrm{ctx}}(q;z),\dot z \right\rangle
+    +
+    \left\langle \nabla_pH_2,Bu \right\rangle .
+\]
+Hence the enriched system is passive with storage \(H_2\) and supply rate
+\[
+    s(t)
+    =
+    \left\langle \nabla_zH_{\mathrm{ctx}}(q;z),\dot z \right\rangle
+    +
+    \left\langle \nabla_pH_2,Bu \right\rangle .
+\]
+\end{theorem}
+
+\begin{proof}
+For fixed \(z\), differentiate \(H_2\) along trajectories:
+\[
+    \dot H_2
+    =
+    \langle\nabla_qH_2,\dot q\rangle
+    +
+    \langle\nabla_pH_2,\dot p\rangle .
+\]
+Using \(\dot q=\nabla_pH_2\) and
+\(\dot p=-\nabla_qH_2-D\nabla_pH_2\), we obtain
+\[
+    \dot H_2
+    =
+    \langle\nabla_qH_2,\nabla_pH_2\rangle
+    +
+    \left\langle
+    \nabla_pH_2,
+    -\nabla_qH_2-D\nabla_pH_2
+    \right\rangle .
+\]
+The two interconnection terms cancel:
+\[
+    \langle\nabla_qH_2,\nabla_pH_2\rangle
+    -
+    \langle\nabla_pH_2,\nabla_qH_2\rangle=0.
+\]
+Therefore
+\[
+    \dot H_2
+    =
+    -\langle\nabla_pH_2,D\nabla_pH_2\rangle.
+\]
+Since \(\nabla_pH_2=M^{-1}p=v\),
+\[
+    \dot H_2=-v^\top Dv.
+\]
+By Assumption~\ref{ass:diss}, \(D\succeq \rho I\), so
+\[
+    -v^\top Dv\le -\rho\|v\|^2\le 0.
+\]
+If \(z=z(t)\), the chain rule adds
+\[
+    \langle\nabla_zH_2,\dot z\rangle
+    =
+    \langle\nabla_zH_{\mathrm{ctx}},\dot z\rangle .
+\]
+If \(u\neq 0\), the input term \(Bu\) in \(\dot p\) contributes
+\[
+    \langle\nabla_pH_2,Bu\rangle .
+\]
+Combining these terms gives the claimed supply-rate identity.
+\end{proof}
+
+\begin{theorem}[Practical discrete dissipativity and step-size condition]
+\label{thm:discrete_passivity}
+Assume~\ref{ass:regularity}--\ref{ass:diss} and \(u_t=0\).
+For the semi-implicit context-enriched update \eqref{eq:disc_p}--\eqref{eq:disc_q}, there
+exists a finite constant \(C_{\mathcal K}>0\) such that
+\[
+    H_2(x_{t+1};z_t)-H_2(x_t;z_t)
+    \le
+    -\tau v_t^\top D_tv_t+C_{\mathcal K}\tau^2 .
+\]
+Consequently, the discrete rollout is practically dissipative. If
+\[
+    \tau < \frac{v_t^\top D_tv_t}{C_{\mathcal K}},
+\]
+then \(H_2(x_{t+1};z_t)<H_2(x_t;z_t)\). If
+\(v_t^\top D_tv_t\ge d_{\min}>0\) uniformly on a region of interest, then any
+\[
+    \tau < \frac{d_{\min}}{C_{\mathcal K}}
+\]
+guarantees one-step energy decrease on that region.
+\end{theorem}
+
+\begin{proof}
+Let \(f_z(x)\) be the continuous-time vector field defined by
+\eqref{eq:ct_q}--\eqref{eq:ct_p} with \(u=0\). Since the semi-implicit update is a
+first-order consistent discretization of this vector field and all derivatives are bounded
+on compact \(\mathcal K\), there exists \(C_I>0\) such that
+\[
+    x_{t+1}=x_t+\tau f_{z_t}(x_t)+e_t,
+    \qquad
+    \|e_t\|\le C_I\tau^2 .
+\]
+Because \(H_2\in C^2(\mathcal K)\), its gradient is Lipschitz. Let \(L_H\) be a
+Lipschitz constant for \(\nabla H_2\). The smoothness inequality gives
+\[
+    H_2(x_{t+1})-H_2(x_t)
+    \le
+    \langle\nabla H_2(x_t),x_{t+1}-x_t\rangle
+    +
+    \frac{L_H}{2}\|x_{t+1}-x_t\|^2 .
+\]
+Substituting \(x_{t+1}-x_t=\tau f_{z_t}(x_t)+e_t\),
+\begin{align*}
+    H_2(x_{t+1})-H_2(x_t)
+    &\le
+    \tau\langle\nabla H_2(x_t),f_{z_t}(x_t)\rangle
+    +
+    \langle\nabla H_2(x_t),e_t\rangle  \\
+    &\qquad
+    +
+    \frac{L_H}{2}\|\tau f_{z_t}(x_t)+e_t\|^2 .
+\end{align*}
+By Theorem~\ref{thm:continuous_passivity},
+\[
+    \langle\nabla H_2(x_t),f_{z_t}(x_t)\rangle
+    =
+    -v_t^\top D_tv_t .
+\]
+The remaining two terms are bounded by \(C_{\mathcal K}\tau^2\) for some finite
+constant \(C_{\mathcal K}\), since \(\mathcal K\) is compact and
+\(\|\nabla H_2\|\), \(\|f_z\|\), and \(\|e_t\|/\tau^2\) are bounded there. Hence
+\[
+    H_2(x_{t+1};z_t)-H_2(x_t;z_t)
+    \le
+    -\tau v_t^\top D_tv_t+C_{\mathcal K}\tau^2 .
+\]
+Strict decrease follows whenever
+\(C_{\mathcal K}\tau^2<\tau v_t^\top D_tv_t\). Dividing by \(\tau>0\) yields the
+step-size condition. The uniform-margin result follows by replacing
+\(v_t^\top D_tv_t\) by \(d_{\min}\).
+\end{proof}
+
+\subsection{Scaffold preservation and no-hallucination}
+
+\begin{theorem}[Scaffold preservation under small context force]
+\label{thm:scaffold_preservation}
+Let \(x_t^{(1)}=(q_t^{(1)},p_t^{(1)})\) be the geometry-scaffold rollout and
+\(x_t^{(2)}=(q_t^{(2)},p_t^{(2)})\) be the context-enriched rollout, initialized from the same
+state. Assume~\ref{ass:regularity}, \ref{ass:bounded_ctx}, and
+\ref{ass:lipschitz_rollout}. Suppose that along the rollout tube
+\[
+    \|\nabla_qH_{\mathrm{ctx}}(q;z)\|\le \varepsilon .
+\]
+Then after \(N\) steps,
+\[
+    \|x_N^{(2)}-x_N^{(1)}\|
+    \le
+    \tau\sqrt{1+\tau^2\|M^{-1}\|^2}\,
+    \varepsilon\,
+    \frac{(1+\tau L_\Phi)^N-1}{\tau L_\Phi},
+\]
+with the last factor interpreted as \(N\) when \(L_\Phi=0\). In particular, if
+\(\varepsilon=0\), the context-enriched rollout recovers the geometry scaffold up to numerical
+roundoff.
+\end{theorem}
+
+\begin{proof}
+The only difference between the geometry scaffold and context-enriched field is the context term in the
+momentum update. At one step, this perturbation is
+\[
+    \delta p_{t+1}
+    =
+    -\tau\nabla_qH_{\mathrm{ctx}}(q_t;z_t),
+\]
+and the induced position perturbation is
+\[
+    \delta q_{t+1}
+    =
+    \tau M^{-1}\delta p_{t+1}
+    =
+    -\tau^2M^{-1}\nabla_qH_{\mathrm{ctx}}(q_t;z_t).
+\]
+Thus
+\[
+    \|\delta p_{t+1}\|\le \tau\varepsilon,
+    \qquad
+    \|\delta q_{t+1}\|\le \tau^2\|M^{-1}\|\varepsilon.
+\]
+The one-step state perturbation is therefore bounded by
+\[
+    \|\delta x_{t+1}\|
+    \le
+    \tau\sqrt{1+\tau^2\|M^{-1}\|^2}\,\varepsilon .
+\]
+Let
+\[
+    e_t=\|x_t^{(2)}-x_t^{(1)}\|.
+\]
+By Assumption~\ref{ass:lipschitz_rollout},
+\[
+    e_{t+1}
+    \le
+    (1+\tau L_\Phi)e_t
+    +
+    \tau\sqrt{1+\tau^2\|M^{-1}\|^2}\,\varepsilon .
+\]
+Since \(e_0=0\), iterating gives
+\[
+    e_N
+    \le
+    \tau\sqrt{1+\tau^2\|M^{-1}\|^2}\,\varepsilon
+    \sum_{j=0}^{N-1}(1+\tau L_\Phi)^j .
+\]
+Evaluating the geometric sum yields the result.
+\end{proof}
+
+\begin{corollary}[No hallucinated lateral escape]
+\label{cor:no_hallucination}
+Let \(P_\perp\) denote projection onto the lateral subspace. Suppose local
+coordinates are scaffold-aligned so that longitudinal context forces do not generate
+lateral motion to first order. If
+\[
+    \|P_\perp\nabla_qH_{\mathrm{ctx}}(q;z)\|\le \varepsilon_\perp
+\]
+on the rollout tube, then
+\[
+    \|P_\perp(q_N^{(2)}-q_N^{(1)})\|
+    \le
+    C_{\perp,N}\varepsilon_\perp,
+\]
+where
+\[
+    C_{\perp,N}
+    =
+    \tau^2
+    \|P_\perp M^{-1}P_\perp^\top\|
+    \frac{(1+\tau L_\Phi)^N-1}{\tau L_\Phi}.
+\]
+When \(\varepsilon_\perp=0\), the context channel cannot produce a lateral escape.
+\end{corollary}
+
+\begin{proof}
+Project the context-induced position perturbation:
+\[
+    P_\perp \delta q_{t+1}
+    =
+    -\tau^2P_\perp M^{-1}\nabla_qH_{\mathrm{ctx}}(q_t;z_t).
+\]
+Under scaffold-aligned local coordinates, the first-order longitudinal--lateral cross
+terms vanish, so
+\[
+    \|P_\perp \delta q_{t+1}\|
+    \le
+    \tau^2
+    \|P_\perp M^{-1}P_\perp^\top\|
+    \varepsilon_\perp .
+\]
+Propagating this one-step projected perturbation through the same Lipschitz recursion
+as in Theorem~\ref{thm:scaffold_preservation} gives the claimed bound.
+\end{proof}
+
+\subsection{Selective risk deflection and risk reduction}
+
+\begin{theorem}[Selective risk deflection and local risk reduction]
+\label{thm:risk_deflection}
+Let \(P_\perp\) project onto a feasible lateral subspace. Suppose that at a state \(q\),
+\[
+    \|P_\perp\nabla_q\widetilde r(\mathbf c;z)\|\ge \Delta,
+\]
+and suppose the projected hard-hazard force does not cancel the soft-risk direction by
+more than \(\chi\):
+\[
+    \left\|
+    P_\perp
+    \left[
+    \lambda_h b_{\mathrm{sp}}'(\phi(\mathbf c;z))\nabla_q\phi(\mathbf c;z)
+    \right]
+    \right\|
+    \le \chi.
+\]
+Then
+\[
+    \|P_\perp F_{\mathrm{ctx}}(q;z)\|
+    \ge
+    \lambda_s\Delta-\chi .
+\]
+Thus, whenever \(\lambda_s\Delta>\chi\), the context channel is necessarily active in
+the lateral subspace.
+
+Assume further that \(\widetilde r\) has \(L_r\)-Lipschitz gradient,
+\(M^{-1}\succeq m_M I\), and
+\[
+    \tau^2\lambda_s\|M^{-1}\|\le \frac{1}{L_r}.
+\]
+Then, ignoring shared geometry and dissipation terms up to \(O(\tau^3)\), the
+one-step context-enriched perturbation satisfies
+\[
+    \widetilde r(q_{t+1}^{(2)})
+    -
+    \widetilde r(q_{t+1}^{(1)})
+    \le
+    -\frac12\tau^2\lambda_s m_M \Delta^2
+    +
+    O(\tau^3).
+\]
+Over any active window \(\mathcal A\) on which the same margin condition holds,
+\[
+    \sum_{t\in\mathcal A}
+    \left[
+    \widetilde r(q_{t+1}^{(2)})
+    -
+    \widetilde r(q_{t+1}^{(1)})
+    \right]
+    \le
+    -\frac12|\mathcal A|\tau^2\lambda_s m_M \Delta^2
+    +
+    O(|\mathcal A|\tau^3).
+\]
+\end{theorem}
+
+\begin{proof}
+The context force is
+\[
+    F_{\mathrm{ctx}}
+    =
+    -\lambda_s\nabla_q\widetilde r
+    -
+    \lambda_h b_{\mathrm{sp}}'(\phi)\nabla_q\phi .
+\]
+Projecting onto the lateral subspace gives
+\[
+    P_\perp F_{\mathrm{ctx}}
+    =
+    -\lambda_sP_\perp\nabla_q\widetilde r
+    -
+    P_\perp\!\left[
+    \lambda_h b_{\mathrm{sp}}'(\phi)\nabla_q\phi
+    \right].
+\]
+By the reverse triangle inequality,
+\[
+    \|P_\perp F_{\mathrm{ctx}}\|
+    \ge
+    \lambda_s\|P_\perp\nabla_q\widetilde r\|
+    -
+    \left\|
+    P_\perp\!\left[
+    \lambda_h b_{\mathrm{sp}}'(\phi)\nabla_q\phi
+    \right]
+    \right\|.
+\]
+The assumptions imply
+\[
+    \|P_\perp F_{\mathrm{ctx}}\|\ge \lambda_s\Delta-\chi.
+\]
+This proves activation under \(\lambda_s\Delta>\chi\).
+
+For the risk-reduction claim, isolate the soft-risk force
+\[
+    F_{\mathrm{soft}}=-\lambda_s\nabla_q\widetilde r(q).
+\]
+The position perturbation induced by this force in one semi-implicit step is
+\[
+    \delta q
+    =
+    -\tau^2\lambda_sM^{-1}\nabla_q\widetilde r(q).
+\]
+By \(L_r\)-smoothness,
+\[
+    \widetilde r(q+\delta q)
+    \le
+    \widetilde r(q)
+    +
+    \langle\nabla_q\widetilde r(q),\delta q\rangle
+    +
+    \frac{L_r}{2}\|\delta q\|^2 .
+\]
+The first-order term is
+\[
+    \langle\nabla_q\widetilde r(q),\delta q\rangle
+    =
+    -\tau^2\lambda_s
+    \nabla_q\widetilde r(q)^\top
+    M^{-1}
+    \nabla_q\widetilde r(q).
+\]
+Since \(M^{-1}\succeq m_MI\) and
+\(\|\nabla_q\widetilde r(q)\|\ge \Delta\) on the active projected direction,
+\[
+    \nabla_q\widetilde r(q)^\top M^{-1}\nabla_q\widetilde r(q)
+    \ge
+    m_M\Delta^2.
+\]
+Therefore
+\[
+    \langle\nabla_q\widetilde r(q),\delta q\rangle
+    \le
+    -\tau^2\lambda_s m_M\Delta^2.
+\]
+The second-order term is
+\[
+    \frac{L_r}{2}\|\delta q\|^2
+    =
+    \frac{L_r}{2}
+    \tau^4\lambda_s^2
+    \|M^{-1}\nabla_q\widetilde r(q)\|^2 .
+\]
+The step-size condition
+\[
+    \tau^2\lambda_s\|M^{-1}\|\le \frac{1}{L_r}
+\]
+ensures that this second-order term is controlled by the first-order decrease, yielding
+\[
+    \widetilde r(q+\delta q)-\widetilde r(q)
+    \le
+    -\frac12\tau^2\lambda_s m_M\Delta^2.
+\]
+The shared geometry and dissipative terms are identical in the geometry scaffold and context-enriched field
+local comparison; by smoothness, their contribution to the relative risk difference is
+\(O(\tau^3)\). Summing the one-step inequality over \(\mathcal A\) proves the final
+claim.
+\end{proof}
+
+\subsection{CVaR gradient consistency}
+
+The episode cost used in the main text is
+\[
+    J(\theta)
+    =
+    w_g\|q_T-q_g\|^2
+    +
+    w_\ell\sum_t\|q_{t+1}-q_t\|
+    +
+    w_r\sum_t \widetilde r(q_t)\|q_{t+1}-q_t\|
+    +
+    w_h\sum_t \mathbf 1\{\phi(q_t)<\epsilon\}.
+\]
+The training objective uses the Rockafellar--Uryasev representation of CVaR:
+\[
+    \operatorname{CVaR}_\alpha(J_\theta)
+    =
+    \min_{\eta\in\mathbb R}
+    \left[
+    \eta+
+    \frac{1}{1-\alpha}\mathbb E(J_\theta-\eta)_+
+    \right].
+\]
+
+\begin{theorem}[Detached empirical CVaR gives a consistent tail-gradient estimator]
+\label{thm:cvar_consistency}
+Let \(J_\theta(\xi)\) be the rollout cost induced by parameter \(\theta\) and rollout
+randomness \(\xi\). Fix \(\alpha\in(0,1)\). Assume:
+\begin{enumerate}
+    \item \(J_\theta(\xi)\) is differentiable in \(\theta\) almost surely;
+    \item \(\|\nabla_\theta J_\theta(\xi)\|\le G\) almost surely;
+    \item the distribution of \(J_\theta\) has a continuous density near its
+    \(\alpha\)-quantile;
+    \item \(\mathbb P[J_\theta=\eta_\alpha(\theta)]=0\), where
+    \(\eta_\alpha(\theta)=\operatorname{VaR}_\alpha(J_\theta)\).
+\end{enumerate}
+Then
+\[
+    \nabla_\theta \operatorname{CVaR}_\alpha(J_\theta)
+    =
+    \frac{1}{1-\alpha}
+    \mathbb E
+    \left[
+    \nabla_\theta J_\theta(\xi)\,
+    \mathbf 1\{J_\theta(\xi)\ge \eta_\alpha(\theta)\}
+    \right].
+\]
+Given \(B\) i.i.d. rollouts and the detached empirical quantile
+\[
+    \widehat \eta
+    =
+    \widehat Q_\alpha(\{J_\theta^{(i)}\}_{i=1}^B),
+\]
+define
+\[
+    \widehat g_B(\theta)
+    =
+    \frac{1}{(1-\alpha)B}
+    \sum_{i=1}^B
+    \nabla_\theta J_\theta^{(i)}
+    \mathbf 1\{J_\theta^{(i)}\ge \widehat \eta\}.
+\]
+Then
+\[
+    \widehat g_B(\theta)
+    \to
+    \nabla_\theta \operatorname{CVaR}_\alpha(J_\theta)
+\]
+almost surely as \(B\to\infty\), and
+\[
+    \|\widehat g_B(\theta)
+    -
+    \nabla_\theta \operatorname{CVaR}_\alpha(J_\theta)\|
+    =
+    O_p(B^{-1/2}).
+\]
+If \(J_\theta\in[0,J_{\max}]\), then the empirical CVaR value obeys
+\[
+    |\widehat{\operatorname{CVaR}}_\alpha-\operatorname{CVaR}_\alpha|
+    =
+    O\!\left(
+    \frac{J_{\max}}{1-\alpha}
+    \sqrt{\frac{\log(1/\delta)}{B}}
+    \right)
+\]
+with probability at least \(1-\delta\).
+\end{theorem}
+
+\begin{proof}
+The Rockafellar--Uryasev variational form gives
+\[
+    \operatorname{CVaR}_\alpha(J_\theta)
+    =
+    \min_{\eta\in\mathbb R}
+    \left[
+    \eta+
+    \frac{1}{1-\alpha}\mathbb E(J_\theta-\eta)_+
+    \right].
+\]
+At the minimizer,
+\[
+    \eta^\star=\eta_\alpha(\theta).
+\]
+By the envelope theorem, when differentiating the optimized value with respect to
+\(\theta\), the derivative of the optimizer \(\eta^\star(\theta)\) does not appear. Hence
+\[
+    \nabla_\theta \operatorname{CVaR}_\alpha(J_\theta)
+    =
+    \frac{1}{1-\alpha}
+    \nabla_\theta
+    \mathbb E[(J_\theta-\eta^\star)_+].
+\]
+Since \(J_\theta\) is differentiable almost surely and the quantile boundary has
+probability zero,
+\[
+    \nabla_\theta(J_\theta-\eta^\star)_+
+    =
+    \nabla_\theta J_\theta\,
+    \mathbf 1\{J_\theta\ge \eta^\star\}
+\]
+almost surely. The bounded-gradient assumption permits interchanging derivative and
+expectation, proving
+\[
+    \nabla_\theta \operatorname{CVaR}_\alpha(J_\theta)
+    =
+    \frac{1}{1-\alpha}
+    \mathbb E
+    \left[
+    \nabla_\theta J_\theta
+    \mathbf 1\{J_\theta\ge \eta_\alpha\}
+    \right].
+\]
+
+For the empirical estimator, continuity of the distribution near \(\eta_\alpha\) implies
+strong consistency of the empirical quantile:
+\[
+    \widehat \eta \to \eta_\alpha
+\]
+almost surely. Since there is no atom at the quantile,
+\[
+    \mathbf 1\{J_\theta^{(i)}\ge\widehat\eta\}
+    \to
+    \mathbf 1\{J_\theta^{(i)}\ge\eta_\alpha\}
+\]
+almost surely. The summands are bounded by \(G/(1-\alpha)\), so dominated
+convergence and the strong law of large numbers give
+\[
+    \widehat g_B(\theta)
+    \to
+    \frac{1}{1-\alpha}
+    \mathbb E
+    \left[
+    \nabla_\theta J_\theta
+    \mathbf 1\{J_\theta\ge\eta_\alpha\}
+    \right]
+    =
+    \nabla_\theta \operatorname{CVaR}_\alpha(J_\theta)
+\]
+almost surely.
+
+For the rate, decompose
+\[
+    \widehat g_B-g
+    =
+    A_B+R_B,
+\]
+where
+\[
+    A_B
+    =
+    \frac{1}{(1-\alpha)B}
+    \sum_{i=1}^B
+    \left[
+    \nabla J_i\mathbf 1\{J_i\ge\eta_\alpha\}
+    -
+    \mathbb E(\nabla J\mathbf 1\{J\ge\eta_\alpha\})
+    \right]
+\]
+and
+\[
+    R_B
+    =
+    \frac{1}{(1-\alpha)B}
+    \sum_{i=1}^B
+    \nabla J_i
+    \left[
+    \mathbf 1\{J_i\ge\widehat\eta\}
+    -
+    \mathbf 1\{J_i\ge\eta_\alpha\}
+    \right].
+\]
+The first term is a bounded empirical average, so \(A_B=O_p(B^{-1/2})\). The
+second term is nonzero only when \(J_i\) lies between \(\widehat\eta\) and
+\(\eta_\alpha\). The probability mass of this interval is
+\(O_p(|\widehat\eta-\eta_\alpha|)\), and standard empirical quantile theory gives
+\(|\widehat\eta-\eta_\alpha|=O_p(B^{-1/2})\). Hence \(R_B=O_p(B^{-1/2})\), proving
+the gradient rate.
+
+For bounded \(J_\theta\), the empirical Rockafellar--Uryasev objective is a bounded
+empirical process indexed by \(\eta\). Uniform concentration over
+\(\eta\in[0,J_{\max}]\), followed by comparison at the empirical and population
+minimizers, yields the displayed
+\[
+    O\!\left(
+    \frac{J_{\max}}{1-\alpha}
+    \sqrt{\frac{\log(1/\delta)}{B}}
+    \right)
+\]
+concentration rate.
+\end{proof}
+
+\subsection{Safety caveat: finite barriers are not CBF certificates}
+\label{app:safety_caveat}
+
+The hard-hazard term \(b_{\mathrm{sp}}(\phi)\) is a differentiable repulsive barrier. It
+should not be stated as a formal forward-invariance certificate unless an additional
+condition is imposed. In continuous time, forward invariance follows if the barrier
+diverges at the unsafe boundary and total energy is bounded. In discrete time, one
+needs either a sufficiently small step size that prevents crossing between samples, or
+an explicit control-barrier-function projection/filter satisfying a discrete or
+continuous CBF condition~\citep{Ames2017CBF}. Therefore, our theoretical claims are
+scaffold preservation, dissipativity, selectivity, and local risk reduction under stated
+regularity assumptions; they are not unconditional collision-avoidance guarantees.

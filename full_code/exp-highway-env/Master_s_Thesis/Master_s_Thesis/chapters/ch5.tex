@@ -1,0 +1,738 @@
+% =============================================================
+%  Chapter 5 — Synthesis: A Hierarchy of Complexity in
+%              Continual Hamiltonian Learning
+%  Rewritten as a trace-based synthesis chapter.
+%  Primary structure: trace → theorem as summary → comparison table.
+%  Every claim is grounded in equation/algorithm references
+%  from Chapters 3 and 4.
+% =============================================================
+
+\chapter{Synthesis: A Hierarchy of Complexity in Continual Hamiltonian Learning}
+\label{chap:hierarchy}
+
+\providecommand{\Ham}{\mathcal{H}}
+\providecommand{\Potential}{\mathcal{R}}
+\providecommand{\PhaseState}{z}
+\providecommand{\Pos}{q}
+\providecommand{\Mom}{p}
+\providecommand{\Mass}{\mathrm{M}}
+\providecommand{\J}{\mathbb{J}}
+
+% =======================================================================
+% \section{Purpose of This Chapter}
+% \label{sec:ch5:purpose}
+% =======================================================================
+
+Chapters~\ref{chap:grlsnam} and~\ref{chap:material} should not be read
+as two independent navigation systems.
+They share the same update skeleton; the primary dynamical difference
+appears as one additional term in the $p$-update.
+This chapter makes that precise.
+
+The argument proceeds in three steps.
+First, the shared skeleton: both stages have an identical $(p,q)$-update
+structure; what changes between them is a single additive term in the
+$p$-update.
+Second, the trace: that single term forces, by necessity, five downstream
+consequences: a new force channel, a new coefficient, a new objective
+term, a new gradient pathway, and a new update loop.
+Third, the theorem: the enrichment principle is the compact statement
+of why one additive line costs five downstream consequences, and
+Corollary~\ref{cor:ch5:concrete} verifies it by pointing to specific
+equations in Chapters~\ref{chap:grlsnam} and~\ref{chap:material}.
+
+% =======================================================================
+\section{The Shared Skeleton: One p-Update, Two Instances}
+\label{sec:ch5:skeleton}
+% =======================================================================
+
+Both stages share an identical phase-space update structure.
+Written side by side:
+
+\begin{equation}
+\renewcommand{\arraystretch}{1.6}
+\begin{array}{ll}
+\textbf{Stage~1} & \textbf{Stage~2} \\
+\hline
+\Mom_{t+1} = \Mom_t
+  - \tau\underbrace{\nabla_\Pos H_{\mathrm{geom}}}_{\text{geom. force}}
+  - \tau R_\theta
+  + \tau\mathbf{B}u_t
+&
+\Mom_{t+1} = \Mom_t
+  - \tau\underbrace{\nabla_\Pos H_{\mathrm{geom}}}_{\text{geom. force}}
+  - \tau\underbrace{\nabla_\Pos H_{\mathrm{mat}}}_{\mathbf{\text{new}}}
+  - \tau R_\theta
+  + \tau\mathbf{B}u_t \\[4pt]
+\vec{q}_{t+1} = \vec{q}_t + \tau\Mass^{-1}\Mom_{t+1}
+&
+\vec{q}_{t+1} = \vec{q}_t + \tau\Mass^{-1}\Mom_{t+1}
+\end{array}
+\label{eq:ch5:side_by_side}
+\end{equation}
+
+The $q$-update is identical.
+The $R_\theta$ port is identical.
+The geometry force $\nabla_\Pos H_{\mathrm{geom}}$ is identical and
+carried forward unchanged.
+The \emph{only structural difference} is the single additive term
+$-\tau\nabla_\Pos H_{\mathrm{mat}}$ in the Stage~2 $p$-update.
+
+\begin{definition}[Continual Hamiltonian Navigation Instance]
+\label{def:ch5:instance}
+A \emph{continual Hamiltonian navigation instance} is a tuple
+$\mathfrak{S} = (H_\theta, R_\theta, f_\xi, \mathcal{L}, \mathcal{U})$
+where $H_\theta : T^*\mathcal{Q}\to\mathbb{R}$ is the stored energy,
+$R_\theta$ the dissipative port, $f_\xi$ the meta-navigator,
+$\mathcal{L}$ the objective, and $\mathcal{U}$ the update hierarchy.
+The policy is the time-$\Delta t$ flow of the port-Hamiltonian update
+induced by $H_\theta$, $R_\theta$, and control input $u$
+(Definition~\ref{def:passivity}), and the
+shared template is:
+\begin{equation}
+  \PhaseState_{t+1} = \Phi_{\vartheta_t}(\PhaseState_t, y_t),
+  \qquad
+  \vartheta_t = f_\xi(y_t, \vec{g}).
+  \label{eq:ch5:template}
+\end{equation}
+\end{definition}
+
+Table~\ref{tab:ch5:instances} shows the two stages.
+
+\begin{table}[t]
+\centering
+\caption{%
+  \textbf{Two instantiations of the shared skeleton.}
+  The $(p,q)$-update structure \eqref{eq:ch5:side_by_side} is
+  identical; all variation is in the contents of
+  $H_\theta$, $\mathcal{L}$, $\mathcal{U}$.
+  Equation references point to the specific machinery in
+  Chapters~\ref{chap:grlsnam}--\ref{chap:material}.
+}
+\label{tab:ch5:instances}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.35}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lll}
+\toprule
+\textbf{Component} &
+\textbf{Stage~1 (Ch.~\ref{chap:grlsnam})} &
+\textbf{Stage~2 (Ch.~\ref{chap:material})} \\
+\midrule
+$\nabla_\Pos H_\theta$ in $p$-update
+  & $\nabla_\Pos H_{\mathrm{geom}}$ only
+    \eqref{eq:ch3:ham}
+  & $\nabla_\Pos H_{\mathrm{geom}} + \nabla_\Pos H_{\mathrm{mat}}$
+    \eqref{eq:ch4:ham} \\
+$R_\theta$ (dissipative port)
+  & $\gamma\Mass^{-1}\Mom$ (implicit)
+  & $\gamma\Mass^{-1}\Mom$ (explicit separate port)
+    \eqref{eq:ch4:R} \\
+Context $y_t$
+  & $\{d_j,\vec{n}_j\}$ geometry only
+    \eqref{eq:ch3:context}
+  & $\{d_j,\vec{n}_j\}\cup\{\tilde{r},\phi,P_t\}$
+    \eqref{eq:ch4:context} \\
+$\vartheta = f_\xi(\mathcal{E})$
+  & $(\beta,\{\alpha_j\},\gamma)$
+    (Box~3.1--3.3)
+  & $(\beta,\{\alpha_j\},\gamma,\lambda_s,\lambda_h)$
+    \eqref{eq:ch4:p_update} \\
+Primary objective $\mathcal{L}$
+  & $\mathcal{L}_{\mathrm{P1}}$: expected traj.\ cost
+    \eqref{eq:ch4:LP1}
+  & $\mathcal{L}_{\mathrm{P2}}$: CVaR$_{0.95}(J)$
+    \eqref{eq:ch4:LP2} \\
+Update hierarchy $\mathcal{U}$
+  & 1 loop: segment Gauss-Newton
+    (Box~3.3)
+  & 3 loops: segment / episode / curriculum
+    (\S\ref{sec:ch4:loops}) \\
+Persistent state
+  & Table~\ref{tab:ch3:cache}: $\xi$, $\zeta_k$, $J_k$
+  & Table~\ref{tab:ch4:state}: adds $\hat{c}_e$,
+    $\Pi_{\mathrm{curr}}^e$, phase flag \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+% =======================================================================
+\section{The Enrichment Principle: Trace First, Theorem Second}
+\label{sec:ch5:principle}
+% =======================================================================
+
+\subsection{The Concrete Trace}
+\label{subsec:ch5:trace}
+
+Consider the single additive term $-\tau\nabla_\Pos H_{\mathrm{mat}}$
+in the Stage~2 $p$-update.
+Why is adding it not a simple extension?
+Because it forces, by necessity, five downstream consequences.
+We trace each one through the actual equations of
+Chapters~\ref{chap:grlsnam}--\ref{chap:material}.
+
+\medskip
+\noindent\textbf{(i) New force channel.}
+$H_{\mathrm{mat}} = \lambda_s\tilde{r}(\vec{c}) + \lambda_h b(\phi(\vec{c}))$
+contributes two forces to the $p$-update:
+$F_{\mathrm{soft}} = -\lambda_s\nabla\tilde{r}$ and
+$F_{\mathrm{hard}} = -\lambda_h\nabla b(\phi)$
+-- equations \eqref{eq:ch4:F_soft}--\eqref{eq:ch4:F_hard}.
+These are new additive terms in the annotated boxed equation
+\eqref{eq:ch4:p_update}, acting at every integration step.
+They did not exist in Stage~1's $p$-update \eqref{eq:ch3:half_mom}.
+
+\medskip
+\noindent\textbf{(ii) New coefficient subspace.}
+$\lambda_s$ and $\lambda_h$ are new output heads of the meta-navigator
+$f_\theta$, realized as the material branch of
+CoefEnergyNetMaterial (§\ref{sec:ch4:implementation}).
+They occupy new rows in Table~\ref{tab:ch4:state} under
+"persistent / unfrozen at P1→P2."
+Setting $\lambda_s = \lambda_h = 0$ exactly recovers Stage~1
+(backward compatibility, Definition~\ref{def:ch5:compat}).
+
+\medskip
+\noindent\textbf{(iii) New objective term.}
+Without $\lambda_s > 0$, the force $F_{\mathrm{soft}} \equiv 0$
+and the trajectory never responds to $\tilde{r}$.
+The soft-risk accumulation term $w_r\sum_t\tilde{r}(\vec{c}_t)\Delta s_t$
+in episode cost $J$ \eqref{eq:ch4:J} would then receive zero gradient
+signal.
+In the present framework, a learnable new coefficient requires an
+objective term that makes its effect visible to optimization;
+without one, $\lambda_s$ has no loss surface to descend.
+
+\medskip
+\noindent\textbf{(iv) New gradient pathway.}
+The rollout sensitivity recursion \eqref{eq:ch4:dp_dtheta}
+gains a new additive stream:
+\[
+  \frac{\partial\Mom_{t+1}}{\partial\theta}
+  \;=\; \cdots
+  \;\underbrace{-\,\tau\frac{\partial\nabla_\Pos H_{\mathrm{mat}}}{\partial\theta}}_{\text{new material stream}}.
+\]
+Specifically, $\partial\mathcal{L}/\partial\lambda_s =
+\sum_t(\partial\mathcal{L}/\partial F_{\mathrm{soft},t})
+\cdot(-\nabla\tilde{r})$
+— equation \eqref{eq:ch4:dL_dlambda_s}.
+This pathway did not exist in Stage~1's sensitivity recursion.
+It is decoupled from the geometry and dissipation streams because
+$H_{\mathrm{mat}}$ is an independent additive term.
+
+\medskip
+\noindent\textbf{(v) New update law.}
+$\lambda_s$ is updated by the CVaR episode gradient (Loop~2,
+§\ref{subsec:ch4:ep_loop}), \emph{not} by the segment
+Gauss-Newton (Loop~1).
+Why?
+Because $\lambda_s$ governs tail-risk behavior of whether the policy
+avoids the worst 5\% of rollouts.
+The tail distribution requires a full episode batch to estimate;
+a single segment residual carries no tail information.
+This is a new computational job that cannot be folded into Loop~1.
+Stage~1 had no episode-level loop at all (Table~\ref{tab:ch3:cache}).
+
+\medskip
+The chain is complete.
+One additive line in the $p$-update costs five downstream consequences,
+each traceable to a specific equation or algorithm in
+Chapters~\ref{chap:grlsnam}--\ref{chap:material}.
+
+\subsection{The Enrichment Principle}
+\label{subsec:ch5:theorem}
+
+\begin{theorem}[Learnable Energy-Enrichment Principle]
+\label{thm:ch5:enrichment}
+Within the class of continual Hamiltonian navigation instances
+(Definition~\ref{def:ch5:instance}), suppose a new \emph{learnable}
+energy term $\vartheta_{\mathrm{new}} H_{\mathrm{new}}(\Pos;\mathcal{E})$
+with adaptive scalar coefficient $\vartheta_{\mathrm{new}}$ is added to
+$H_\theta^{(k)}$.
+Then the following consequences hold:
+\begin{enumerate}[(i)]
+  \item \emph{(Force channel, always.)} $F_{\mathrm{new}} = -\vartheta_{\mathrm{new}}\nabla_\Pos H_{\mathrm{new}}$
+        enters the $p$-update at every integration step.
+  \item \emph{(Coefficient, for learnable terms.)} The new parameter
+        $\vartheta_{\mathrm{new}}$ enlarges the coefficient subspace; a
+        fixed-prior term may be absorbed without a new degree of freedom.
+  \item \emph{(Objective, for identifiability.)} If $\vartheta_{\mathrm{new}}$
+        is to be learned from data, then $\mathcal{L}$ must contain at least
+        one term whose gradient is sensitive to $F_{\mathrm{new}}$; otherwise
+        $\partial\mathcal{L}/\partial\vartheta_{\mathrm{new}} = 0$ and
+        $\vartheta_{\mathrm{new}}$ is not identifiable.
+  \item \emph{(Sensitivity stream, always.)} The rollout sensitivity
+        recursion gains a new additive stream
+        $-\tau\vartheta_{\mathrm{new}}\,\partial\nabla_\Pos H_{\mathrm{new}}/\partial\theta$.
+  \item \emph{(Update timescale, for distributional signals.)} If the
+        gradient signal needed to identify $\vartheta_{\mathrm{new}}$ is
+        only available at an episodic or distributional timescale (e.g.,
+        CVaR requires a batch), a new or modified update loop in
+        $\mathcal{U}$ is necessary.
+\end{enumerate}
+The enriched instance $\mathfrak{S}^{(k+1)}$ has the same skeleton
+template \eqref{eq:ch5:template} with strictly richer
+$H_\theta$, $\vartheta$, $\mathcal{L}$, and $\mathcal{U}$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+(i) Follows from Hamilton's equations: adding $\vartheta H_{\mathrm{new}}$
+adds $-\vartheta\nabla_\Pos H_{\mathrm{new}}$ to $\dot{p}$.
+(ii) A fixed (non-adaptive) term can be folded into $H_{\mathrm{new}}$
+directly; no new coefficient is needed.
+(iii) Chain rule: $\partial\mathcal{L}/\partial\vartheta_{\mathrm{new}}
+= \sum_t (\partial\mathcal{L}/\partial F_t) \cdot F_{\mathrm{new},t}$,
+which is zero if $\mathcal{L}$ is insensitive to $F_{\mathrm{new}}$.
+(iv) Direct differentiation of the $p$-update recursion.
+(v) If the signal requires aggregating over episodes (e.g., a tail
+quantile), it is not available within a single segment loop, necessitating
+a higher-frequency loop.
+\end{proof}
+
+\begin{corollary}[Concrete instantiation]
+\label{cor:ch5:concrete}
+Every consequence (i)--(v) of Theorem~\ref{thm:ch5:enrichment}
+is instantiated in the Stage~1→Stage~2 transition:
+(i) \eqref{eq:ch4:F_soft}--\eqref{eq:ch4:F_hard} and
+\eqref{eq:ch4:p_update};
+(ii) $(\lambda_s,\lambda_h)$ in Table~\ref{tab:ch4:state};
+(iii) $J$ terms 3--4 in \eqref{eq:ch4:J};
+(iv) \eqref{eq:ch4:dL_dlambda_s}--\eqref{eq:ch4:dL_dlambda_h};
+(v) Loop~2 in §\ref{subsec:ch4:ep_loop} and its absence from
+    Stage~1's Box~3.3.
+\end{corollary}
+
+\begin{proposition}[Hamiltonian risk-potential duality]
+\label{prop:ch5:risk_duality}
+At Stage~2 convergence, the material energy
+$H_{\mathrm{mat}}(\vec{c})
+ = \lambda_s^*\tilde{r}(\vec{c})
+ + \lambda_h^*b_{\mathrm{sp}}(\phi(\vec{c}))$
+is a risk potential in the Hamiltonian sense:
+the conservative force
+$F_{\mathrm{mat}} = -\nabla_{\vec{q}}H_{\mathrm{mat}}$
+coincides with the negative gradient of expected soft-risk exposure
+along trajectories.
+Consequently, Hamiltonian dynamics minimise risk exposure not through
+explicit replanning but because risk is encoded as potential energy where
+the system is deflected away from high-risk regions by the same
+mechanism by which a physical system evolves away from
+high-potential configurations.
+\end{proposition}
+\begin{proof}
+By Hamilton's equations,
+$\dot{\Mom}=-\nabla_{\vec{q}}H$, so
+$F_{\mathrm{mat}}
+ = -\lambda_s^*\nabla\tilde{r}
+ - \lambda_h^*\nabla b_{\mathrm{sp}}$
+(\eqref{eq:ch4:F_soft}--\eqref{eq:ch4:F_hard}).
+At convergence, $\partial\,\mathrm{CVaR}/\partial\lambda_s=0$ implies
+$\lambda_s^*$ is the scalar making $-\lambda_s^*\nabla\tilde{r}$
+the equilibrium deflection force on the optimal trajectory.
+Since $J$ contains $w_r\sum_t\tilde{r}(\vec{c}_t)\Delta s_t$
+(\eqref{eq:ch4:J}, term~3), minimising $\mathrm{CVaR}(J)$ over
+$\lambda_s$ is equivalent to learning the slope of a risk potential
+whose gradient field equals $F_{\mathrm{soft}}$.
+The $\lambda_h^*$ term follows identically for the hard-hazard barrier.
+\end{proof}
+
+\begin{corollary}[Material-aware enrichment yields lower-risk path selection]
+\label{cor:ch5:risk_selection}
+Let $\Pi_{\mathrm{geom}}$ be the set of trajectories feasible under
+Stage~1's geometric objective within the waypoint-induced routing
+corridor.
+At Stage~2 convergence:
+\begin{enumerate}[(i)]
+  \item \emph{Local preference.}
+    For any $\tau_1,\tau_2\in\Pi_{\mathrm{geom}}$ with equal geometric
+    cost and $\int\tilde{r}\,|_{\tau_1}>\int\tilde{r}\,|_{\tau_2}$,
+    Stage~2 strictly prefers $\tau_2$.
+    (Lemma~\ref{lem:ch4:risk_deflect}, applied pointwise.)
+  \item \emph{Tail-risk dominance.}
+    $\mathrm{CVaR}_\beta^{(\mathrm{S2})}
+     \leq\mathrm{CVaR}_\beta^{(\mathrm{S1})}$
+    for all $\beta\in(0,1)$, with strict inequality whenever
+    $\Pi_{\mathrm{geom}}$ contains trajectories of differing risk
+    exposure.
+    (Proposition~\ref{prop:ch4:cvar_descent}.)
+  \item \emph{Continual improvement.}
+    CVaR subgradient iterates converge to a stationary point of the
+    tail-risk objective at rate $O(1/\sqrt{k})$,
+    reducing per-episode risk exposure toward a locally optimal level.
+    (Proposition~\ref{prop:ch4:cvar_descent}.)
+\end{enumerate}
+Stage~2 does not globally minimise risk over all routes, it is
+constrained to the feasibility corridor from the geometric scaffold.
+Theorem~\ref{thm:ch5:enrichment} guarantees that the enriched structure
+is necessary; this corollary guarantees it is sufficient for
+lower-risk path selection within that corridor, improving continuously
+over experience.
+\end{corollary}
+
+% =======================================================================
+\section{The Four Coupled Enlargements}
+\label{sec:ch5:four}
+% =======================================================================
+
+Table~\ref{tab:ch5:enlargements} traces each enlargement axis through
+the actual equations of both stages, with the equation reference that
+makes each claim checkable.
+
+\begin{table}[t]
+\centering
+\caption{%
+  \textbf{Four coupled enlargements from Stage~1 to Stage~2.}
+  Every entry is grounded in a specific equation or section
+  reference from Chapters~\ref{chap:grlsnam}--\ref{chap:material}.
+}
+\label{tab:ch5:enlargements}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{p{2.2cm}p{3.8cm}p{3.8cm}p{3.0cm}}
+\toprule
+\textbf{Axis} &
+\textbf{Stage~1} &
+\textbf{Stage~2} &
+\textbf{What it enables} \\
+\midrule
+\textbf{A. Stored}\par\textbf{energy}
+  & $H^{(1)}_{\mathrm{kin}} + H_{\mathrm{geom}}$
+    \eqref{eq:ch3:ham}
+  & $H^{(1)} + \lambda_s\tilde{r} + \lambda_h b(\phi)$;\;
+    $R_\theta$ explicit port
+    \eqref{eq:ch4:ham}, \eqref{eq:ch4:R}
+  & Material-risk and hazard barrier force channels in $p$-update \\
+\midrule
+\textbf{B. Coefficient}\par\textbf{space}
+  & $(\beta,\{\alpha_j\},\gamma)$;\;
+    3 output heads in $f_\xi$
+    (Box~3.1)
+  & $(\beta,\{\alpha_j\},\gamma,\lambda_s,\lambda_h)$;\;
+    2 new material heads
+    (\S\ref{sec:ch4:implementation})
+  & New gradient pathways \eqref{eq:ch4:dL_dlambda_s}--\eqref{eq:ch4:dL_dlambda_h};
+    backward-compatible init \\
+\midrule
+\textbf{C. Objective}
+  & $\mathcal{L}_{\mathrm{P1}}$: expected traj.\ cost
+    \eqref{eq:ch4:LP1}
+  & $\mathrm{CVaR}_{0.95}(J) + 0.3\mathcal{L}_{\mathrm{P1}}$;\;
+    tail-risk on $J$ \eqref{eq:ch4:LP2};\;
+    double regularization \eqref{eq:ch4:L_total}
+  & Catastrophic tail penalized (Prop.~\ref{prop:ch4:cvar});
+    geometry scaffold retained \\
+\midrule
+\textbf{D. Update}\par\textbf{hierarchy}
+  & 1 loop: segment Gauss-Newton
+    (Box~3.3, Table~\ref{tab:ch3:cache})
+  & 3 loops: segment (local), episode (global CVaR),
+    curriculum (conquest + phase)
+    (\S\ref{sec:ch4:loops}, Table~\ref{tab:ch4:state})
+  & Statistical coverage; passivity-gated phase transition;
+    persistent conquest flags \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Reading the table.}
+Row~A shows the single additive difference in $H_\theta$ that
+initiates the enrichment chain.
+Row~B shows the new coefficient slots that Consequence~(ii) forces.
+Row~C shows the new objective terms that Consequence~(iii) forces.
+Row~D shows the new update laws that Consequence~(v) forces.
+The table is Table~\ref{tab:ch5:instances} written at the level of
+consequence rather than component.
+
+\paragraph{Backward compatibility.}
+\begin{definition}[Backward-compatible enrichment]
+\label{def:ch5:compat}
+An enrichment $\mathfrak{S}^{(k)}\to\mathfrak{S}^{(k+1)}$ is
+\emph{backward-compatible} if setting
+$\vartheta_{\mathrm{new}} = 0$ recovers
+$H^{(k+1)} = H^{(k)}$ exactly.
+\end{definition}
+Both stage transitions satisfy this:
+$\lambda_s = \lambda_h = 0$ gives $H^{(2)} = H^{(1)}$.
+The Phase~1 weights serve as a warm start for Phase~2;
+Algorithm~\ref{algo:ch4:curriculum} initializes with $\lambda_s=\lambda_h=0$
+frozen and only unfreezes them after the passivity criterion is met.
+
+\paragraph{Passivity at initialization.}
+\begin{proposition}[Passivity preserved at backward-compatible init]
+\label{prop:ch5:passivity}
+If $\mathfrak{S}^{(k)}$ satisfies
+$\mathcal{L}_{\mathrm{pass}} \leq \epsilon_{\mathrm{pass}}$
+at convergence, then at the backward-compatible initialization of
+$\mathfrak{S}^{(k+1)}$ (with $\vartheta_{\mathrm{new}} = 0$),
+$\mathcal{L}_{\mathrm{pass}}^{(k+1)} = \mathcal{L}_{\mathrm{pass}}^{(k)}
+\leq \epsilon_{\mathrm{pass}}$.
+\end{proposition}
+\begin{proof}
+At $\vartheta_{\mathrm{new}} = 0$, $H^{(k+1)} = H^{(k)}$ exactly,
+so $\Delta H^{(k+1)}_t = \Delta H^{(k)}_t$ along every trajectory.
+The Phase~1 curriculum only advances (Algorithm~\ref{algo:ch4:curriculum},
+line~9) when $\mathcal{L}_{\mathrm{pass}} \leq \epsilon_{\mathrm{pass}}$,
+so the condition is guaranteed at initialization.
+\end{proof}
+
+The spike in $\mathcal{L}_{\mathrm{pass}}$ observed early in Phase~2
+training (Figure~\ref{fig:ch6:curriculum}) is due to $\lambda_s,\lambda_h$
+moving away from zero, temporarily increasing the stored energy;
+the curriculum delays advancement until passivity is re-established.
+
+% =======================================================================
+\section{What the Progression Achieves Computationally}
+\label{sec:ch5:compute}
+% =======================================================================
+
+The clearest computational picture of the enrichment is through
+the persistent-state tables.
+Table~\ref{tab:ch3:cache} shows what Stage~1 maintains:
+$\xi$ (fixed at inference), the segment coefficient vector $\zeta_k$,
+and the smoothed Jacobian $J_k$ are the three objects, two of which are
+segment-local.
+Table~\ref{tab:ch4:state} shows what Stage~2 adds:
+persistent conquest flags $\hat{c}_e$, a curriculum sampling
+distribution $\Pi_{\mathrm{curr}}^e$, a phase flag,
+and frozen-then-unfrozen material coefficients $(\lambda_s,\lambda_h)$.
+
+The passage from Table~\ref{tab:ch3:cache} to Table~\ref{tab:ch4:state}
+is the computational picture of Enlargement~D.
+"More adaptation hierarchy" is not an abstract claim, it is a
+concrete expansion of the maintained state across loops:
+Stage~2 adds persistent conquest flags $\hat{c}_e$, a curriculum
+sampling distribution $\Pi_{\mathrm{curr}}^e$, a phase flag,
+and frozen-then-unfrozen material coefficients $(\lambda_s,\lambda_h)$,
+each with its own update trigger and update cost.
+
+\paragraph{Failure modes addressed.}
+Table~\ref{tab:ch6:failures} in Chapter~\ref{chap:experiments}
+documents the one-to-one correspondence: each added structural
+component resolves a specific failure mode.
+$H_{\mathrm{mat}}^{\mathrm{soft}}$ resolves hazard drift
+(17→3 episodes); $R_\theta$ as explicit port resolves oscillation
+(8.7→1.2 per episode); CVaR resolves catastrophic tail encounters
+(0 hard-hazard entries vs.\ 7 without $H_{\mathrm{mat}}^{\mathrm{hard}}$);
+the passivity curriculum resolves premature phase transition instability.
+The enrichment principle predicts exactly these correspondences:
+each new structural element was forced by a specific gap in the
+previous stage's machinery.
+
+% =======================================================================
+\section{Current Limits and the Next Rung}
+\label{sec:ch5:limits}
+% =======================================================================
+
+Each limitation of Stage~2 is expressible as a missing component
+in Table~\ref{tab:ch4:state}.
+
+\paragraph{Oracle material access.}
+$(\lambda_s,\lambda_h)$ are trained on oracle $\tilde{r},\phi$.
+Stage~3 replaces these with learned belief $\hat\rho$ from RGB-IR,
+adding a new entry to the persistent state (perception backbone
+weights $\omega$) and a new gradient pathway
+$\partial\mathcal{L}/\partial\omega$ through the perception model.
+The enrichment chain for Stage~3 is identical in structure to the
+Stage~1→2 chain:
+$H_{\mathrm{perc}} \to F_{\mathrm{perc}} \to \omega \to
+\mathcal{L}_{\mathrm{perc}} \to \nabla_\omega\mathcal{L} \to$
+belief update loop.
+
+\paragraph{Simplified observer.}
+The context update $y_{t+1} = \Psi(y_t,\vec{q}_{t+1})$
+carries no belief state.
+A richer observer would add a learned $b_t$ to the persistent state
+and a filtering update law to $\mathcal{U}$ -- a fourth loop.
+
+\paragraph{Isotropic metric.}
+$\Mass$ is a fixed scalar.
+A learned $\Mass(\vec{q};\xi)$ would add position-dependent entries
+to the kinetic term and a new gradient stream
+$\partial H_{\mathrm{kin}}/\partial\xi$ through the $p$-update.
+
+\paragraph{Empirical coverage.}
+The conquest flags $\hat{c}_e$ are a finite-sample proxy.
+The theoretical open problem (§\ref{sec:ch7:theory} T3) is bounding
+$\mathrm{vol}(\mathcal{B}(\theta))$ analytically -- replacing the
+finite-sample flag with a Riemannian volume estimate.
+
+% =======================================================================
+\section{Chapter Summary}
+\label{sec:ch5:summary}
+% =======================================================================
+
+The synthesis of this chapter can be read directly off the costate
+equation \eqref{eq:ch5:side_by_side}.
+Stage~2 adds one term, $-\tau\nabla_\Pos H_{\mathrm{mat}}$,
+to the Stage~1 $p$-update.
+That single term is not a simple extension because it forces,
+by necessity:
+a new force channel in $F_{\mathrm{tot}}$ (i),
+a new coefficient in $f_\xi$'s output (ii),
+a new term in episode cost $J$ (iii),
+a new gradient pathway in the sensitivity recursion (iv),
+and a new computational loop in $\mathcal{U}$ (v).
+
+Theorem~\ref{thm:ch5:enrichment} states this abstractly.
+Corollary~\ref{cor:ch5:concrete} verifies it by pointing to specific
+equations.
+Table~\ref{tab:ch5:enlargements} traces all four enlargement axes
+with equation cross-references.
+The passage from Table~\ref{tab:ch3:cache} to Table~\ref{tab:ch4:state}
+gives the concrete computational picture of what "richer hierarchy"
+means.
+
+The enrichment principle is \emph{generative}: it predicts the
+structure of Stage~3 (perception backbone, belief update loop) in
+exactly the same way it characterizes Stage~2.
+The ladder's organizing rule: one new energy term costs five
+downstream consequences is what makes the framework a research
+program rather than a pair of navigation systems.
+
+\begin{figure}[t]
+\centering
+% Pre-define named colors to avoid nested xcolor mixing in parameterized TikZ styles
+\colorlet{stagegray}{gray!60}
+\begin{tikzpicture}[
+  font=\small\sffamily,
+  % Stage box style
+  stage/.style={
+    rectangle, rounded corners=6pt,
+    draw=#1!70!black, fill=#1!9,
+    line width=1.4pt,
+    minimum width=13.5cm, minimum height=2.0cm,
+    align=left, inner sep=10pt
+  },
+  stageno/.style={
+    circle,
+    draw=#1!80!black, fill=#1!25,
+    line width=1.2pt,
+    minimum size=26pt,
+    font=\bfseries\normalsize\sffamily
+  },
+  % Chain node style
+  chain/.style={
+    rectangle, rounded corners=3pt,
+    draw=#1!60!black, fill=#1!12,
+    line width=0.8pt,
+    minimum width=1.9cm, minimum height=0.7cm,
+    align=center, inner sep=3pt,
+    font=\scriptsize\sffamily
+  },
+  % Arrow styles
+  harrow/.style={-{Stealth[length=5pt]}, line width=1pt, color=gray!60},
+  varrow/.style={-{Stealth[length=7pt]}, line width=1.4pt, color=#1},
+  addlbl/.style={font=\scriptsize\sffamily\itshape, text=gray!60!black},
+  % Dashed future
+  futurebox/.style={
+    rectangle, rounded corners=6pt,
+    draw=gray!40, fill=gray!5,
+    line width=1pt, dashed,
+    minimum width=13.5cm, minimum height=1.6cm,
+    align=left, inner sep=10pt
+  },
+]
+
+% ── Stage 0: Geometry-only (Ch 3) ─────────────────────────────────────
+\node[stage=teal] (s0) at (0,0) {%
+  \hspace{30pt}%
+  \begin{minipage}{12.2cm}
+    \textbf{Stage 1 — Geometry-Only (Chapter~\ref{chap:grlsnam})}\\[3pt]
+    $H^{(1)} = H_{\mathrm{kin}} + \beta D_\mathcal{G}
+               + \sum_j\alpha_j b(d_j)$,\quad
+    $R^{(1)}: \gamma\Mass^{-1}\Mom$ (implicit)\\[2pt]
+    $\mathcal{L}^{(1)} = \mathcal{L}_{\mathrm{geom}}$,\quad
+    $\mathcal{U}^{(1)}$: 1-scale online $\alpha_j$ update\\[2pt]
+    \textit{Solves:} geometry-aware navigation under local sensing.
+    \textit{Cannot:} reason about latent material risk.
+  \end{minipage}
+};
+\node[stageno=teal] at ($(s0.west)+(18pt,0)$) {\textcolor{teal!80!black}{1}};
+
+% ── Transition annotation ────────────────────────────────────────────
+\node[addlbl] at ($(s0.south)!0.5!(s1.north)+(0,-0.18)$) {};
+
+% % ── Enrichment chain (floating between stages) ─────────────────────
+% \node[chain=orange] (cH)  at (-5.2,-2.05) {$+H_{\mathrm{mat}}$};
+% \node[chain=orange] (cF)  at (-2.7,-2.05) {$\to F_{\mathrm{mat}}$};
+% \node[chain=orange] (cV)  at (-0.2,-2.05) {$\to \vartheta_{\mathrm{new}}$};
+% \node[chain=orange] (cL)  at ( 2.3,-2.05) {$\to \mathcal{L}_{\mathrm{new}}$};
+% \node[chain=orange] (cU)  at ( 4.8,-2.05) {$\to \text{update}$};
+% \draw[harrow] (cH.east) -- (cF.west);
+% \draw[harrow] (cF.east) -- (cV.west);
+% \draw[harrow] (cV.east) -- (cL.west);
+% \draw[harrow] (cL.east) -- (cU.west);
+% \node[addlbl, above=2pt of cH] {\textbf{Enrichment chain} (Theorem~\ref{thm:ch5:enrichment})};
+
+% ── Stage 1: Material-aware (Ch 4) ──────────────────────────────────
+\node[stage=orange, below=1.5cm of s0] (s1) {%
+  \hspace{30pt}%
+  \begin{minipage}{12.2cm}
+    \textbf{Stage 2 — Material-Aware (Chapter~\ref{chap:material})}\\[3pt]
+    $H^{(2)} = H^{(1)} + \lambda_s\tilde{r}(\vec{c})
+               + \lambda_h b(\phi(\vec{c}))$,\quad
+    $R^{(2)}: \gamma\Mass^{-1}\Mom$ (explicit port)\\[2pt]
+    $\mathcal{L}^{(2)} = \mathrm{CVaR}_{0.95}(J) +
+               \mathcal{R}_H + \mathcal{R}_{\nabla H}$,\quad
+    $\mathcal{U}^{(2)}$: segment $\to$ episode $\to$ curriculum\\[2pt]
+    \textit{Solves:} risk-sensitive navigation under oracle material.
+    \textit{Cannot:} infer material from raw perception.
+  \end{minipage}
+};
+\node[stageno=orange] at ($(s1.west)+(16pt,0)$)
+  {\textcolor{orange!80!black}{2}};
+
+\draw[varrow=orange!70!black] (s0.south) -- (s1.north);
+
+% % ── Enrichment chain (between s1 and s2_future) ─────────────────────
+% \node[chain=gray] (dH) at (-5.2,-4.1) {\small$+H_{\mathrm{perc}}$};
+% \node[chain=gray] (dF) at (-2.7,-4.1) {\small$\to F_{\mathrm{perc}}$};
+% \node[chain=gray] (dV) at (-0.2,-4.1) {\small$\to \vartheta_{\mathrm{perc}}$};
+% \node[chain=gray] (dL) at ( 2.3,-4.1) {\small$\to \mathcal{L}_{\mathrm{perc}}$};
+% \node[chain=gray] (dU) at ( 4.8,-4.1) {\small$\to \text{update}$};
+% \draw[harrow] (dH.east) -- (dF.west);
+% \draw[harrow] (dF.east) -- (dV.west);
+% \draw[harrow] (dV.east) -- (dL.west);
+% \draw[harrow] (dL.east) -- (dU.west);
+% \node[addlbl, above=2pt of dH, text=gray!60]
+%   {\textit{next enrichment (future)}};
+
+% ── Stage 2: Future / deferred ──────────────────────────────────────
+\node[futurebox, below=1.5cm of s1] (s2) {%
+  \hspace{30pt}%
+  \begin{minipage}{12.2cm}
+    \textbf{Stage 3 — Perception-Led Material Inference (Future Work)}\\[3pt]
+    $H^{(3)} = H^{(2)} + H_{\mathrm{perc}}(\vec{c}; \hat\rho)$,\quad
+    learned material belief $\hat\rho$ from RGB-IR\\[2pt]
+    $\mathcal{L}^{(3)}$ adds perception loss, uncertainty calibration;
+    $\mathcal{U}^{(3)}$ adds belief update loop\\[2pt]
+    \textit{Would solve:} end-to-end perception-to-navigation under
+    latent material uncertainty.
+  \end{minipage}
+};
+\node[stageno=stagegray] at ($(s2.west)+(16pt,0)$)
+  {\textcolor{gray!50}{\textbf{3}}};
+\draw[varrow=gray!50, dashed] (s1.south) -- (s2.north);
+
+% ── Right-side axis label ──────────────────────────────────────────
+\draw[{Stealth[length=6pt]}-{Stealth[length=6pt]},
+      line width=1pt, color=gray!50]
+  ($(s0.north east)+(0.5cm,0)$) -- ($(s2.south east)+(0.5cm,0)$)
+  node[midway, right=6pt, font=\small\sffamily\bfseries,
+       text=gray!60, rotate=-90, anchor=south] {enrichment axis};
+
+\end{tikzpicture}
+\caption{%
+  \textbf{The enrichment ladder.}
+  Each transition arrow is labeled with the five-link chain
+  $(H_{\mathrm{new}} \to F \to \vartheta \to \mathcal{L} \to \nabla\mathcal{L} \to \text{loop})$.
+  Stage~1 maintains segment-local state only;
+  Stage~2 adds persistent curriculum state across episodes;
+  Stage~3 (dashed, future) adds a perception backbone to the
+  maintained state.
+  The same enrichment principle governs each transition.
+}
+\label{fig:ch5:enrichment_ladder}
+\end{figure}

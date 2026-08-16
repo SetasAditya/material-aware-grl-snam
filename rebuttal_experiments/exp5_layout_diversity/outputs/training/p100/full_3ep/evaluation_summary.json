@@ -1,0 +1,19 @@
+{
+  "num_force_samples": 2671.0,
+  "correct_activation_rate": 0.48148148148148145,
+  "false_activation_rate": 0.8248215266337178,
+  "selectivity_ratio": 1.115431547164917,
+  "force_risk_alignment": 0.7387981471967006,
+  "evaluation_episodes": 180,
+  "evaluation_scenes": 28,
+  "evaluation_regime_counts": {
+    "R1": 60,
+    "R2": 60,
+    "R3": 60
+  },
+  "checkpoint": "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/exp5_layout_diversity/outputs/training/p100/full_3ep/epoch_002.pt",
+  "bev_resolution_m": 0.5,
+  "force_eps": 0.02,
+  "stride": 3,
+  "claim_scope": "held-out layouts within RELLIS sequence 00000"
+}

@@ -1,0 +1,1065 @@
+% =============================================================
+%  Chapter 3 — Geometry-Only Structured Navigation:
+%              The GRL-SNAM Foundation
+%  Rewritten per professor's feedback:
+%  - manifold/cotangent-bundle advantage made explicit
+%  - role of p as internal evaluator/guide
+%  - factored algorithm hierarchy
+%  - loss terms mapped to Hamiltonian components
+%  - incremental update / efficiency story
+% =============================================================
+
+\chapter{Geometry-Only Structured Navigation: The GRL-SNAM Foundation}
+\label{chap:grlsnam}
+
+\providecommand{\Ham}{\mathcal{H}}
+\providecommand{\Potential}{\mathcal{R}}
+\providecommand{\PhaseState}{z}
+\providecommand{\Pos}{q}
+\providecommand{\Mom}{p}
+\providecommand{\Mass}{\mathrm{M}}
+\providecommand{\J}{\mathbb{J}}
+
+% =======================================================================
+\section{Motivation: Why This Case First?}
+\label{sec:ch3:motivation}
+% =======================================================================
+
+Before adding material risk or semantic structure, we must
+establish what a \emph{geometry-only} Hamiltonian learner can already
+do and what structural gaps geometry alone cannot close.
+This chapter serves that purpose.
+It introduces the four ideas that carry through this work:
+the policy as a phase-space flow map, local sensing and staged
+energy shaping, online cotangent-space correction, and
+multi-timescale coordination.
+Understanding these in the simpler geometry-only setting is necessary
+before Chapter~\ref{chap:material} enriches the energy landscape with
+material risk and tail-risk objectives.
+
+% =======================================================================
+\section{Geometry-Only Problem Setting}
+\label{sec:ch3:setting}
+% =======================================================================
+
+\paragraph{Task.}
+The agent must navigate from $\vec{q}_0$ to a goal
+$\vec{x}_g \in \mathbb{R}^2$ through an unknown workspace
+$\mathcal{W}$ whose occupancy field $I : \mathcal{W}\to\{0,1\}$ is
+never given in full.
+The robot is deformable (a ring in our experiments) with configuration
+$\vec{q} = (\vec{y},\vec{c},\vec{\psi}) \in \mathcal{Q}
+= \mathcal{Q}_y \times \mathcal{Q}_f \times \mathcal{Q}_o$,
+where $\vec{c}\in\mathbb{R}^2$ is the pose,
+$\vec{y}$ collects sensor variables, and
+$\vec{\psi}$ parameterizes morphology.
+
+\paragraph{Geometry-only restriction.}
+In this chapter the environment context at stage $\tau$ contains
+\emph{only geometric} information:
+\begin{equation}
+  \mathcal{E}_\tau
+  = \bigl\{
+      \vec{c}_{\mathrm{target}},\;
+      C(\mathcal{E}_\tau),\;
+      \{d_i(\vec{q};\mathcal{E}_\tau)\}_{i=1}^{C(\mathcal{E}_\tau)}
+    \bigr\},
+  \label{eq:ch3:context}
+\end{equation}
+where $d_i \geq 0$ are signed clearances to locally sensed obstacles.
+No semantic label, material property, or latent risk signal is available.
+The agent observes only the local window $\mathcal{W}(\vec{q}_t)$ of
+half-width $\hat{d}$ centred at the current pose; sensing economy is
+measured by the mapping ratio
+\begin{equation}
+  \rho_{\mathrm{map}} := \frac{\mathrm{area}\!\left(\bigcup_t \mathcal{W}(\vec{q}_t)\right)}{L^2}.
+  \label{eq:ch3:map_ratio}
+\end{equation}
+
+\input{chapters/tikz_energy_landscape_display}
+
+Figure~\ref{fig:teaser_progressive_landscape} shows how the energy
+landscape is progressively assembled from local sensing over successive
+attempts: the agent builds an initial terrain from partial context,
+refines it from rollout feedback, and converges toward a landscape
+whose valleys align with traversable corridors.
+% =======================================================================
+\section{Why Phase Space? The Manifold and Cotangent-Bundle Viewpoint}
+\label{sec:ch3:phasespace}
+% =======================================================================
+
+Standard RL methods work in state-action space:
+a network maps $\vec{q}_t \mapsto a_t$, the environment advances the
+state, and a scalar reward drives learning.
+The policy topology (which configurations attract, which repel) is
+encoded implicitly in the weights with no geometric structure and
+no direct handle for stable correction.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.85\linewidth]{figs/flat_policy_vs_phase_space_hamiltonian.png}
+    \caption{
+    % \textbf{Flat policy learning versus phase-space Hamiltonian learning.}
+    \textit{Left:} a black-box policy maps local observations directly to actions, with evaluation remaining external and fixed.
+    \textit{Right:} GRL-SNAM represents policy as a phase-space flow, where local sensing updates an internal cotangent evaluator \(p\) that shapes the Hamiltonian vector field and smoothly guides the configuration variable \(q\). The figure highlights the shift from reactive action prediction to structured geometric dynamics with incremental correction.
+    }
+    \label{fig:ch3:flat_vs_phase_space}
+\end{figure}
+
+GRL-SNAM~\citep{ellendula2025grlsnam} takes a different starting point.
+The configuration $\vec{q}$ moves on the configuration manifold
+$\mathcal{Q}$, a smooth manifold that captures the robot's degrees of
+freedom.
+Attached to every point $\vec{q}$ is the cotangent space
+$T^*_{\vec{q}}\mathcal{Q}$, the dual of the tangent space.
+An element $p \in T^*_{\vec{q}}\mathcal{Q}$ is a \emph{covector} defined as a linear functional on tangent velocities and it represents the
+generalized momentum conjugate to $\vec{q}$.
+
+The \textbf{phase space} $T^*\mathcal{Q}$ is the union of all
+$(q,p)$ pairs.
+A scalar function $H : T^*\mathcal{Q} \to \mathbb{R}$ on this space
+defines a Hamiltonian vector field via
+\begin{equation}
+  \dot{z} = \J\,\nabla_z H(z),
+  \qquad
+  \dot{\vec{q}} = \nabla_{\Mom} H = \Mass^{-1}\Mom,
+  \qquad
+  \dot{\Mom} = -\nabla_{\Pos} H,
+  \label{eq:ch3:hamilton}
+\end{equation}
+where $z = (\vec{q},\Mom)$,
+$\J = \bigl[\begin{smallmatrix}0&I\\-I&0\end{smallmatrix}\bigr]$
+is the symplectic matrix acting on the \emph{full} phase gradient $\nabla_z H$
+(not on $\nabla_\Mom H$ alone).
+The \textbf{policy is the deterministic time-$\Delta t$ flow map} of this system:
+\begin{equation}
+  z_{t+1} = \Phi^{\Delta t}_H(z_t),
+  \qquad
+  \pi_H(z_t) := \Pi_{\mathcal{Q}}\!\left(\Phi^{\Delta t}_H(z_t)\right),
+  \qquad
+  z_t = (\vec{q}_t, \Mom_t).
+  \label{eq:ch3:policy}
+\end{equation}
+
+\paragraph{Why this matters computationally.}
+In flat state-action RL, adapting the policy means retraining
+network weights which is a global, potentially destructive update.
+In the Hamiltonian viewpoint, adapting the policy means reshaping
+$H$: adjusting the coefficients $(\beta, \{\alpha_i\}, \gamma)$
+that modulate its energy terms.
+Each coefficient controls a specific force channel.
+The force field topology i.e.; goal-attracting basins, obstacle-repulsive
+walls is explicit, inspectable, and surgically correctable.
+
+A second advantage is structure-preserving integration.
+For the conservative Hamiltonian substep (without dissipation or port
+input), the leapfrog integrator is a \emph{symplectomorphism}: it
+preserves the discrete symplectic form $\omega = \sum_i dq^i\wedge dp_i$
+up to roundoff, controlling long-run phase-space volume drift that
+accumulates in generic Euler-step integrators~\citep{reich1996symplectic,hairer2006geometric}.
+The dissipative port ($R_\theta$) and correction input ($u^\xi$) are
+applied as separate substeps; the full port-Hamiltonian update is not
+symplectic but satisfies the energy-dissipation inequality
+$\dot{H} \leq y^\top u$ (passivity).
+
+The third advantage is that the value function is related to the
+costate: when the Hamilton–Jacobi–Bellman equation admits a smooth
+solution $\mathcal{V}^*(t,\vec{q};\mathcal{E})$,
+the costate satisfies
+$\Mom(t) = \nabla_{\Pos}\mathcal{V}^*(t,\vec{q}(t);\mathcal{E})$.
+Conventional RL approximates $\mathcal{V}^*$ via Bellman backups which is a
+backward-time PDE solved approximately.
+GRL-SNAM instead learns the reduced Hamiltonian directly, producing
+forward-time rollouts without Bellman recursion.
+
+% =======================================================================
+\section{The Role of \texorpdfstring{$p$}{p}: Internal Evaluator,
+         Predictor, and Guide}
+\label{sec:ch3:p_role}
+% =======================================================================
+
+The momentum variable $\Mom$ is often introduced as "the conjugate
+variable to $\Pos$" and left at that.
+This undersells its computational role.
+In GRL-SNAM, $\Mom$ simultaneously performs five functions at each
+integration step.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{figs/role_of_p_one_update.png}
+    \caption{
+    \textbf{The role of \(p\) in one phase-space update.}
+    Local sensing feeds the cotangent variable \(p_t\), which serves as an internal evaluator and force predictor.
+    Through the leapfrog half-step \(p_{t+\frac12}\), this information is converted into a smooth update of the configuration variable \(q\), yielding the corrected transition \((q_t,p_t)\mapsto(q_{t+1},p_{t+1})\).
+    }
+    \label{fig:ch3:role_of_p_update}
+\end{figure}
+\paragraph{1. Geometric accumulator.}
+$\Mom_t$ encodes a summary of the geometry sensed so far,
+weighted by the current barrier weights $\{\alpha_i^t\}$.
+Through \eqref{eq:ch3:hamilton}, each barrier clearance $d_i$
+pushes the costate via $-\nabla_{\Pos}b_i(d_i)$;
+a long sequence of clearance signals accumulates as a running
+cotangent-space summary of local obstacle geometry.
+
+\paragraph{2. Progress evaluator.}
+The inner product $\Mom_t^\top \Mass^{-1}\Mom_t = 2H_{\mathrm{kin}}$
+is the current kinetic energy.
+When $H_{\mathrm{kin}}$ is large but goal distance is not decreasing,
+the agent is spending kinetic energy unproductively which is an early
+warning of oscillation or stall.
+This is the information used in the passivity surrogate
+$\mathcal{L}_{\mathrm{pass}} = \frac{1}{T}\sum_t\mathrm{softplus}(\Delta H_t)$.
+
+\paragraph{3. Force predictor.}
+From \eqref{eq:ch3:hamilton}, $\dot{\vec{q}} = \Mass^{-1}\Mom_t$:
+the current momentum \emph{predicts} the next configuration
+displacement before that displacement is computed.
+This half-step predictive role is exactly what the leapfrog
+integrator exploits: update $\Mom$ using the current gradient,
+then advance $\Pos$ using the updated $\Mom$.
+The costate is always one half-step ahead.
+
+\paragraph{4. Online correction receiver.}
+The online adaptation law updates $\{\alpha_i^t\}$ from the observed
+residual $\Delta y^{\mathrm{des}}_t - J_t\Delta\zeta_t$.
+This residual enters the dynamics through the costate equation
+$\dot\Mom = -\nabla_{\Pos}\Potential - R_\theta$:
+the correction reshapes the force field by changing the gradient
+that acts on $\Mom$, not by directly perturbing $\Pos$.
+The costate is the \emph{receiver} of adaptation signals.
+
+\paragraph{5. Port correction amender.}
+When energy-coefficient updates alone cannot satisfy the desired
+observable change (large residual $r_t$), a port correction
+$u_f^\xi$ is injected directly into the costate equation.
+This is the non-conservative port of the port-Hamiltonian structure:
+$\dot\Mom \leftarrow \dot\Mom + G_f^\xi u_f^\xi$.
+The evaluator in conventional RL is external (a separate value
+network).
+In GRL-SNAM, the evaluator is the costate $\Mom$: it lives
+\emph{inside} the evolving trajectory.
+
+\begin{quote}\itshape
+$\vec{q}$ is the primal movement variable, advancing on the
+configuration manifold.
+$\Mom$ is the cotangent-space intelligence: it senses geometry,
+evaluates progress, predicts the next force balance, receives
+adaptation signals, and corrects the motion field from within
+the rollout and not from an external critic.
+\end{quote}
+
+% =======================================================================
+\section{Reduced Hamiltonian and Energy Decomposition}
+\label{sec:ch3:hamiltonian}
+% =======================================================================
+
+\subsection{From OCP to Reduced Hamiltonian}
+\label{subsec:ch3:ocp}
+
+At stage $\tau$, navigation is a constrained OCP
+(see §\ref{subsec:prelim:pmp} for the full derivation).
+Following the mechanical surrogate construction of
+§\ref{subsec:prelim:pmp}, we adopt a
+\textbf{structured mechanical Hamiltonian} whose kinetic--potential
+separation is motivated by the PMP costate structure but learned
+end-to-end rather than derived as an exact PMP consequence:
+\begin{equation}
+  H(\vec{q},\Mom;\mathcal{E}_\tau)
+  = \underbrace{\tfrac{1}{2}\Mom^\top\Mass^{-1}\Mom}_{H_{\mathrm{kin}}}
+  + \underbrace{\Potential(\vec{q};\mathcal{E}_\tau)}_{H_{\mathrm{pot}}},
+  \label{eq:ch3:ham}
+\end{equation}
+where the kinetic term drives forward momentum and the potential
+$\Potential$ encodes navigation objectives.
+The optimal trajectory follows Hamilton's equations~\eqref{eq:ch3:hamilton}.
+
+\subsection{The Geometry-Only Potential: Term-by-Term}
+\label{subsec:ch3:potential}
+
+The potential $\Potential$ decomposes additively over four terms.
+Each term corresponds to one navigation objective; each term contributes
+one force channel; each force channel has one learnable coefficient.
+
+\begin{equation}
+  \Potential(\vec{q};\mathcal{E}_\tau)
+  = \underbrace{E_{\mathrm{sensor}}(\vec{y})}_{\text{(i) sensing}}
+  + \underbrace{\beta^t E_{\mathrm{goal}}(\vec{c},\vec{c}_{\mathrm{target}})}_{\text{(ii) goal}}
+  + \underbrace{\lambda^t E_{\mathrm{obj}}(\vec{\psi})}_{\text{(iii) shape}}
+  + \underbrace{\sum_{i\in\mathcal{C}_t} \alpha_i^t\,b(d_i(\vec{q};\mathcal{E}_\tau))}_{\text{(iv) barrier}},
+  \label{eq:ch3:potential}
+\end{equation}
+where $b(\cdot)$ is an IPC-style barrier potential and the active
+constraint set $\mathcal{C}_t = \{i \mid d_i \leq \hat{d}\}$ is
+discovered online by sensing.
+
+\begin{table}[htbp]
+\centering
+\caption{%
+  \textbf{Energy terms, their force channels, coefficients, and
+  what each shapes in the dynamics.}
+  Each row is one link in the enrichment chain
+  $H_i \to F_i \to \vartheta_i$.
+}
+\label{tab:ch3:terms}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.3}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllll}
+\toprule
+\textbf{Term} & \textbf{Force $F_i = -\nabla_{\Pos}H_i$} &
+\textbf{Coeff.} & \textbf{Shapes} & \textbf{Updated by} \\
+\midrule
+$E_{\mathrm{sensor}}$ & $-\nabla_{\vec{y}}\|\vec{y}\|_S^2$
+  & $\omega_y$ (fixed) & Sensor alignment & Offline only \\
+$E_{\mathrm{goal}}$ & $-2\beta(\vec{c}-\vec{c}_{\mathrm{target}})$
+  & $\beta^t$ & Goal-attracting basin & $\mathcal{L}_{\mathrm{traj}}$ \\
+$E_{\mathrm{obj}}$ & $-\lambda\nabla_{\vec\psi}E_{\mathrm{obj}}$
+  & $\lambda^t$ & Shape/deformation & $\mathcal{L}_{\mathrm{traj}}$ \\
+$b(d_i)$ & $-\alpha_i\nabla_{\Pos}b(d_i)$
+  & $\{\alpha_i^t\}$ & Repulsive walls near obstacles & Online $J_t$ update \\
+$R_\theta = \gamma\Mass^{-1}\Mom$ & (dissipation, not $\nabla H$)
+  & $\gamma$ & Energy removal, passivity & $\mathcal{L}_{\mathrm{fric}}$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Table~\ref{tab:ch3:terms} summarizes the five channels.
+Note that the dissipative port $R_\theta = \gamma\Mass^{-1}\Mom$
+is \emph{not} part of $H$, it enters the costate equation
+separately as $\dot\Mom \leftarrow \dot\Mom - \tau R_\theta$,
+preserving the port-Hamiltonian separation of stored energy and
+dissipation (Definition~\ref{def:passivity}).
+
+\subsection{The Meta-Navigator: Context to Coefficients}
+\label{subsec:ch3:metanav}
+
+The meta-navigator $g_\xi$ maps each local context to a full
+coefficient vector in a single forward pass:
+\begin{equation}
+  g_\xi(\mathcal{E}_\tau)
+  = \bigl[\,\eta_\xi(\mathcal{E}_\tau),\;\mu_\xi(\mathcal{E}_\tau),\;u_f^\xi\,\bigr],
+  \qquad
+  \eta_\xi = (\beta, \lambda, \{\alpha_i\}_{i\in\mathcal{C}_t}).
+  \label{eq:ch3:metanav}
+\end{equation}
+The parameters $\xi$ are learned offline; $g_\xi$ runs as a
+fixed network at inference time where no optimization occurs per query.
+This is the first computational efficiency property: \emph{the cost
+per stage is one forward pass through $g_\xi$, not a per-stage
+optimization}.
+
+The output $\eta_\xi$ provides the inter-term tradeoff weights;
+$\mu_\xi$ provides the friction coefficient for the dissipative port;
+$u_f^\xi$ provides a port correction when energy reweighting alone
+is insufficient (see §\ref{sec:ch3:online}).
+
+\begin{figure}[t]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  node distance=0.5cm,
+  font=\small,
+  % --- Colors ---
+  sensorcolor/.style={draw=RoyalBlue, fill=RoyalBlue!10},
+  framecolor/.style ={draw=Crimson,   fill=Crimson!10},
+  shapecolor/.style ={draw=ForestGreen,fill=ForestGreen!10},
+  navcolor/.style   ={draw=Orange,    fill=Orange!10},
+  band/.style       ={fill=black!3, draw=none},
+  % --- Styles ---
+  mod/.style   ={rectangle,rounded corners=2pt,draw,very thick,align=center,
+                 minimum width=4.8cm,minimum height=2.2cm,#1},
+  nav/.style   ={rectangle,rounded corners=2pt,draw,very thick,align=center,
+                 minimum width=14.0cm,minimum height=2.0cm,#1},
+  io/.style    ={circle,draw,thick,inner sep=0pt,minimum size=2.8mm,fill=white},
+  qarr/.style  ={thick,dashed,-{Stealth[length=2.2mm]}},
+  rarr/.style  ={thick,-{Stealth[length=2.2mm]}},
+  chip/.style  ={rectangle,rounded corners=1pt,draw,thin,inner sep=2pt,
+                 font=\scriptsize,fill=white},
+  dsicon/.style={rectangle,draw,thin,fill=white,minimum width=4.5mm,minimum height=4.5mm},
+  badge/.style ={circle,draw,thin,fill=white,minimum size=5mm,font=\scriptsize\bfseries},
+  xtiny/.style ={font=\scriptsize},
+  response/.style={rectangle,draw,thin,fill=white,rounded corners=1pt,font=\scriptsize,align=left,inner sep=3pt}
+]
+
+% ====== GRID COORDS ======
+\coordinate (ColY) at (-5.2,0);   % Sensor column x
+\coordinate (ColF) at ( 0.0,0);   % Frame column x
+\coordinate (ColO) at ( 5.2,0);   % Shape column x
+
+% ====== Background band ======
+\node[rectangle,band,minimum width=16.5cm,minimum height=2.8cm,anchor=center] at (0,6.0) {};
+
+% ====== MODULES (moved up) ======
+% Sensor module
+\node[mod=sensorcolor,anchor=center] (sensor) at ($(ColY)+(0,6.0)$) {
+    {\bfseries\color{RoyalBlue}Sensor Policy $\pi_y^{\theta_y,\xi}$}\\[2pt]
+    {\scriptsize $s_y^{\theta_y,\xi}(z_y,t;\mathcal{E})=\mathbb{J}\nabla_{z_y}h_y^{\theta_y}$}\\[1pt]
+    {\scriptsize\color{gray} $\Gamma_y^\xi\equiv 0,\; G_y^\xi u_y^\xi\equiv 0$}
+};
+
+% Frame module
+\node[mod=framecolor,anchor=center] (frame) at ($(ColF)+(0,6.0)$) {
+    {\bfseries\color{Crimson}Frame Policy $\pi_f^{\theta_f,\xi}$}\\[1pt]
+    {\scriptsize $s_f^{\theta_f,\xi}=\mathbb{J}\nabla_{z_f}h_f^{\theta_f}+\begin{bmatrix}0\\-\Gamma_f^\xi\dot{q}_f+G_f^\xi u_f^\xi\end{bmatrix}$}\\[1pt]
+    {\scriptsize\color{gray} $\Gamma_f^\xi=\mu_\xi(\mathcal{E})\mathbf{I},\; G_f^\xi=\mathbf{I}$}
+};
+
+% Shape module
+\node[mod=shapecolor,anchor=center] (shape) at ($(ColO)+(0,6.0)$) {
+    {\bfseries\color{ForestGreen}Shape Policy $\pi_o^{\theta_o,\xi}$}\\[2pt]
+    {\scriptsize $s_o^{\theta_o,\xi}(z_o,t;\mathcal{E})=\mathbb{J}\nabla_{z_o}h_o^{\theta_o}$}\\[1pt]
+    {\scriptsize\color{gray} $\Gamma_o^\xi\equiv 0,\; G_o^\xi u_o^\xi\equiv 0$}
+};
+
+% ====== Configuration space icons (top-left inside each) ======
+\foreach \M/\L in {sensor/$\mathcal{Q}_y$,frame/$\mathcal{Q}_f$,shape/$\mathcal{Q}_o$}{
+  \node[dsicon] (ds-\M) at ([xshift=4mm,yshift=-3mm]\M.north west) {};
+  \draw[thin] (ds-\M.south west)++(0,0.6mm) rectangle ++(4.5mm,0.8mm);
+  \draw[thin] (ds-\M.south west)++(0,1.8mm) rectangle ++(4.5mm,0.8mm);
+  \draw[thin] (ds-\M.south west)++(0,3.0mm) rectangle ++(4.5mm,0.8mm);
+  \node[xtiny] at ([xshift=7mm]ds-\M.east) {\L};
+}
+
+% ====== Time badges (outside top-right) ======
+\node[badge,text=RoyalBlue]   at ([xshift=-14pt,yshift=8pt]sensor.north east) {$T_y$};
+\node[badge,text=Crimson]     at ([xshift=-14pt,yshift=8pt]frame.north east)  {$T_f$};
+\node[badge,text=ForestGreen] at ([xshift=-14pt,yshift=8pt]shape.north east)  {$T_o$};
+
+% ====== Timescale annotation ======
+\node[xtiny,anchor=west] at (8.0,7.6) {$T_y \gg T_f \gg T_o$};
+
+% ====== POTENTIAL TERMS (above modules) ======
+\node[chip,fill=RoyalBlue!5] at ([yshift=6pt]sensor.north) {$\mathcal{R}_y: E_{\mathrm{sensor}} + \sum_i\alpha_i b(d_i)$};
+\node[chip,fill=Crimson!5] at ([yshift=6pt]frame.north) {$\mathcal{R}_f: \beta E_{\mathrm{goal}} + \sum_i\alpha_i b(d_i)$};
+\node[chip,fill=ForestGreen!5] at ([yshift=6pt]shape.north) {$\mathcal{R}_o: \lambda E_{\mathrm{obj}} + \sum_i\alpha_i b(d_i)$};
+
+% ====== RESPONSE BOXES (between modules and navigator) ======
+\node[response,fill=RoyalBlue!5] (Ry) at ($(ColY)+(0,3.6)$) {
+    $\mathsf{R}_y=\big\{z_{0:T_y}^{(y)},\mathrm{QoI}_y\big\}$\\
+    $\mathrm{QoI}_y=\Delta\mathcal{E}$
+};
+\node[response,fill=Crimson!5] (Rf) at ($(ColF)+(0,3.6)$) {
+    $\mathsf{R}_f=\big\{z_{0:T_f}^{(f)},\mathrm{QoI}_f\big\}$\\
+    $\mathrm{QoI}_f=\{v_t^{(f)}\}_{t=0}^{T_f}$
+};
+\node[response,fill=ForestGreen!5] (Ro) at ($(ColO)+(0,3.6)$) {
+    $\mathsf{R}_o=\big\{z_{0:T_o}^{(o)},\mathrm{QoI}_o\big\}$\\
+    $\mathrm{QoI}_o=\{\min_i d_i\}_{t=0}^{T_o}$
+};
+
+% ====== NAVIGATOR ======
+\node[nav=navcolor,anchor=center] (nav) at ($(0,1.2)$) {
+  {\bfseries Navigator $g_{\xi}$ (Meta-Hamiltonian Composer)}\\[2pt]
+  {\scriptsize Tokenize: $\mathcal{T}_t=\mathrm{Tokenize}(\mathcal{C}_t(\mathcal{E},q_t),\,q_t,\,\mathbf{x}_g)$\quad\quad Output: $g_\xi(\mathcal{E})=\big[\,\eta_\xi,\;\mu_\xi,\;u_f^\xi\,\big]$}\\[1pt]
+  {\scriptsize Dual weights: $\eta_\xi(\mathcal{E})=(\beta,\lambda,\{\alpha_i\}_{i\in\mathcal{C}_t})$\quad\quad Surrogate: $H=\tfrac{1}{2}p^{\top}M^{-1}p+\mathcal{R}(q;\eta_\xi,\mathcal{E})$}
+};
+
+% ====== QUERY ARROWS (Navigator to Modules) ======
+\draw[qarr,draw=RoyalBlue]
+  ([xshift=-8pt]nav.north-|ColY) -- node[xtiny,fill=white,inner sep=1pt,pos=0.5,left]
+  {$(H_y,z_y^t,T_y)$} ([xshift=-8pt]Ry.south-|ColY);
+
+\draw[qarr,draw=Crimson]
+  ([xshift=-8pt]nav.north-|ColF) -- node[xtiny,fill=white,inner sep=1pt,pos=0.5,left]
+  {$(H_f,z_f^t,T_f,\Gamma_f^\xi,u_f^\xi)$} ([xshift=-8pt]Rf.south-|ColF);
+
+\draw[qarr,draw=ForestGreen]
+  ([xshift=-8pt]nav.north-|ColO) -- node[xtiny,fill=white,inner sep=1pt,pos=0.5,left]
+  {$(H_o,z_o^t,T_o)$} ([xshift=-8pt]Ro.south-|ColO);
+
+% ====== RESPONSE ARROWS (Response boxes to Navigator) ======
+\draw[rarr,draw=RoyalBlue]
+  ([xshift=8pt]Ry.south-|ColY) -- ([xshift=8pt]nav.north-|ColY);
+
+\draw[rarr,draw=Crimson]
+  ([xshift=8pt]Rf.south-|ColF) -- ([xshift=8pt]nav.north-|ColF);
+
+\draw[rarr,draw=ForestGreen]
+  ([xshift=8pt]Ro.south-|ColO) -- ([xshift=8pt]nav.north-|ColO);
+
+% ====== ARROWS from Modules to Response boxes ======
+\draw[rarr,draw=RoyalBlue] (sensor.south) -- (Ry.north);
+\draw[rarr,draw=Crimson] (frame.south) -- (Rf.north);
+\draw[rarr,draw=ForestGreen] (shape.south) -- (Ro.north);
+
+% ====== Environment & Trajectory ======
+\node[rectangle,draw,thick,fill=white,minimum width=2.6cm,minimum height=1.0cm,align=center]
+      (env) at (-9.2,1.2) {{\bfseries Environment $\mathcal{E}$}\\ {\scriptsize $z_0,\;\mathbf{x}_g,\;\{d_i\geq 0\}$}};
+\node[rectangle,draw,thick,fill=white,minimum width=2.6cm,minimum height=1.0cm,align=center]
+      (traj) at ( 9.2,1.2) {{\bfseries Trajectory}\\ {\scriptsize $\{z_t\}_{t=0}^{T}$}};
+
+\draw[thick,-{Stealth[length=2.5mm]}] (env.east) -- (nav.west);
+\draw[thick,-{Stealth[length=2.5mm]}] (nav.east) -- (traj.west);
+
+% ====== Side annotations ======
+% Symplectic matrix definition (left)
+\node[rectangle,draw,thin,fill=white,align=left,font=\scriptsize,inner sep=4pt]
+      at (-9.8,5.8) {
+       \textbf{Symplectic form:}\\[1pt]
+       $\mathbb{J}=\begin{bmatrix}0 & I\\-I & 0\end{bmatrix}$\\[1pt]
+       $\mathbb{J}\nabla_z h = \begin{bmatrix}\nabla_p h\\-\nabla_q h\end{bmatrix}$
+      };
+
+% Online adaptation (right)
+\node[rectangle,draw,thin,fill=white,align=left,font=\scriptsize,inner sep=4pt]
+      at (10.5,5.8) {
+       \textbf{Online observables:}\\[1pt]
+       $y_t=[-\mathrm{clr}_t,\mathrm{dist}_t,-\mathrm{speed}_t]^\top$\\[1pt]
+       Adapt $\zeta_t=[\eta_t,\mu_t]$ via $J_t\approx\partial y/\partial\zeta$
+      };
+
+% ====== Compact Legend ======
+\node[rectangle,draw,thick,fill=white,align=left,font=\scriptsize,inner sep=4pt]
+      at (0,-0.8) {
+       \textbf{Legend:}\;
+       \tikz[baseline=-0.5ex]{\node[io]{};} port\quad
+       \tikz[baseline=-0.5ex]{\draw[qarr] (0,0)--(8mm,0);} query\quad
+       \tikz[baseline=-0.5ex]{\draw[rarr] (0,0)--(8mm,0);} response
+       \qquad
+       \textbf{Policy as flow:}\; $\pi_k^{\theta_k,\xi}(\mathcal{E}):=\Phi_k^{\Delta t}(\cdot;\mathcal{E})$
+      };
+
+\end{tikzpicture}}
+\caption{%
+Modular score-field architecture for GRL-SNAM.
+The Navigator $g_\xi$ tokenizes active constraints $\mathcal{C}_t$, state $q_t$, and goal $\mathbf{x}_g$, then outputs dual weights $\eta_\xi=(\beta,\lambda,\{\alpha_i\})$, friction $\mu_\xi$, and port correction $u_f^\xi$.
+Each module $k\in\{y,f,o\}$ integrates its score field $s_k^{\theta_k,\xi}=\mathbb{J}\nabla_{z_k}h_k^{\theta_k}$ (plus non-conservative terms for the frame module) over horizon $T_k$ and returns response $\mathsf{R}_k$ with phase-space rollouts and QoIs.
+The frame module uniquely receives dissipation $\Gamma_f^\xi$ and port input $u_f^\xi$; sensor and shape modules have purely symplectic dynamics.
+}
+\label{fig:independent-score-architecture}
+\end{figure}
+
+\subsection{Online Adaptation via Cotangent Feedback}
+\label{sec:ch3:online}
+ 
+§\ref{sec:ch3:p_role} established that $\Mom_t$ carries
+evaluative information about the current rollout: kinetic energy,
+clearance-gradient accumulation, and speed.
+Online adaptation closes the loop, it reads that information
+back out of $\Mom_t$ and uses it to correct the active coefficients
+$\zeta_t = (\beta_t,\lambda_t,\{\alpha_i\}_{i\in\mathcal{C}_t},\mu_t)$
+without touching $\xi$ or rerunning $g_\xi$.
+
+\begin{figure*}[htbp]
+\centering
+
+% -------- Left subfigure --------
+\begin{subfigure}[htbp]{0.8\textwidth}
+\centering
+\setlength{\tabcolsep}{2pt}
+\small\sffamily
+\begin{tabular}{@{}c ccc@{}}
+  & \textbf{A} & \textbf{B} & \textbf{C} \\[4pt]
+  
+  \rotatebox{90}{\parbox{18mm}{\centering\textcolor{red!65!black}{\textbf{Baseline}}}} &
+  \includegraphics[width=0.28\linewidth]{baseline_A.png} &
+  \includegraphics[width=0.28\linewidth]{baseline_B.png} &
+  \includegraphics[width=0.28\linewidth]{baseline_D.png} \\[4pt]
+  
+  \rotatebox{90}{\parbox{18mm}{\centering\textcolor{green!50!black}{\textbf{Ours}}}} &
+  \includegraphics[width=0.28\linewidth]{ours_A.png} &
+  \includegraphics[width=0.28\linewidth]{ours_B.png} &
+  \includegraphics[width=0.28\linewidth]{ours_D.png} \\
+\end{tabular}
+
+\vspace{1mm}
+{\scriptsize
+\textcolor{red!65!black}{$\times$~fails (collision/loop)}
+\hfill
+\textcolor{green!50!black}{$\checkmark$~reaches goal}
+}
+
+\caption{Fixed policy vs.\ online adaptation. Baseline gets trapped or collides; our method adapts online and continues toward the goal.}
+\end{subfigure}
+\hfill
+% -------- Right subfigure --------
+\begin{subfigure}[htbp]{0.75\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figs/teaser_online_correction_mechanism.png}
+\caption{Online correction. Failures trigger local updates using observable signals (clearance, distance, speed), adjusting weights to restore safety while preserving progress.}
+\end{subfigure}
+
+\caption{\textbf{Online adaptation for mapless navigation.}}
+\label{fig:teaser_combined}
+\end{figure*}
+
+The three evaluative signals already in the phase-space state become
+the observable vector:
+\begin{equation}
+  y_t
+  = \bigl[-\,\mathrm{clr}_t,\;\mathrm{dist}_t,\;-\|\Mass^{-1}\Mom_t\|\bigr]^\top,
+  \qquad
+  \Delta y_t^{\mathrm{des}} = y_t^\star - y_t,
+  \label{eq:ch3:obs}
+\end{equation}
+where $\mathrm{clr}_t = \min_{i\in\mathcal{C}_t}d_i$ and
+$\mathrm{dist}_t = |\vec{c}_t - \vec{x}_g|$.
+No second query to $g_\xi$ is needed; the signal is already in the
+trajectory.
+ 
+To move $y_t$ toward $y_t^\star$, the Jacobian
+$J_t = \partial y_t/\partial\zeta_t$ is needed.
+Rather than differentiating through the integrator, it is accumulated
+as a rank-1 secant update from consecutive $(y,\zeta)$ pairs:
+\begin{equation}
+  J_t = \rho\,J_{t-1}
+        + (1-\rho)\,
+          \frac{(y_t-y_{t-1})(\zeta_t-\zeta_{t-1})^\top}
+               {\|\zeta_t-\zeta_{t-1}\|^2+\varepsilon}.
+  \label{eq:ch3:secant}
+\end{equation}
+With $J_t$ in hand, the coefficient update is a
+Tikhonov-regularized step:
+\begin{equation}
+  \Delta\zeta_t = (J_t^\top J_t + \lambda_J I)^{-1}J_t^\top\Delta y_t^{\mathrm{des}},
+  \qquad
+  \zeta_{t+1} = \Pi_{\mathbb{R}_+}(\zeta_t + \kappa\,\Delta\zeta_t).
+  \label{eq:ch3:tikhonov}
+\end{equation}
+The projection $\Pi_{\mathbb{R}_+}$ preserves non-negativity of all
+barrier weights, maintaining the repulsive character of each $\alpha_i$.
+The solve is $(2+|\mathcal{C}_t|)$-dimensional (typically 4--10)
+so the cost is $O(|\mathcal{C}_t|^3)$, not $O(|\xi|^3)$.
+$J_t$ itself requires only a rank-1 update
+($O(3|\mathcal{C}_t|)$) and is cached between steps.
+ 
+When the residual $r_t = \Delta y_t^{\mathrm{des}} - J_t\Delta\zeta_t$
+is non-negligible meaning the desired observable change lies
+partly outside the range of $J_t$, a port impulse amends it
+directly through the costate equation:
+\begin{equation}
+  u_{f,t}^\xi = (P_t^\top P_t + \lambda_u I)^{-1}P_t^\top r_t,
+  \label{eq:ch3:port}
+\end{equation}
+injected as $+\tfrac{\Delta t}{2}u_{f,t}^\xi$ into the half-step
+momentum \eqref{eq:ch3:half_mom}.
+This leaves $H$ unchanged as it is a non-conservative correction
+through the port, not a modification of the stored energy.
+ 
+The chain is therefore: $\Mom_t$ carries evaluative state
+$\to$ observables are extracted $\to$ active coefficients are
+updated via the secant Jacobian $\to$ residual mismatch is
+absorbed by the port.
+Each step reads from or writes to the evolving costate; no
+external critic or second network is involved.
+
+% =======================================================================
+\section{Algorithm}
+\label{sec:ch3:algorithm}
+% =======================================================================
+
+The GRL-SNAM computation is organized as two algorithms plus three
+sub-procedures.
+This factored structure makes explicit \emph{what runs where, what is updated, and what is cached}. 
+
+\subsection{Top-Level Control Loop}
+\label{subsec:ch3:toplevel}
+
+Algorithm~\ref{algo:ch3:toplevel} is the outermost loop.
+Its only job is to advance stages, maintain the goal check, and
+delegate to the per-stage procedure.
+It has no internal optimization and caches only the current
+phase-space state $\PhaseState_\tau$ and context $\mathcal{E}_\tau$
+across stages.
+
+\begin{algorithm}[t]
+\caption{GRL-SNAM: Top-Level Navigation Loop}
+\label{algo:ch3:toplevel}
+\begin{algorithmic}[1]
+\State \textbf{Input:} $\vec{x}_g$, initial $\PhaseState_0 = (\vec{q}_0,\mathbf{0})$,
+       trained $g_\xi$, max stages $S_{\max}$
+\State $\tau \leftarrow 0$;\; $\mathcal{E}_0 \leftarrow$ \textsc{Sense}$(\vec{q}_0)$
+\While{$|\vec{c}_\tau - \vec{x}_g| > \epsilon_g$ \textbf{and} $\tau < S_{\max}$}
+  \State $[\eta_\xi, \mu_\xi, u_f^\xi] \leftarrow g_\xi(\mathcal{E}_\tau)$
+         \hfill $\triangleright$ \emph{one forward pass; no optimization}
+  \State Assemble $H(\cdot;\mathcal{E}_\tau)$ from $\eta_\xi$
+         via \eqref{eq:ch3:ham}--\eqref{eq:ch3:potential}
+  \State $\PhaseState_{\tau+1}, \mathcal{E}_{\tau+1}
+         \leftarrow$ \textsc{StageRollout}$(\PhaseState_\tau, \mathcal{E}_\tau,
+         H, \mu_\xi, u_f^\xi)$
+         \hfill $\triangleright$ Algorithm~\ref{algo:ch3:stage}
+  \State $\tau \leftarrow \tau + 1$
+\EndWhile
+\State \textbf{Return} trajectory $\{\PhaseState_t\}$, parameter history
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Per-Stage Sub-Procedure}
+\label{subsec:ch3:stage}
+
+Algorithm~\ref{algo:ch3:stage} handles one stage: it integrates
+the phase-space dynamics, runs the online coefficient update at
+each step, and returns the updated context.
+
+\begin{algorithm}[t]
+\caption{GRL-SNAM: Per-Stage Rollout and Online Update}
+\label{algo:ch3:stage}
+\begin{algorithmic}[1]
+\Require $\PhaseState_0^{(\tau)}, \mathcal{E}_\tau, H, \mu_\xi, u_f^\xi$,
+         horizon $(T_y, T_f, T_o)$, step $\Delta t$,
+         smoothed Jacobian $J_{\tau-1}$ (cached from last stage)
+\State $n \leftarrow 0$;\; $\mathcal{C}_0 \leftarrow \{i : d_i(\vec{q}_0;\mathcal{E}_\tau) \leq \hat{d}\}$
+\While{$n < T_f$ \textbf{and} $|\vec{c}_n - \vec{c}_{\mathrm{target}}| > \epsilon_s$}
+  \If{$n \bmod T_y = 0$}
+    \State \textsc{SenseUpdate}$(\vec{q}_n) \to \mathcal{E}_n$,
+           update $\mathcal{C}_n$, assemble $H_y$
+           \hfill $\triangleright$ Box~\ref{box:sense}
+  \EndIf
+  \State \textsc{SymplecticStep}$(\PhaseState_n, H, \mu_\xi, \Delta t)
+         \to \PhaseState_{n+1}$
+         \hfill $\triangleright$ Box~\ref{box:symp}
+  \State $y_n \leftarrow [-\mathrm{clr}_n,\;\mathrm{dist}_n,\;-\mathrm{speed}_n]^\top$
+  \State \textsc{OnlineCoeffUpdate}$(\PhaseState_n, y_n, J_{n-1})
+         \to (\zeta_{n+1}, J_n, u_{f,n}^\xi)$
+         \hfill $\triangleright$ Box~\ref{box:online}
+  \State $n \leftarrow n + 1$
+\EndWhile
+\State \textbf{Return} $\PhaseState_n$, $\mathcal{E}_n$, $J_n$ (cache for next stage)
+\end{algorithmic}
+\end{algorithm}
+
+The three sub-procedures are given as named boxes to separate
+conceptual roles without adding heavyweight algorithm environments.
+
+\begin{mdframed}[linecolor=teal!60!black, linewidth=1pt,
+                 frametitle={\small\sffamily\bfseries
+                 Box 3.6.1: \textsc{SenseUpdate}},
+                 frametitlefont=\small\sffamily\bfseries]
+\label{box:sense}
+\textbf{Input:} current pose $\vec{q}_n$\\
+\textbf{Cached:} previous context $\mathcal{E}_{n-1}$\\
+\textbf{Computes:}
+\begin{enumerate}[(i)]
+  \item Query sensor: returns obstacle list
+        $\{(\vec{c}_i,r_i)\}_{i=1}^{C}$ within window $\mathcal{W}(\vec{q}_n)$.
+  \item Compute signed clearances
+        $d_i(\vec{q};\mathcal{E}_n) = \|\vec{q}_f - \vec{c}_i\| - r_i$.
+  \item Update active set $\mathcal{C}_n \leftarrow \{i : d_i \leq \hat{d}\}$.
+  \item Update local goal $\vec{c}_{\mathrm{target}}(\mathcal{E}_n)$
+        if stage exit reached.
+\end{enumerate}
+\textbf{Output:} updated $\mathcal{E}_n$, $\mathcal{C}_n$\\
+\textbf{Cached after:} $\mathcal{E}_n$ replaces $\mathcal{E}_{n-1}$;
+$\{\alpha_i : i \notin \mathcal{C}_n\}$ are zeroed (not stored).\\
+\textbf{Cost:} $O(C(\mathcal{E}_n))$ distance evaluations.
+\end{mdframed}
+
+\vspace{6pt}
+
+\begin{mdframed}[linecolor=orange!70!black, linewidth=1pt,
+                 frametitle={\small\sffamily\bfseries
+                 Box 3.6.2: \textsc{SymplecticStep}}]
+\label{box:symp}
+\textbf{Input:} $(\vec{q}_n, \Mom_n)$, Hamiltonian $H$,
+dissipation $\mu_\xi$, step $\Delta t$\\
+\textbf{Leapfrog integration} (symplecticity-preserving):
+\begin{align}
+  \Mom_{n+\frac{1}{2}}
+  &= \Mom_n
+     - \tfrac{\Delta t}{2}\nabla_{\Pos}H(\vec{q}_n,\Mom_n)
+     - \tfrac{\Delta t}{2}\,\mu_\xi\Mass^{-1}\Mom_n
+     + \tfrac{\Delta t}{2}\,u_{f,n}^\xi,
+  \label{eq:ch3:half_mom} \\
+  \vec{q}_{n+1}
+  &= \vec{q}_n + \Delta t\,\Mass^{-1}\Mom_{n+\frac{1}{2}},
+  \label{eq:ch3:q_update} \\
+  \Mom_{n+1}
+  &= \Mom_{n+\frac{1}{2}}
+     - \tfrac{\Delta t}{2}\nabla_{\Pos}H(\vec{q}_{n+1},\Mom_{n+\frac{1}{2}})
+     - \tfrac{\Delta t}{2}\,\mu_\xi\Mass^{-1}\Mom_{n+\frac{1}{2}}.
+  \label{eq:ch3:full_mom}
+\end{align}
+The half-step momentum $\Mom_{n+\frac12}$ is the \emph{predictor}:
+it uses the current force balance to anticipate the next position
+before committing to $\vec{q}_{n+1}$.
+This is the computational realization of $p$'s role as
+\emph{force predictor} (§\ref{sec:ch3:p_role}).\\
+\textbf{Output:} $(\vec{q}_{n+1}, \Mom_{n+1})$\\
+\textbf{Cost:} $O(C(\mathcal{E}_n))$ barrier gradient evaluations.
+\end{mdframed}
+
+\vspace{6pt}
+
+\begin{mdframed}[linecolor=violet!70!black, linewidth=1pt,
+                 frametitle={\small\sffamily\bfseries
+                 Box 3.6.3: \textsc{OnlineCoeffUpdate}}]
+\label{box:online}
+\textbf{Input:} $\PhaseState_n$, observable $y_n$,
+cached Jacobian $J_{n-1}$, target $y_n^\star$\\[3pt]
+\textbf{Step 1 - Incremental Jacobian (rank-1 secant update).}
+\begin{equation}
+  \tilde{J}_n
+  = \frac{(y_n - y_{n-1})(\zeta_n - \zeta_{n-1})^\top}
+         {\|\zeta_n - \zeta_{n-1}\|^2 + \varepsilon},
+  \quad
+  J_n = \rho J_{n-1} + (1-\rho)\tilde{J}_n.
+  \label{eq:ch3:jacobian}
+\end{equation}
+The smoothed Jacobian $J_n \in \mathbb{R}^{3\times(2+|\mathcal{C}_n|)}$
+is \textbf{cached} between steps and updated with a single rank-1
+operation with no full recomputation.\\[3pt]
+\textbf{Step 2 - Tikhonov-regularized coefficient update.}
+\begin{equation}
+  \Delta\zeta_n
+  = (J_n^\top J_n + \lambda_J I)^{-1}
+    J_n^\top\underbrace{(y_n^\star - y_n)}_{\Delta y^{\mathrm{des}}_n},
+  \quad
+  \zeta_{n+1}
+  = \Pi_{\mathbb{R}_+}\bigl(\zeta_n + \kappa\,\Delta\zeta_n\bigr).
+  \label{eq:ch3:coeff_update}
+\end{equation}
+The system $(J_n^\top J_n + \lambda_J I)$ is
+$(2+|\mathcal{C}_n|)\times(2+|\mathcal{C}_n|)$ typically $5$--$15$
+dimensional so the solve costs $O(|\mathcal{C}_n|^3)$, not $O(|\xi|^3)$.\\[3pt]
+\textbf{Step 3 - Port correction (if residual $r_n$ is large).}
+\begin{equation}
+  r_n = \Delta y^{\mathrm{des}}_n - J_n\Delta\zeta_n,
+  \qquad
+  u_{f,n}^\xi
+  = (P_n^\top P_n + \lambda_u I)^{-1} P_n^\top r_n.
+  \label{eq:ch3:port_update}
+\end{equation}
+\textbf{Output:} updated $\zeta_{n+1}$, cached $J_n$, port term $u_{f,n}^\xi$\\
+\textbf{What is cached:} $J_n$ (smoothed Jacobian), $\zeta_n$, $y_n$.\\
+\textbf{What is wiped between stages:} inactive $\alpha_i$ (not in $\mathcal{C}_n$).\\
+\textbf{What is never recomputed from scratch:} $J_n$ is always a rank-1
+update of $J_{n-1}$; neither $g_\xi$ nor the Hamiltonian energy terms
+are reoptimized per step.
+\end{mdframed}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{figs/incremental_hamiltonian_update_vs_replanning.png}
+    \caption{
+    % \textbf{Incremental Hamiltonian update versus from-scratch replanning.}
+    \textit{Left:} newly observed obstacles trigger repeated global replanning under a fixed evaluator.
+    \textit{Right:} GRL-SNAM updates only the active local Hamiltonian structure, reusing cached coefficients and context to produce the phase-space transition \((q_t,p_t)\mapsto(q_{t+1},p_{t+1})\) without global recomputation.
+    }
+    \label{fig:ch3:incremental_vs_replan}
+\end{figure}
+
+% =======================================================================
+\section{Training Losses and What Each Shapes}
+\label{sec:ch3:losses}
+% =======================================================================
+
+The meta-navigator $g_\xi$ is trained offline to minimize a four-term loss.
+Each term maps directly to one Hamiltonian component and one force channel;
+the connection is made explicit below.
+
+\paragraph{$\mathcal{L}_{\mathrm{traj}}$: trajectory supervision.}
+$\mathcal{L}_{\mathrm{traj}} = \mathbb{E}_\mathcal{E}[\sum_t \|\vec{q}_t^{\mathrm{pred}} - \vec{q}_t^{\mathrm{ref}}\|^2]$ shapes the goal-attraction
+basin ($F_{\mathrm{goal}} = -2\beta(\vec{c}-\vec{c}_{\mathrm{target}})$)
+and the deformation channel ($F_{\mathrm{obj}} = -\lambda\nabla E_{\mathrm{obj}}$) via gradients that flow through the rollout
+sensitivity recursion into $\partial\Potential/\partial\beta$
+and $\partial\Potential/\partial\lambda$. The loss acts on phase-space trajectories $\vec{q}_t$ via the rollout
+integrator, not on raw actions.
+Differentiating through the symplectic integrator ensures that the
+gradient shapes the \emph{force field} rather than only the action
+distribution at individual timesteps which is exactly the distinction
+between field learning and policy regression.
+
+\paragraph{$\mathcal{L}_{\mathrm{vel}}$: velocity supervision.}
+$\mathcal{L}_{\mathrm{vel}} = \mathbb{E}_\mathcal{E}[\sum_t \|\Mass^{-1}\Mom_t - \vec{v}_t^{\mathrm{ref}}\|^2]$
+shapes the kinetic term via $\partial\Mom_t/\partial\xi$.
+Without velocity supervision, trajectory loss can be minimized by
+high-frequency oscillations that match positions but not momenta which is an
+aliasing artifact of discrete integration.
+
+\paragraph{$\mathcal{L}_{\mathrm{fric}}$: passivity enforcement.}
+$\mathcal{L}_{\mathrm{fric}} = w_\gamma|\gamma - \gamma_0|^2$
+anchors the dissipation coefficient $\gamma$ to a reference $\gamma_0$ derived from simulation.
+It directly enforces the passivity condition
+$\dot{H} \leq \Mom^\top\Mass^{-1} u_f$
+(Definition~\ref{def:passivity}): if $\gamma$ is too small,
+the system is under-damped and $\Delta H_t > 0$ along rollouts
+(energy increases, passivity violated); if $\gamma$ is too large,
+the system is over-damped and makes no forward progress.
+$\mathcal{L}_{\mathrm{fric}}$ is \textbf{not} an arbitrary quadratic,
+it is the training-time enforcement of port-Hamiltonian passivity.
+$\gamma_0$ is estimated from noisy simulation rollouts.
+An unweighted $|\gamma - \gamma_0|^2$ treats all estimates equally;
+a covariance-weighted version $(\gamma - \gamma_0)^\top\Sigma_\gamma^{-1}(\gamma-\gamma_0)$
+down-weights high-variance estimates.
+The current implementation uses fixed $w_\gamma$; moving to adaptive
+weighting is identified as a near-term extension in §\ref{sec:ch7:limits}.
+
+\paragraph{$\mathcal{L}_{\mathrm{multi}}$: near-contact robustness.}
+$\mathcal{L}_{\mathrm{multi}} = \frac{1}{M}\sum_m b(r_{\min} - \min_{i,t}d_i(\tilde{q}_t^{(m)};\mathcal{E}))$
+shapes $\{\alpha_i\}$ and the
+gradient of the IPC potential near $\{d_i = 0\}$ by explicitly over-sampling near-contact
+configurations.
+Without it, the learned barrier is too soft near collision because
+the trajectories that matter most for collision safety are those
+starting near obstacles, which are under-represented in
+nominal rollouts.
+$\mathcal{L}_{\mathrm{multi}}$ explicitly over-samples these
+near-contact configurations.
+
+\subsection{Full Training Objective}
+\label{subsec:ch3:full_loss}
+
+\begin{equation}
+  \mathcal{L}(\xi)
+  = w_t\,\mathcal{L}_{\mathrm{traj}}
+  + w_v\,\mathcal{L}_{\mathrm{vel}}
+  + w_\gamma\,\mathcal{L}_{\mathrm{fric}}
+  + w_m\,\mathcal{L}_{\mathrm{multi}},
+  \label{eq:ch3:full_loss}
+\end{equation}
+with the term-to-Hamiltonian mapping:
+$\mathcal{L}_{\mathrm{traj}} \to \{\beta,\lambda\}$;\;
+$\mathcal{L}_{\mathrm{vel}} \to \Mass^{-1}$;\;
+$\mathcal{L}_{\mathrm{fric}} \to \gamma$;\;
+$\mathcal{L}_{\mathrm{multi}} \to \{\alpha_i\}$.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{figs/loss_to_hamiltonian_structure.png}
+    \caption{
+    Each training loss shapes a specific Hamiltonian component, which induces a corresponding force channel and observable behavior in the geometry-only learner.
+    }
+    \label{fig:ch3:loss_to_hamiltonian}
+\end{figure}
+
+% =======================================================================
+\section{Incremental Updates, Cache Management, and Efficiency}
+\label{sec:ch3:efficiency}
+% =======================================================================
+
+A key computational property of GRL-SNAM is that \emph{nothing
+is recomputed from scratch at inference time} as illustrated in Figure \ref{fig:ch3:incremental_vs_replan}.
+Table~\ref{tab:ch3:cache} makes the memory and update schedule explicit.
+
+\begin{table}[htbp]
+\centering
+\caption{%
+  \textbf{What is stored, updated incrementally, and wiped
+  in GRL-SNAM.}
+  The per-step cost is dominated by the $O(|\mathcal{C}_n|^3)$
+  Tikhonov solve, not by any full re-optimization.
+}
+\label{tab:ch3:cache}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.3}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llll}
+\toprule
+\textbf{Object} & \textbf{Stored where} & \textbf{Updated how} &
+\textbf{Cost per step} \\
+\midrule
+$\xi$ (meta-navigator weights) & Offline, fixed & Not updated at inference & — \\
+$\mathcal{E}_\tau$ (context) & Per-stage cache & Full recompute at $T_y$ boundary &
+  $O(C)$ distance evals \\
+$\zeta_n = (\eta_n,\mu_n)$ (coefficients) & Per-step cache &
+  Rank-1 Tikhonov solve \eqref{eq:ch3:coeff_update} &
+  $O(|\mathcal{C}_n|^3)$ \\
+$J_n$ (Jacobian estimate) & Per-step cache &
+  Rank-1 secant update \eqref{eq:ch3:jacobian} &
+  $O(3\,|\mathcal{C}_n|)$ \\
+$(\vec{q}_n,\Mom_n)$ (phase state) & Per-step &
+  Leapfrog~\eqref{eq:ch3:half_mom}--\eqref{eq:ch3:full_mom} &
+  $O(|\mathcal{C}_n|)$ grad evals \\
+Inactive $\alpha_i$ ($i \notin \mathcal{C}_n$) & Wiped &
+  Zeroed when obstacle leaves window & $O(1)$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\paragraph{Why this is efficient.}
+The meta-navigator $g_\xi$ runs once per stage as a forward pass:
+$O(1)$ in the number of integration steps.
+The Jacobian $J_n$ is a rank-1 update of $J_{n-1}$:
+no full Jacobian is ever computed; only the direction
+$(y_n - y_{n-1})(\zeta_n-\zeta_{n-1})^\top/\|\cdot\|^2$ is formed.
+The coefficient solve is a $(2+|\mathcal{C}_n|)$-dimensional
+Tikhonov problem, not a full network optimization.
+In a typical corridor, $|\mathcal{C}_n| \leq 8$, making the
+per-step cost trivially small.
+
+\paragraph{Why this is more robust than fixed estimation.}
+The smoothed Jacobian $J_n = \rho J_{n-1} + (1-\rho)\tilde{J}_n$
+accumulates a running estimate of how the observable $y_t$ responds
+to coefficient changes.
+This is a stateful, incrementally improving estimator and not a
+Jacobian computed once at initialization and held fixed.
+As the rollout progresses and more $(y,\zeta)$ pairs are observed,
+$J_n$ becomes more accurate, and the Tikhonov updates become more
+targeted.
+This is the sense in which GRL-SNAM provides
+\emph{stateful estimator improvement} without storing full trajectories.
+
+% =======================================================================
+\section{Strengths of the Geometry-Only Learner}
+\label{sec:ch3:strengths}
+% =======================================================================
+
+\paragraph{Explicit field topology.}
+The factored potential \eqref{eq:ch3:potential} makes the force-field
+topology inspectable: goal-attracting basins, repulsive walls, and
+dissipative channels are separate terms with separate coefficients.
+Any coefficient can be examined or corrected without touching the others.
+
+\paragraph{Stable online correction.}
+The passivity condition $\dot{H} \leq \Mom^\top\Mass^{-1}u_f$
+is enforced at training time by $\mathcal{L}_{\mathrm{fric}}$
+and monitored at inference by $\mathcal{L}_{\mathrm{pass}}$.
+Online updates \eqref{eq:ch3:coeff_update} respect the
+$\Pi_{\mathbb{R}_+}$ projection, keeping all coefficients
+non-negative and preserving the repulsive character of each barrier.
+
+\paragraph{Sample efficiency.}
+500k gradient steps of Hamiltonian-structured supervision achieve
+87.5\% success on the dungeon benchmark which is an order of magnitude
+fewer than the 3--8M steps required by PPO/SAC/TRPO baselines
+under the same interface.
+
+\paragraph{Minimal sensing effort.}
+$\rho_{\mathrm{map}} \leq 0.35$ on all test splits: the agent
+explores less than 35\% of the workspace because the energy landscape
+is refined only in the neighborhood actually visited.
+
+% =======================================================================
+\section{Limitations of Geometry-Only Structure}
+\label{sec:ch3:limitations}
+% =======================================================================
+
+Three structural gaps follow directly from the geometry-only
+restriction~\eqref{eq:ch3:context}.
+These are not tuning failures, they are architectural.
+
+\paragraph{L1: No material-risk force channel.}
+The potential \eqref{eq:ch3:potential} has no term for $\tilde{r}(\vec{c})$.
+Two regions with identical clearances but different material risk
+(safe grass vs.\ hazardous mud) receive identical forces.
+Adding a material-risk channel requires a new energy term, a new
+coefficient, a new gradient pathway, and a new loss term which is 
+precisely the enrichment of Chapter~\ref{chap:material}.
+
+\paragraph{L2: No tail-risk objective.}
+The training loss \eqref{eq:ch3:full_loss} optimizes expected
+trajectory quality.
+It cannot focus gradient signal on rare catastrophic outcomes
+(the tails of the rollout-cost distribution).
+This requires CVaR, a coherent risk measure not expressible as
+an expectation, together with the material-aware episode cost $J$.
+
+\paragraph{L3: Coefficient space saturated.}
+The coefficient vector $(\beta,\lambda,\{\alpha_i\},\gamma)$ controls
+only the weights of existing geometric terms.
+Adding a new \emph{type} of force (material repulsion, hazard barrier)
+requires a new slot in this vector, a new head in $g_\xi$, and a new
+input to the online update.
+None of this fits in the current coefficient space.
+
+\begin{quote}\itshape
+Geometry-only structured Hamiltonian learning yields a principled,
+sample-efficient, continually correctable navigation policy under
+local sensing but the resulting learner is blind to latent semantic
+risk, lacks a tail-risk objective, and has no energy-coefficient
+slot for material information.
+Chapter~\ref{chap:material} addresses all three by adding new energy
+terms, following the enrichment chain of Theorem~\ref{thm:ch5:enrichment}.
+\end{quote}

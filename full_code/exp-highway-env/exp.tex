@@ -1,0 +1,179 @@
+\section{Experiments and Results}
+
+\subsection{Setup and design rationale}
+\label{sec:exp_setup}
+
+We evaluate the contribution on two complementary benchmarks.
+DFC2018~\citep{dfc2018} is a real-world static-risk geographic navigation dataset; highway-env~\citep{highway-env} is a controlled dynamic-risk testbed for autonomous driving scenarios.
+Neither alone is sufficient to support the contribution, and their combination is by design.
+DFC answers the quantitative question (\emph{by how much does the method reduce risk on a real dataset?}) and is the dataset on which most prior work in this line~\citep{prev_work_1, prev_work_2} has been evaluated.
+Highway-env answers the mechanistic question (\emph{what kind of behavior does the method produce, and is that behavior interpretable?}) and provides scenario-level controllability that DFC cannot.
+This pairing addresses two specific concerns about prior work in this line~(\S\ref{sec:intro}): single-dataset risk (mitigated by adding a second simulator with a different risk modality) and oracle-access risk (mitigated by the noisy-oracle ablation in \S\ref{sec:exp_dfc} and by highway-env's procedurally-constructed risk field, which sidesteps the oracle question entirely).
+
+\paragraph{Matched local information.}
+Both stages and all baselines receive identical local observations on each benchmark.
+On DFC, this is a $32 \times 32$ ego-frame perception window with semantic land-cover and elevation channels, sampled at the agent's current position.
+On highway-env, this is the $15$-vehicle ego-frame neighbor list (positions, headings, dimensions) and the $32 \times 64$ procedurally-constructed risk patch derived from those kinematic states.
+Crucially, no method receives global state: there is no oracle observation of the destination heuristic on DFC, and no privileged access to the full traffic state on highway-env.
+The comparison is therefore between methods that compute risk from the same input information; differences in performance reflect differences in how that information is used, not in what is available.
+
+\paragraph{Architecture, training, and evaluation.}
+A single architecture (\textsc{CoefEnergyNetMaterial}, \S\ref{sec:method_architecture}) is used across both benchmarks; the only differences between DFC and highway-env experiments are the input observation construction and the integration timestep.
+Stage~1 is trained by imitation against a geometric reference policy (Dijkstra-derived for DFC, IDM-derived for highway-env).
+Stage~2 is warm-started from Stage~1, geometry-frozen, and trained with the three risk channels using the curriculum and on-policy buffer described in \S\ref{sec:method_stage2}.
+We evaluate at the policy frequency of each environment ($10$~Hz for highway-env, single-step planning for DFC).
+Implementation details and hyperparameters are reported in Appendix~\ref{app:implementation}.
+
+\subsection{DFC2018: quantitative risk reduction}
+\label{sec:exp_dfc}
+
+\paragraph{Setup.}
+We evaluate on the DFC2018 geographic navigation benchmark~\citep{dfc2018}, in which an agent must navigate from a randomly sampled origin to a randomly sampled destination through urban terrain with heterogeneous risk---a static-risk counterpart to the dynamic highway-env setting.
+The risk field is constructed from semantic land-cover labels (high-risk regions correspond to building footprints, water bodies, and vegetation; low-risk regions correspond to roads and traversable terrain).
+Three methods are compared on the held-out test split: \textsc{Dijkstra} (geometric shortest path on a grid graph), \textsc{Stage 1} (geometry-only Hamiltonian controller, our Stage~1 architecture without the risk channels), and \textsc{Stage 2} (Stage~1 + the three risk channels of \S\ref{sec:method_stage2}).
+All methods receive matched local information: a $32 \times 32$ ego-frame perception window with semantic and elevation channels.
+We report results on $\NUM{dfc_n_test}$ test trajectories aggregated across $\NUM{dfc_n_seeds}$ seeds.
+
+\paragraph{Headline result.}
+Table~\ref{tab:dfc_main} reports cumulative risk along the executed path, path length relative to Dijkstra, and oscillation (a measure of trajectory smoothness).
+Stage~2 reduces cumulative risk by $\NUM{dfc_risk_reduction_full}\%$ over Stage~1 on the full held-out test set, and by $\NUM{dfc_risk_reduction_highrisk}\%$ on the high-risk subset (trajectories where Dijkstra's shortest path passes through above-median risk; this is the stress-test).
+The path-length comparison is the load-bearing fact: Stage~2's executed paths are only $\NUM{dfc_path_length_increase}\%$ longer than Stage~1's, and oscillation is $\NUM{dfc_osc_factor}\times$ lower.
+Stage~2 is not finding a different geometric route; it is shaping the field along essentially the same scaffold to reduce risk exposure.
+This is the enrichment principle in operation: the geometric backbone persists, the field gets reshaped along a structurally consistent path.
+
+\paragraph{Noisy-oracle ablation.}
+A reasonable concern is that Stage~2's advantage depends on a clean material/risk oracle that would be unavailable in deployment.
+We test this by injecting temporally-correlated noise into the risk field (Ornstein-Uhlenbeck process with correlation length $\NUM{dfc_oracle_corrlen}$~m and varying amplitude $\sigma$).
+Table~\ref{tab:dfc_noisy_oracle} reports Stage~2's risk reduction over Stage~1 at $\sigma \in \{0, 0.1, 0.2, 0.3\}$.
+The advantage degrades smoothly: from $\NUM{dfc_risk_reduction_sigma0}\%$ at $\sigma = 0$ to $\NUM{dfc_risk_reduction_sigma3}\%$ at $\sigma = 0.3$, with no knife-edge collapse.
+The method does not require a perfect risk oracle to be useful; it requires only that the oracle's signal-to-noise ratio remain above a graceful threshold.
+
+\paragraph{Reading the DFC results in light of highway-env.}
+The 56\%-class numbers establish that Stage~2 produces substantial quantitative risk reduction; they do not, on their own, establish that the reduction reflects principled risk-aware behavior rather than statistical regularities specific to the DFC dataset.
+The highway-env results in \S\ref{sec:exp_highway} provide that complementary evidence---demonstrating that the same architecture, evaluated on dynamic obstacles in a controllable scenario family, exhibits context-sensitive behavior with a clean paired-comparison story and a lateral-channel ablation.
+Together, the two benchmarks support the contribution from both directions: DFC answers \emph{by how much}, and highway-env answers \emph{in what way}.
+
+\subsection{Highway-env: context-sensitive risk-shaping}
+\label{sec:exp_highway}
+
+\paragraph{Setup.}
+We evaluate on three highway driving scenarios in highway-env~\citep{highway-env}, a controlled dynamic-risk testbed (not a realism benchmark; see \S\ref{sec:exp_limitations}).
+\textsc{Default} uses the standard \texttt{highway-v0} configuration with $50$ background vehicles in $4$ lanes.
+\textsc{Slow leader} is an authored scenario placing a single IDM vehicle with target speed $10$~m/s in ego's lane $30$~m ahead, with the adjacent passing lane kept clear at spawn---a passable obstacle.
+\textsc{Slow leader (boxed)} is the same blocking geometry with both adjacent lanes occupied by background vehicles---an unpassable obstacle, included as an explicit falsifier.
+Stage~1 is trained via IDM imitation on a union of \textsc{default} and \textsc{slow leader} demonstrations~(\S\ref{sec:method_stage1}).
+Stage~2 is warm-started from Stage~1, geometry-frozen, and trained with the three risk channels of \S\ref{sec:method_stage2}.
+All evaluations report $20$ paired episodes per scenario on identical seeds; both models share the same matched local information (the $15$-vehicle ego-frame neighbor list and the procedurally constructed risk patch).
+
+\paragraph{Headline result.}
+Table~\ref{tab:paired_comparison} reports the primary paired metrics per scenario.
+The numbers tell three distinct stories.
+On \textsc{default}, Stage~2 improves robustness rather than speed: collision rate drops from $5\%$ to $0\%$, off-road rate drops from $95\%$ to $0\%$, mean speed falls from $24.66$ to $22.68$~m/s, and lane-keeping error drops from $5.75$~m to $0.17$~m.
+On \textsc{slow leader}, Stage~2 transitions from total failure to clean success: collision rate drops from $100\%$ to $0\%$, lane changes rise from $0.00$ to $1.00$ per episode, and mean speed increases from $23.87$ to $26.31$~m/s.
+On \textsc{slow leader (boxed)}, both stages fail at $100\%$ collision rate.
+This last result is intentional: we do not paper over it.
+The boxed scenario tests whether Stage~2 has discovered a generalizable risk-aware policy or has merely learned to swerve when the asymmetric risk-field gradient supports it; the architecture, by design, can only do the latter.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Paired Stage 1 vs.\ Stage 2 across scenarios.} 20 paired episodes per scenario, identical seeds. Stage 2 preserves Stage 1's default-scenario performance; produces qualitatively new behavior on slow leader (lane change, no crash); correctly defers in boxed (no escape geometry).}
+\label{tab:paired_comparison}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{Default} & \multicolumn{2}{c}{Slow leader} & \multicolumn{2}{c}{Boxed} \\
+ & S1 & S2 & S1 & S2 & S1 & S2 \\
+\midrule
+Crash rate & $5.0\%$ & $0.0\%$ & $100.0\%$ & $0.0\%$ & $100.0\%$ & $100.0\%$ \\
+Mean speed (m/s) & $24.66\pm0.87$ & $22.68\pm1.31$ & $23.87\pm0.00$ & $26.31\pm0.00$ & $22.92\pm0.00$ & $22.33\pm0.00$ \\
+Lane changes/ep & $0.95\pm0.74$ & $0.00\pm0.00$ & $0.00\pm0.00$ & $1.00\pm0.00$ & $0.00\pm0.00$ & $0.00\pm0.00$ \\
+$|a_{\text{lat}}|$ p95 & $1.65\pm0.54$ & $1.69\pm1.08$ & $0.00\pm0.00$ & $7.67\pm0.00$ & $0.51\pm0.00$ & $0.69\pm0.00$ \\
+LKE mean (m) & $5.75\pm2.53$ & $0.17\pm0.06$ & $0.00\pm0.00$ & $0.65\pm0.00$ & $0.09\pm0.00$ & $0.09\pm0.00$ \\
+Cum risk (eval) & $2.82\pm4.31$ & $5.94\pm5.57$ & $5.67\pm0.00$ & $6.33\pm0.00$ & $3.45\pm0.00$ & $3.75\pm0.00$ \\
+Min clearance (m) & $7.60\pm3.12$ & $4.63\pm3.39$ & $3.05\pm0.00$ & $1.16\pm0.00$ & $3.88\pm0.00$ & $3.63\pm0.00$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/figure2_paired_rollout.pdf}
+    \caption{\textbf{Slow-leader interaction storyboard on a matched seed.} Four snapshots isolate the decision window in which Stage~2 initiates the lane change while Stage~1 stays on the geometric scaffold and crashes. The bottom traces show the corresponding divergence in lateral position and minimum clearance over time.}
+    \label{fig:paired_rollout}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/figure3_outcome_summary.pdf}
+    \caption{\textbf{Outcome-level summary across scenarios.} Crash rate, off-road rate, progress, and lane changes isolate the contribution more directly than force-level summaries: Stage~2 removes the default off-road pathology, passes the solvable slow-leader case, and does not hallucinate a boxed escape.}
+    \label{fig:outcome_summary}
+\end{figure}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures_v3/figure4_paired_transitions.pdf}
+    \caption{\textbf{Paired per-seed transition plot with scenario context.} Top-row context snapshots make the paired improvement interpretable: only the passable slow-leader geometry flips from Stage~1 failure to Stage~2 success, while boxed remains blocked.}
+    \label{fig:paired_transitions}
+\end{figure*}
+
+\paragraph{Reading the highway-env figures together.}
+Figure~\ref{fig:outcome_summary} is the top-line comparison: it shows that Stage~2 does not merely trade one failure mode for another, but instead selectively changes behavior where an escape exists.
+Figure~\ref{fig:paired_transitions} makes the same point seed-by-seed: the slow-leader scenario exhibits a clean Stage~1 $\rightarrow$ Stage~2 transition, while the boxed scenario does not.
+Figure~\ref{fig:paired_rollout} then shows what that transition looks like in closed loop: Stage~2 departs from the Stage~1 scaffold only in the trigger window where the pass becomes locally justified.
+
+\paragraph{Lateral-channel ablation.}
+Disabling $\mu_{\text{lat}}$ at inference in the trained Stage~2 checkpoint destroys the slow-leader improvement while leaving the other two scenarios essentially unchanged.
+On \textsc{slow leader}, the same checkpoint moves from $0\%$ crash and $1.00$ lane changes per episode to $100\%$ crash and $0.00$ lane changes per episode.
+On \textsc{default}, Stage~2 remains at $0\%$ crash with $0.00$ lane changes per episode, and on \textsc{boxed} it remains at $100\%$ crash with $0.00$ lane changes per episode.
+This is a clean same-checkpoint ablation: the lateral channel is carrying the pass maneuver.
+
+\paragraph{Enrichment-principle ablation.}
+Table~\ref{tab:enrichment_ablation} reports the currently available frozen-vs-unfrozen comparison.
+This is not yet a perfectly matched freeze-only rerun, so we treat it as provisional rather than definitive.
+Even so, the signal is consistent with the enrichment principle: the unfrozen run raises validation $L_{\text{traj}}$ from $1.278$ to $5.393$ (a $4.22\times$ degradation) and lowers average closed-loop speed from $22.45$ to $17.10$~m/s.
+Frozen Stage~2 preserves the Stage~1 scaffold substantially better while delivering the highway-env behavior reported above.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Enrichment ablation.} Freezing Stage 1 geometry preserves the scaffold while Stage 2 trains the risk and lateral channels on top. Missing runs are rendered as dashes rather than dropped.}
+\label{tab:enrichment_ablation}
+\small
+\begin{tabular}{lrrrrrr}
+\toprule
+ & val $L_{\text{traj}}$ & val $L_{\text{nav}}$ & $\mu_{\text{lat}}$ raw & max-scn crash & avg-scn crash & avg-scn speed (m/s) \\
+\midrule
+Stage 2 (unfrozen geometry) & $5.393$ & $13.145$ & --- & $0.0\%$ & $0.0\%$ & $18.74$ \\
+Stage 2 (frozen geometry) & $1.278$ & $10.279$ & $1.51$ & $100.0\%$ & $33.3\%$ & $22.90$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Limitations}
+\label{sec:exp_limitations}
+
+The results above support a specific, scoped contribution.
+We identify four limitations that bound the claim.
+
+\paragraph{Architectural ceiling on geometrically-blocked scenarios.}
+The boxed scenario in \S\ref{sec:exp_highway} is not a tuning failure; it is an architectural one.
+The lateral channel can produce force only when the side-probe asymmetry is non-zero, and longitudinal braking-at-distance is bounded by Stage~1's barrier mechanism, which only activates within $d_{\min} < d_{\text{hat}}$ ($10$~m in our experiments).
+Scenarios that require either lateral evasion with no asymmetric escape or hard braking from distance fall outside the architecture's reach.
+Resolving this would require either extending the soft-risk channel to longer ranges, adding an emergency-braking force channel triggered by collision-imminence prediction, or relaxing the geometry-frozen constraint for selected attention coefficients---all of which we leave to future work.
+
+\paragraph{Surrogate--deployment consistency.}
+Stage~2 trains against a frozen-coefficient surrogate that approximates the deployment dynamics.
+On the default \texttt{highway-v0} distribution, we measure surrogate-vs-deployment trajectory drift of $2.05$~m median and $3.39$~m p95 over a $2$~s horizon; this is structural bias from the frozen-neighbor approximation rather than chaotic divergence (Appendix~\ref{app:sim2sim}).
+Stage~2's behavior is calibrated against a surrogate that systematically differs from deployment by this measured amount.
+The bias did not prevent learning the lane-change behavior, but the absolute numbers in \S\ref{sec:exp_highway} should be read with this caveat.
+
+\paragraph{Procedurally-constructed risk field on highway-env.}
+The risk patch on highway-env is constructed from kinematic state via the procedure of \S\ref{sec:method_risk_field}, not learned from raw perception.
+This is appropriate for evaluating the risk-shaping mechanism in a controlled setting, but it does not address the question of whether the architecture would behave the same way given a learned risk encoder operating on visual or LIDAR perception.
+We treat highway-env as a controlled dynamic-risk testbed, not a realism benchmark.
+
+\paragraph{Imitation distribution.}
+Stage~1 is trained against IDM (highway-env) and Dijkstra (DFC) as imitation sources.
+Both are deterministic-class reference policies with known behavioral biases (IDM's politeness parameter, Dijkstra's edge-weight sensitivity).
+A different imitation source would produce a different geometric scaffold, and consequently a different family of behaviors that Stage~2 could enrich.
+The enrichment principle is independent of the imitation source, but the empirical results in this paper are conditional on the specific Stage~1 distributions used.

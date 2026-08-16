@@ -1,0 +1,127 @@
+{
+  "repair_training_config": {
+    "seed": 27370,
+    "epochs": 12,
+    "batch_size": 256,
+    "learning_rate": 0.002,
+    "weight_decay": 0.0001,
+    "stride": 3,
+    "waypoint_stride": 6,
+    "patch_size": 32,
+    "horizon_cells": 8,
+    "long_horizon_cells": 24,
+    "hard_margin_m": 1.0,
+    "improvement_margin": 0.1,
+    "horizon_seconds": 1.0,
+    "resolution_m_per_cell": 0.5,
+    "min_effect_m": 0.5,
+    "active_weight": 8.0,
+    "inactive_weight": 1.0,
+    "effect_weight": 12.0,
+    "target_weight": 1.0,
+    "separation_weight": 1.0,
+    "normalized_separation": 0.25,
+    "target_far": 0.25,
+    "lam_soft_max": 5.0,
+    "lam_hard_max": 10.0,
+    "mu_lat_max": 5.0,
+    "train_risk_encoder": true,
+    "preservation_weight": 10.0,
+    "device": "cpu",
+    "threads": 4
+  },
+  "provenance": {
+    "train_manifest": "/mnt/data/adityas/material-aware-grl-snam-clean/repair_experiments/splits/train_static.json",
+    "train_manifest_sha256": "3ad3164fe46c788001f7b54ab8af3537b8da2bf396a2c169b1fdf9f91b1a8011",
+    "validation_manifest": "/mnt/data/adityas/material-aware-grl-snam-clean/repair_experiments/splits/validation_static.json",
+    "validation_manifest_sha256": "ff95aeadf405d88e159c3cde55e257fd99de5051c028d06807f4ba9ca9d3ce08",
+    "sealed_test_loaded": false,
+    "train_sequences": [
+      "00000",
+      "00001",
+      "00002"
+    ],
+    "validation_sequences": [
+      "00003"
+    ],
+    "bev_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis/cache/rellis_bev_all_seqbalanced_2500",
+    "initialization": {
+      "checkpoint": "/mnt/data/adityas/GRL-SNAM/exp-rellis/checkpoints/rellis_stage2_decision_mid_ep12/best.pt",
+      "checkpoint_sha256": "7ccb38ca448f56946f07c882c8efc8d5e193dd085e2d898d26b7044ff96dc090",
+      "missing_initialized_parameters": [],
+      "unexpected_parameters": [],
+      "trainable_parameter_names": [
+        "risk_enc.net.0.weight",
+        "risk_enc.net.0.bias",
+        "risk_enc.net.2.weight",
+        "risk_enc.net.2.bias",
+        "risk_enc.net.4.weight",
+        "risk_enc.net.4.bias",
+        "risk_enc.net.8.weight",
+        "risk_enc.net.8.bias",
+        "lam_soft_head.0.weight",
+        "lam_soft_head.0.bias",
+        "lam_soft_head.2.weight",
+        "lam_soft_head.2.bias"
+      ],
+      "trainable_parameter_count": 97361,
+      "total_parameter_count": 207254
+    },
+    "train_data": {
+      "episodes": 1350,
+      "decisions": 31517,
+      "labels": {
+        "active": 6259,
+        "inactive": 25258
+      },
+      "labels_by_regime": {
+        "R1": {
+          "active": 6259,
+          "inactive": 4372
+        },
+        "R3": {
+          "active": 0,
+          "inactive": 10530
+        },
+        "R2": {
+          "active": 0,
+          "inactive": 10356
+        }
+      },
+      "seconds": 63.844015694980044
+    },
+    "validation_data": {
+      "episodes": 450,
+      "decisions": 10243,
+      "labels": {
+        "active": 2322,
+        "inactive": 7921
+      },
+      "labels_by_regime": {
+        "R1": {
+          "active": 2322,
+          "inactive": 1122
+        },
+        "R3": {
+          "active": 0,
+          "inactive": 3357
+        },
+        "R2": {
+          "active": 0,
+          "inactive": 3442
+        }
+      },
+      "seconds": 22.54386703800992
+    },
+    "frozen_feature_cache": {
+      "train_seconds": 37.75298881600611,
+      "validation_seconds": 9.210506449016975,
+      "feature_dim": 128,
+      "policy": "Cached frozen geometry context and teacher outputs once; retained raw risk patches because risk_enc remains trainable."
+    },
+    "development_limits": {
+      "max_train_episodes": null,
+      "max_validation_episodes": null
+    }
+  }
+}

@@ -1,0 +1,6462 @@
+[
+  {
+    "episode_id": "00008",
+    "source_episode_id": "00000_001707_00",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00008/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00009",
+    "source_episode_id": "00000_001707_01",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00009/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      68,
+      75
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00010",
+    "source_episode_id": "00000_001707_02",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00010/episode.pt",
+    "start_rc": [
+      58,
+      10
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00011",
+    "source_episode_id": "00000_001707_03",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00011/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      68,
+      75
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00012",
+    "source_episode_id": "00000_001707_04",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00012/episode.pt",
+    "start_rc": [
+      55,
+      16
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00013",
+    "source_episode_id": "00000_001707_05",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00013/episode.pt",
+    "start_rc": [
+      58,
+      11
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00014",
+    "source_episode_id": "00000_001707_06",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00014/episode.pt",
+    "start_rc": [
+      58,
+      11
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00015",
+    "source_episode_id": "00000_001707_07",
+    "scene_id": "00000_001707",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00015/episode.pt",
+    "start_rc": [
+      58,
+      10
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00032",
+    "source_episode_id": "00000_001710_00",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00032/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      58,
+      83
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00033",
+    "source_episode_id": "00000_001710_01",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00033/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      58,
+      83
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00034",
+    "source_episode_id": "00000_001710_02",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00034/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      50,
+      84
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00035",
+    "source_episode_id": "00000_001710_03",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00035/episode.pt",
+    "start_rc": [
+      46,
+      13
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00036",
+    "source_episode_id": "00000_001710_04",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00036/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00037",
+    "source_episode_id": "00000_001710_05",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00037/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00038",
+    "source_episode_id": "00000_001710_06",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00038/episode.pt",
+    "start_rc": [
+      46,
+      13
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00039",
+    "source_episode_id": "00000_001710_07",
+    "scene_id": "00000_001710",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00039/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00040",
+    "source_episode_id": "00000_001711_00",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00040/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00041",
+    "source_episode_id": "00000_001711_01",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00041/episode.pt",
+    "start_rc": [
+      46,
+      12
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00042",
+    "source_episode_id": "00000_001711_02",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00042/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00043",
+    "source_episode_id": "00000_001711_03",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00043/episode.pt",
+    "start_rc": [
+      46,
+      12
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00044",
+    "source_episode_id": "00000_001711_04",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00044/episode.pt",
+    "start_rc": [
+      58,
+      10
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00045",
+    "source_episode_id": "00000_001711_05",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00045/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00046",
+    "source_episode_id": "00000_001711_06",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00046/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      66,
+      89
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00047",
+    "source_episode_id": "00000_001711_07",
+    "scene_id": "00000_001711",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00047/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00120",
+    "source_episode_id": "00000_001721_00",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00120/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00121",
+    "source_episode_id": "00000_001721_01",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00121/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00122",
+    "source_episode_id": "00000_001721_02",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00122/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00123",
+    "source_episode_id": "00000_001721_03",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00123/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      59,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00124",
+    "source_episode_id": "00000_001721_04",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00124/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00125",
+    "source_episode_id": "00000_001721_05",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00125/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00126",
+    "source_episode_id": "00000_001721_06",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00126/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00127",
+    "source_episode_id": "00000_001721_07",
+    "scene_id": "00000_001721",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00127/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00136",
+    "source_episode_id": "00000_001723_00",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00136/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00137",
+    "source_episode_id": "00000_001723_01",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00137/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00138",
+    "source_episode_id": "00000_001723_02",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00138/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00139",
+    "source_episode_id": "00000_001723_03",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00139/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00140",
+    "source_episode_id": "00000_001723_04",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00140/episode.pt",
+    "start_rc": [
+      46,
+      12
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00141",
+    "source_episode_id": "00000_001723_05",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00141/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00142",
+    "source_episode_id": "00000_001723_06",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00142/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00143",
+    "source_episode_id": "00000_001723_07",
+    "scene_id": "00000_001723",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00143/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00184",
+    "source_episode_id": "00000_001729_00",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00184/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00185",
+    "source_episode_id": "00000_001729_01",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00185/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      41,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00186",
+    "source_episode_id": "00000_001729_02",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00186/episode.pt",
+    "start_rc": [
+      46,
+      12
+    ],
+    "goal_rc": [
+      60,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00187",
+    "source_episode_id": "00000_001729_03",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00187/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00188",
+    "source_episode_id": "00000_001729_04",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00188/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      58,
+      73
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00189",
+    "source_episode_id": "00000_001729_05",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00189/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      58,
+      73
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00190",
+    "source_episode_id": "00000_001729_06",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00190/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      60,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00191",
+    "source_episode_id": "00000_001729_07",
+    "scene_id": "00000_001729",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00191/episode.pt",
+    "start_rc": [
+      58,
+      16
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00192",
+    "source_episode_id": "00000_001730_00",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00192/episode.pt",
+    "start_rc": [
+      58,
+      10
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00193",
+    "source_episode_id": "00000_001730_01",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00193/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      49,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00194",
+    "source_episode_id": "00000_001730_02",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00194/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      49,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00195",
+    "source_episode_id": "00000_001730_03",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00195/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      66,
+      83
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00196",
+    "source_episode_id": "00000_001730_04",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00196/episode.pt",
+    "start_rc": [
+      58,
+      17
+    ],
+    "goal_rc": [
+      65,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00197",
+    "source_episode_id": "00000_001730_05",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00197/episode.pt",
+    "start_rc": [
+      58,
+      17
+    ],
+    "goal_rc": [
+      59,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00198",
+    "source_episode_id": "00000_001730_06",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00198/episode.pt",
+    "start_rc": [
+      46,
+      18
+    ],
+    "goal_rc": [
+      59,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00199",
+    "source_episode_id": "00000_001730_07",
+    "scene_id": "00000_001730",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00199/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00200",
+    "source_episode_id": "00000_001733_00",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00200/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      49,
+      89
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00201",
+    "source_episode_id": "00000_001733_01",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00201/episode.pt",
+    "start_rc": [
+      45,
+      6
+    ],
+    "goal_rc": [
+      49,
+      89
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00202",
+    "source_episode_id": "00000_001733_02",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00202/episode.pt",
+    "start_rc": [
+      58,
+      17
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00203",
+    "source_episode_id": "00000_001733_03",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00203/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00204",
+    "source_episode_id": "00000_001733_04",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00204/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      65,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00205",
+    "source_episode_id": "00000_001733_05",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00205/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      68,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00206",
+    "source_episode_id": "00000_001733_06",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00206/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      59,
+      79
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00207",
+    "source_episode_id": "00000_001733_07",
+    "scene_id": "00000_001733",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00207/episode.pt",
+    "start_rc": [
+      58,
+      10
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00216",
+    "source_episode_id": "00000_001737_00",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00216/episode.pt",
+    "start_rc": [
+      23,
+      16
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00217",
+    "source_episode_id": "00000_001737_01",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00217/episode.pt",
+    "start_rc": [
+      23,
+      16
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00218",
+    "source_episode_id": "00000_001737_02",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00218/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00219",
+    "source_episode_id": "00000_001737_03",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00219/episode.pt",
+    "start_rc": [
+      24,
+      10
+    ],
+    "goal_rc": [
+      66,
+      83
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00220",
+    "source_episode_id": "00000_001737_04",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00220/episode.pt",
+    "start_rc": [
+      23,
+      16
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00221",
+    "source_episode_id": "00000_001737_05",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00221/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      66,
+      83
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00222",
+    "source_episode_id": "00000_001737_06",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00222/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00223",
+    "source_episode_id": "00000_001737_07",
+    "scene_id": "00000_001737",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00223/episode.pt",
+    "start_rc": [
+      24,
+      10
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00232",
+    "source_episode_id": "00000_001740_00",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00232/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      66,
+      73
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00233",
+    "source_episode_id": "00000_001740_01",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00233/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00234",
+    "source_episode_id": "00000_001740_02",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00234/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      50,
+      81
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00235",
+    "source_episode_id": "00000_001740_03",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00235/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00236",
+    "source_episode_id": "00000_001740_04",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00236/episode.pt",
+    "start_rc": [
+      24,
+      14
+    ],
+    "goal_rc": [
+      67,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00237",
+    "source_episode_id": "00000_001740_05",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00237/episode.pt",
+    "start_rc": [
+      24,
+      11
+    ],
+    "goal_rc": [
+      50,
+      81
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00238",
+    "source_episode_id": "00000_001740_06",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00238/episode.pt",
+    "start_rc": [
+      23,
+      16
+    ],
+    "goal_rc": [
+      58,
+      75
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00239",
+    "source_episode_id": "00000_001740_07",
+    "scene_id": "00000_001740",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00239/episode.pt",
+    "start_rc": [
+      24,
+      11
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00272",
+    "source_episode_id": "00000_001747_00",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00272/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00273",
+    "source_episode_id": "00000_001747_01",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00273/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      66,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00274",
+    "source_episode_id": "00000_001747_02",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00274/episode.pt",
+    "start_rc": [
+      46,
+      13
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00275",
+    "source_episode_id": "00000_001747_03",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00275/episode.pt",
+    "start_rc": [
+      45,
+      8
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00276",
+    "source_episode_id": "00000_001747_04",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00276/episode.pt",
+    "start_rc": [
+      46,
+      13
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00277",
+    "source_episode_id": "00000_001747_05",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00277/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00278",
+    "source_episode_id": "00000_001747_06",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00278/episode.pt",
+    "start_rc": [
+      58,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00279",
+    "source_episode_id": "00000_001747_07",
+    "scene_id": "00000_001747",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00279/episode.pt",
+    "start_rc": [
+      46,
+      13
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00328",
+    "source_episode_id": "00000_001756_00",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00328/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00329",
+    "source_episode_id": "00000_001756_01",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00329/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00330",
+    "source_episode_id": "00000_001756_02",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00330/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00331",
+    "source_episode_id": "00000_001756_03",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00331/episode.pt",
+    "start_rc": [
+      45,
+      19
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00332",
+    "source_episode_id": "00000_001756_04",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00332/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00333",
+    "source_episode_id": "00000_001756_05",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00333/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00334",
+    "source_episode_id": "00000_001756_06",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00334/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00335",
+    "source_episode_id": "00000_001756_07",
+    "scene_id": "00000_001756",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00335/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00448",
+    "source_episode_id": "00000_001808_00",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00448/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00449",
+    "source_episode_id": "00000_001808_01",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00449/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00450",
+    "source_episode_id": "00000_001808_02",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00450/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00451",
+    "source_episode_id": "00000_001808_03",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00451/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00452",
+    "source_episode_id": "00000_001808_04",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00452/episode.pt",
+    "start_rc": [
+      57,
+      18
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00453",
+    "source_episode_id": "00000_001808_05",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00453/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00454",
+    "source_episode_id": "00000_001808_06",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00454/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00455",
+    "source_episode_id": "00000_001808_07",
+    "scene_id": "00000_001808",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00455/episode.pt",
+    "start_rc": [
+      56,
+      9
+    ],
+    "goal_rc": [
+      41,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00464",
+    "source_episode_id": "00000_001810_00",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00464/episode.pt",
+    "start_rc": [
+      56,
+      9
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00465",
+    "source_episode_id": "00000_001810_01",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00465/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00466",
+    "source_episode_id": "00000_001810_02",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00466/episode.pt",
+    "start_rc": [
+      56,
+      9
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00467",
+    "source_episode_id": "00000_001810_03",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00467/episode.pt",
+    "start_rc": [
+      57,
+      18
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00468",
+    "source_episode_id": "00000_001810_04",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00468/episode.pt",
+    "start_rc": [
+      45,
+      19
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00469",
+    "source_episode_id": "00000_001810_05",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00469/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00470",
+    "source_episode_id": "00000_001810_06",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00470/episode.pt",
+    "start_rc": [
+      56,
+      9
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00471",
+    "source_episode_id": "00000_001810_07",
+    "scene_id": "00000_001810",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00471/episode.pt",
+    "start_rc": [
+      45,
+      19
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00480",
+    "source_episode_id": "00000_001812_00",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00480/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00481",
+    "source_episode_id": "00000_001812_01",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00481/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      41,
+      81
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00482",
+    "source_episode_id": "00000_001812_02",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00482/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00483",
+    "source_episode_id": "00000_001812_03",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00483/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00484",
+    "source_episode_id": "00000_001812_04",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00484/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00485",
+    "source_episode_id": "00000_001812_05",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00485/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00486",
+    "source_episode_id": "00000_001812_06",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00486/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00487",
+    "source_episode_id": "00000_001812_07",
+    "scene_id": "00000_001812",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00487/episode.pt",
+    "start_rc": [
+      45,
+      19
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00504",
+    "source_episode_id": "00000_001815_00",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00504/episode.pt",
+    "start_rc": [
+      49,
+      17
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00505",
+    "source_episode_id": "00000_001815_01",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00505/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00506",
+    "source_episode_id": "00000_001815_02",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00506/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      42,
+      80
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00507",
+    "source_episode_id": "00000_001815_03",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00507/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00508",
+    "source_episode_id": "00000_001815_04",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00508/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00509",
+    "source_episode_id": "00000_001815_05",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00509/episode.pt",
+    "start_rc": [
+      45,
+      19
+    ],
+    "goal_rc": [
+      49,
+      91
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00510",
+    "source_episode_id": "00000_001815_06",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00510/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00511",
+    "source_episode_id": "00000_001815_07",
+    "scene_id": "00000_001815",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00511/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      49,
+      81
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00520",
+    "source_episode_id": "00000_001817_00",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00520/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00521",
+    "source_episode_id": "00000_001817_01",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00521/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00522",
+    "source_episode_id": "00000_001817_02",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00522/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00523",
+    "source_episode_id": "00000_001817_03",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00523/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00524",
+    "source_episode_id": "00000_001817_04",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00524/episode.pt",
+    "start_rc": [
+      57,
+      14
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00525",
+    "source_episode_id": "00000_001817_05",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00525/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00526",
+    "source_episode_id": "00000_001817_06",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00526/episode.pt",
+    "start_rc": [
+      56,
+      9
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00527",
+    "source_episode_id": "00000_001817_07",
+    "scene_id": "00000_001817",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00527/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00528",
+    "source_episode_id": "00000_001818_00",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00528/episode.pt",
+    "start_rc": [
+      44,
+      8
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00529",
+    "source_episode_id": "00000_001818_01",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00529/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00530",
+    "source_episode_id": "00000_001818_02",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00530/episode.pt",
+    "start_rc": [
+      44,
+      8
+    ],
+    "goal_rc": [
+      49,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00531",
+    "source_episode_id": "00000_001818_03",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00531/episode.pt",
+    "start_rc": [
+      45,
+      19
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00532",
+    "source_episode_id": "00000_001818_04",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00532/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00533",
+    "source_episode_id": "00000_001818_05",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00533/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00534",
+    "source_episode_id": "00000_001818_06",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00534/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00535",
+    "source_episode_id": "00000_001818_07",
+    "scene_id": "00000_001818",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00535/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00536",
+    "source_episode_id": "00000_001821_00",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00536/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00537",
+    "source_episode_id": "00000_001821_01",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00537/episode.pt",
+    "start_rc": [
+      45,
+      12
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00538",
+    "source_episode_id": "00000_001821_02",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00538/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      50,
+      81
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00539",
+    "source_episode_id": "00000_001821_03",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00539/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00540",
+    "source_episode_id": "00000_001821_04",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00540/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00541",
+    "source_episode_id": "00000_001821_05",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00541/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00542",
+    "source_episode_id": "00000_001821_06",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00542/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00543",
+    "source_episode_id": "00000_001821_07",
+    "scene_id": "00000_001821",
+    "split": "train",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00543/episode.pt",
+    "start_rc": [
+      57,
+      15
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00713",
+    "source_episode_id": "00000_001863_00",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00713/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      65,
+      76
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00714",
+    "source_episode_id": "00000_001863_01",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00714/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00715",
+    "source_episode_id": "00000_001863_02",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00715/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00716",
+    "source_episode_id": "00000_001863_03",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00716/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00717",
+    "source_episode_id": "00000_001863_04",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00717/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      65,
+      89
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00718",
+    "source_episode_id": "00000_001863_05",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00718/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00719",
+    "source_episode_id": "00000_001863_06",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00719/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00720",
+    "source_episode_id": "00000_001863_07",
+    "scene_id": "00000_001863",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00720/episode.pt",
+    "start_rc": [
+      21,
+      23
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00742",
+    "source_episode_id": "00000_001881_00",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00742/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00743",
+    "source_episode_id": "00000_001881_01",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00743/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00744",
+    "source_episode_id": "00000_001881_02",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00744/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00745",
+    "source_episode_id": "00000_001881_03",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00745/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00746",
+    "source_episode_id": "00000_001881_04",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00746/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00747",
+    "source_episode_id": "00000_001881_05",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00747/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      41,
+      73
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00748",
+    "source_episode_id": "00000_001881_06",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00748/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00749",
+    "source_episode_id": "00000_001881_07",
+    "scene_id": "00000_001881",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00749/episode.pt",
+    "start_rc": [
+      25,
+      6
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00751",
+    "source_episode_id": "00000_001884_00",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00751/episode.pt",
+    "start_rc": [
+      26,
+      6
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00752",
+    "source_episode_id": "00000_001884_01",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00752/episode.pt",
+    "start_rc": [
+      26,
+      6
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00753",
+    "source_episode_id": "00000_001884_02",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00753/episode.pt",
+    "start_rc": [
+      26,
+      6
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00754",
+    "source_episode_id": "00000_001884_03",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00754/episode.pt",
+    "start_rc": [
+      26,
+      6
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00755",
+    "source_episode_id": "00000_001884_04",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00755/episode.pt",
+    "start_rc": [
+      42,
+      14
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00756",
+    "source_episode_id": "00000_001884_05",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00756/episode.pt",
+    "start_rc": [
+      26,
+      6
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00757",
+    "source_episode_id": "00000_001884_06",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00757/episode.pt",
+    "start_rc": [
+      26,
+      6
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00758",
+    "source_episode_id": "00000_001884_07",
+    "scene_id": "00000_001884",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00758/episode.pt",
+    "start_rc": [
+      26,
+      6
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00775",
+    "source_episode_id": "00000_001897_00",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00775/episode.pt",
+    "start_rc": [
+      25,
+      10
+    ],
+    "goal_rc": [
+      51,
+      75
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00776",
+    "source_episode_id": "00000_001897_01",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00776/episode.pt",
+    "start_rc": [
+      25,
+      12
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00777",
+    "source_episode_id": "00000_001897_02",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00777/episode.pt",
+    "start_rc": [
+      25,
+      12
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00778",
+    "source_episode_id": "00000_001897_03",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00778/episode.pt",
+    "start_rc": [
+      25,
+      10
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00779",
+    "source_episode_id": "00000_001897_04",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00779/episode.pt",
+    "start_rc": [
+      25,
+      12
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00780",
+    "source_episode_id": "00000_001897_05",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00780/episode.pt",
+    "start_rc": [
+      25,
+      12
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00781",
+    "source_episode_id": "00000_001897_06",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00781/episode.pt",
+    "start_rc": [
+      25,
+      10
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00782",
+    "source_episode_id": "00000_001897_07",
+    "scene_id": "00000_001897",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00782/episode.pt",
+    "start_rc": [
+      25,
+      10
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00783",
+    "source_episode_id": "00000_001898_00",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00783/episode.pt",
+    "start_rc": [
+      26,
+      12
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00784",
+    "source_episode_id": "00000_001898_01",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00784/episode.pt",
+    "start_rc": [
+      26,
+      14
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00785",
+    "source_episode_id": "00000_001898_02",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00785/episode.pt",
+    "start_rc": [
+      26,
+      12
+    ],
+    "goal_rc": [
+      42,
+      75
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00786",
+    "source_episode_id": "00000_001898_03",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00786/episode.pt",
+    "start_rc": [
+      26,
+      14
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00787",
+    "source_episode_id": "00000_001898_04",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00787/episode.pt",
+    "start_rc": [
+      26,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00788",
+    "source_episode_id": "00000_001898_05",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00788/episode.pt",
+    "start_rc": [
+      26,
+      14
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00789",
+    "source_episode_id": "00000_001898_06",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00789/episode.pt",
+    "start_rc": [
+      26,
+      14
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00790",
+    "source_episode_id": "00000_001898_07",
+    "scene_id": "00000_001898",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00790/episode.pt",
+    "start_rc": [
+      26,
+      12
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00815",
+    "source_episode_id": "00000_001959_00",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00815/episode.pt",
+    "start_rc": [
+      54,
+      17
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00816",
+    "source_episode_id": "00000_001959_01",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00816/episode.pt",
+    "start_rc": [
+      54,
+      17
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00817",
+    "source_episode_id": "00000_001959_02",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00817/episode.pt",
+    "start_rc": [
+      56,
+      13
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00818",
+    "source_episode_id": "00000_001959_03",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00818/episode.pt",
+    "start_rc": [
+      57,
+      10
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00819",
+    "source_episode_id": "00000_001959_04",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00819/episode.pt",
+    "start_rc": [
+      54,
+      17
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00820",
+    "source_episode_id": "00000_001959_05",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00820/episode.pt",
+    "start_rc": [
+      57,
+      10
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00821",
+    "source_episode_id": "00000_001959_06",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00821/episode.pt",
+    "start_rc": [
+      56,
+      13
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00822",
+    "source_episode_id": "00000_001959_07",
+    "scene_id": "00000_001959",
+    "split": "train",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00822/episode.pt",
+    "start_rc": [
+      47,
+      10
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00548",
+    "source_episode_id": "00000_001822_04",
+    "scene_id": "00000_001822",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00548/episode.pt",
+    "start_rc": [
+      45,
+      13
+    ],
+    "goal_rc": [
+      66,
+      89
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00549",
+    "source_episode_id": "00000_001822_05",
+    "scene_id": "00000_001822",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00549/episode.pt",
+    "start_rc": [
+      57,
+      15
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00550",
+    "source_episode_id": "00000_001822_06",
+    "scene_id": "00000_001822",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00550/episode.pt",
+    "start_rc": [
+      57,
+      15
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00551",
+    "source_episode_id": "00000_001822_07",
+    "scene_id": "00000_001822",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00551/episode.pt",
+    "start_rc": [
+      57,
+      15
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00552",
+    "source_episode_id": "00000_001823_00",
+    "scene_id": "00000_001823",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00552/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      41,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00553",
+    "source_episode_id": "00000_001823_01",
+    "scene_id": "00000_001823",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00553/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      51,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00559",
+    "source_episode_id": "00000_001823_07",
+    "scene_id": "00000_001823",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00559/episode.pt",
+    "start_rc": [
+      57,
+      18
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00561",
+    "source_episode_id": "00000_001824_01",
+    "scene_id": "00000_001824",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00561/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00566",
+    "source_episode_id": "00000_001824_06",
+    "scene_id": "00000_001824",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00566/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00567",
+    "source_episode_id": "00000_001824_07",
+    "scene_id": "00000_001824",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00567/episode.pt",
+    "start_rc": [
+      45,
+      10
+    ],
+    "goal_rc": [
+      66,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00568",
+    "source_episode_id": "00000_001825_00",
+    "scene_id": "00000_001825",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00568/episode.pt",
+    "start_rc": [
+      45,
+      14
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00570",
+    "source_episode_id": "00000_001825_02",
+    "scene_id": "00000_001825",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00570/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00572",
+    "source_episode_id": "00000_001825_04",
+    "scene_id": "00000_001825",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00572/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00574",
+    "source_episode_id": "00000_001825_06",
+    "scene_id": "00000_001825",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00574/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00576",
+    "source_episode_id": "00000_001827_00",
+    "scene_id": "00000_001827",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00576/episode.pt",
+    "start_rc": [
+      57,
+      9
+    ],
+    "goal_rc": [
+      43,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00577",
+    "source_episode_id": "00000_001827_01",
+    "scene_id": "00000_001827",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00577/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00581",
+    "source_episode_id": "00000_001827_05",
+    "scene_id": "00000_001827",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00581/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00583",
+    "source_episode_id": "00000_001827_07",
+    "scene_id": "00000_001827",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00583/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00584",
+    "source_episode_id": "00000_001829_00",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00584/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00585",
+    "source_episode_id": "00000_001829_01",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00585/episode.pt",
+    "start_rc": [
+      56,
+      10
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00586",
+    "source_episode_id": "00000_001829_02",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00586/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00587",
+    "source_episode_id": "00000_001829_03",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00587/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      57,
+      89
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00588",
+    "source_episode_id": "00000_001829_04",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00588/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00589",
+    "source_episode_id": "00000_001829_05",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00589/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00590",
+    "source_episode_id": "00000_001829_06",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00590/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00591",
+    "source_episode_id": "00000_001829_07",
+    "scene_id": "00000_001829",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00591/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00592",
+    "source_episode_id": "00000_001830_00",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00592/episode.pt",
+    "start_rc": [
+      45,
+      9
+    ],
+    "goal_rc": [
+      65,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00593",
+    "source_episode_id": "00000_001830_01",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00593/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      57,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00594",
+    "source_episode_id": "00000_001830_02",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00594/episode.pt",
+    "start_rc": [
+      46,
+      14
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00595",
+    "source_episode_id": "00000_001830_03",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00595/episode.pt",
+    "start_rc": [
+      56,
+      10
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00596",
+    "source_episode_id": "00000_001830_04",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00596/episode.pt",
+    "start_rc": [
+      56,
+      10
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00597",
+    "source_episode_id": "00000_001830_05",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00597/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      75,
+      91
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00598",
+    "source_episode_id": "00000_001830_06",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00598/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      65,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00599",
+    "source_episode_id": "00000_001830_07",
+    "scene_id": "00000_001830",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00599/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00600",
+    "source_episode_id": "00000_001831_00",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00600/episode.pt",
+    "start_rc": [
+      45,
+      13
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00601",
+    "source_episode_id": "00000_001831_01",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00601/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00602",
+    "source_episode_id": "00000_001831_02",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00602/episode.pt",
+    "start_rc": [
+      45,
+      13
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00603",
+    "source_episode_id": "00000_001831_03",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00603/episode.pt",
+    "start_rc": [
+      45,
+      13
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00604",
+    "source_episode_id": "00000_001831_04",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00604/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00605",
+    "source_episode_id": "00000_001831_05",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00605/episode.pt",
+    "start_rc": [
+      56,
+      10
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00606",
+    "source_episode_id": "00000_001831_06",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00606/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00607",
+    "source_episode_id": "00000_001831_07",
+    "scene_id": "00000_001831",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00607/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00608",
+    "source_episode_id": "00000_001832_00",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00608/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00609",
+    "source_episode_id": "00000_001832_01",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00609/episode.pt",
+    "start_rc": [
+      58,
+      15
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00610",
+    "source_episode_id": "00000_001832_02",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00610/episode.pt",
+    "start_rc": [
+      58,
+      15
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00611",
+    "source_episode_id": "00000_001832_03",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00611/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00612",
+    "source_episode_id": "00000_001832_04",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00612/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00613",
+    "source_episode_id": "00000_001832_05",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00613/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00614",
+    "source_episode_id": "00000_001832_06",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00614/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00615",
+    "source_episode_id": "00000_001832_07",
+    "scene_id": "00000_001832",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00615/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00616",
+    "source_episode_id": "00000_001833_00",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00616/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00617",
+    "source_episode_id": "00000_001833_01",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00617/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00618",
+    "source_episode_id": "00000_001833_02",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00618/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      65,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00619",
+    "source_episode_id": "00000_001833_03",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00619/episode.pt",
+    "start_rc": [
+      57,
+      9
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00620",
+    "source_episode_id": "00000_001833_04",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00620/episode.pt",
+    "start_rc": [
+      44,
+      10
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00621",
+    "source_episode_id": "00000_001833_05",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00621/episode.pt",
+    "start_rc": [
+      45,
+      13
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00622",
+    "source_episode_id": "00000_001833_06",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00622/episode.pt",
+    "start_rc": [
+      58,
+      15
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00623",
+    "source_episode_id": "00000_001833_07",
+    "scene_id": "00000_001833",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00623/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      73,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00624",
+    "source_episode_id": "00000_001835_00",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00624/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00625",
+    "source_episode_id": "00000_001835_01",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00625/episode.pt",
+    "start_rc": [
+      44,
+      10
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00626",
+    "source_episode_id": "00000_001835_02",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00626/episode.pt",
+    "start_rc": [
+      44,
+      10
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00627",
+    "source_episode_id": "00000_001835_03",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00627/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00628",
+    "source_episode_id": "00000_001835_04",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00628/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      50,
+      75
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00629",
+    "source_episode_id": "00000_001835_05",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00629/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      65,
+      81
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00630",
+    "source_episode_id": "00000_001835_06",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00630/episode.pt",
+    "start_rc": [
+      57,
+      9
+    ],
+    "goal_rc": [
+      65,
+      81
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00631",
+    "source_episode_id": "00000_001835_07",
+    "scene_id": "00000_001835",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00631/episode.pt",
+    "start_rc": [
+      57,
+      9
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00632",
+    "source_episode_id": "00000_001836_00",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00632/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00633",
+    "source_episode_id": "00000_001836_01",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00633/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00634",
+    "source_episode_id": "00000_001836_02",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00634/episode.pt",
+    "start_rc": [
+      45,
+      14
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00635",
+    "source_episode_id": "00000_001836_03",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00635/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      66,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00636",
+    "source_episode_id": "00000_001836_04",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00636/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00637",
+    "source_episode_id": "00000_001836_05",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00637/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      66,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00638",
+    "source_episode_id": "00000_001836_06",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00638/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00639",
+    "source_episode_id": "00000_001836_07",
+    "scene_id": "00000_001836",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00639/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00640",
+    "source_episode_id": "00000_001839_00",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00640/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00641",
+    "source_episode_id": "00000_001839_01",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00641/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00642",
+    "source_episode_id": "00000_001839_02",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00642/episode.pt",
+    "start_rc": [
+      45,
+      14
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00643",
+    "source_episode_id": "00000_001839_03",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00643/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00644",
+    "source_episode_id": "00000_001839_04",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00644/episode.pt",
+    "start_rc": [
+      58,
+      16
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00645",
+    "source_episode_id": "00000_001839_05",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00645/episode.pt",
+    "start_rc": [
+      46,
+      16
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00646",
+    "source_episode_id": "00000_001839_06",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00646/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00647",
+    "source_episode_id": "00000_001839_07",
+    "scene_id": "00000_001839",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00647/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00648",
+    "source_episode_id": "00000_001840_00",
+    "scene_id": "00000_001840",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00648/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00649",
+    "source_episode_id": "00000_001840_01",
+    "scene_id": "00000_001840",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00649/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00650",
+    "source_episode_id": "00000_001840_02",
+    "scene_id": "00000_001840",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00650/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00652",
+    "source_episode_id": "00000_001840_04",
+    "scene_id": "00000_001840",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00652/episode.pt",
+    "start_rc": [
+      43,
+      8
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00655",
+    "source_episode_id": "00000_001840_07",
+    "scene_id": "00000_001840",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00655/episode.pt",
+    "start_rc": [
+      56,
+      12
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00656",
+    "source_episode_id": "00000_001841_00",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00656/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00657",
+    "source_episode_id": "00000_001841_01",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00657/episode.pt",
+    "start_rc": [
+      43,
+      8
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00658",
+    "source_episode_id": "00000_001841_02",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00658/episode.pt",
+    "start_rc": [
+      43,
+      8
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00659",
+    "source_episode_id": "00000_001841_03",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00659/episode.pt",
+    "start_rc": [
+      45,
+      14
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00660",
+    "source_episode_id": "00000_001841_04",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00660/episode.pt",
+    "start_rc": [
+      45,
+      14
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00661",
+    "source_episode_id": "00000_001841_05",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00661/episode.pt",
+    "start_rc": [
+      58,
+      18
+    ],
+    "goal_rc": [
+      42,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00662",
+    "source_episode_id": "00000_001841_06",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00662/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      52,
+      72
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00663",
+    "source_episode_id": "00000_001841_07",
+    "scene_id": "00000_001841",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00663/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00664",
+    "source_episode_id": "00000_001843_00",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00664/episode.pt",
+    "start_rc": [
+      43,
+      8
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00665",
+    "source_episode_id": "00000_001843_01",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00665/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00666",
+    "source_episode_id": "00000_001843_02",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00666/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00667",
+    "source_episode_id": "00000_001843_03",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00667/episode.pt",
+    "start_rc": [
+      45,
+      15
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00668",
+    "source_episode_id": "00000_001843_04",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00668/episode.pt",
+    "start_rc": [
+      56,
+      13
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00669",
+    "source_episode_id": "00000_001843_05",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00669/episode.pt",
+    "start_rc": [
+      43,
+      8
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00670",
+    "source_episode_id": "00000_001843_06",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00670/episode.pt",
+    "start_rc": [
+      57,
+      11
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00671",
+    "source_episode_id": "00000_001843_07",
+    "scene_id": "00000_001843",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00671/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00672",
+    "source_episode_id": "00000_001844_00",
+    "scene_id": "00000_001844",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00672/episode.pt",
+    "start_rc": [
+      56,
+      13
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00673",
+    "source_episode_id": "00000_001844_01",
+    "scene_id": "00000_001844",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00673/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00674",
+    "source_episode_id": "00000_001844_02",
+    "scene_id": "00000_001844",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00674/episode.pt",
+    "start_rc": [
+      57,
+      18
+    ],
+    "goal_rc": [
+      66,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00675",
+    "source_episode_id": "00000_001844_03",
+    "scene_id": "00000_001844",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00675/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00676",
+    "source_episode_id": "00000_001844_04",
+    "scene_id": "00000_001844",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00676/episode.pt",
+    "start_rc": [
+      57,
+      18
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00677",
+    "source_episode_id": "00000_001844_05",
+    "scene_id": "00000_001844",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00677/episode.pt",
+    "start_rc": [
+      56,
+      13
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00679",
+    "source_episode_id": "00000_001844_07",
+    "scene_id": "00000_001844",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00679/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00680",
+    "source_episode_id": "00000_001845_00",
+    "scene_id": "00000_001845",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00680/episode.pt",
+    "start_rc": [
+      57,
+      10
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00681",
+    "source_episode_id": "00000_001845_01",
+    "scene_id": "00000_001845",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00681/episode.pt",
+    "start_rc": [
+      46,
+      17
+    ],
+    "goal_rc": [
+      66,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00682",
+    "source_episode_id": "00000_001845_02",
+    "scene_id": "00000_001845",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00682/episode.pt",
+    "start_rc": [
+      56,
+      13
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00683",
+    "source_episode_id": "00000_001845_03",
+    "scene_id": "00000_001845",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00683/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00684",
+    "source_episode_id": "00000_001845_04",
+    "scene_id": "00000_001845",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00684/episode.pt",
+    "start_rc": [
+      57,
+      10
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00685",
+    "source_episode_id": "00000_001845_05",
+    "scene_id": "00000_001845",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00685/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00686",
+    "source_episode_id": "00000_001845_06",
+    "scene_id": "00000_001845",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00686/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00696",
+    "source_episode_id": "00000_001858_00",
+    "scene_id": "00000_001858",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00696/episode.pt",
+    "start_rc": [
+      56,
+      20
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00697",
+    "source_episode_id": "00000_001858_01",
+    "scene_id": "00000_001858",
+    "split": "val",
+    "regime": "R1",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00697/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00698",
+    "source_episode_id": "00000_001858_02",
+    "scene_id": "00000_001858",
+    "split": "val",
+    "regime": "R2",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00698/episode.pt",
+    "start_rc": [
+      43,
+      12
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00840",
+    "source_episode_id": "00000_001970_06",
+    "scene_id": "00000_001970",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00840/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00841",
+    "source_episode_id": "00000_001970_07",
+    "scene_id": "00000_001970",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00841/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00842",
+    "source_episode_id": "00000_001980_00",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00842/episode.pt",
+    "start_rc": [
+      65,
+      9
+    ],
+    "goal_rc": [
+      42,
+      91
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00843",
+    "source_episode_id": "00000_001980_01",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00843/episode.pt",
+    "start_rc": [
+      44,
+      21
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00844",
+    "source_episode_id": "00000_001980_02",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00844/episode.pt",
+    "start_rc": [
+      65,
+      9
+    ],
+    "goal_rc": [
+      41,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00845",
+    "source_episode_id": "00000_001980_03",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00845/episode.pt",
+    "start_rc": [
+      44,
+      21
+    ],
+    "goal_rc": [
+      42,
+      91
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00846",
+    "source_episode_id": "00000_001980_04",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00846/episode.pt",
+    "start_rc": [
+      50,
+      18
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00847",
+    "source_episode_id": "00000_001980_05",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00847/episode.pt",
+    "start_rc": [
+      65,
+      9
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00848",
+    "source_episode_id": "00000_001980_06",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00848/episode.pt",
+    "start_rc": [
+      65,
+      9
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00849",
+    "source_episode_id": "00000_001980_07",
+    "scene_id": "00000_001980",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00849/episode.pt",
+    "start_rc": [
+      50,
+      10
+    ],
+    "goal_rc": [
+      49,
+      75
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00850",
+    "source_episode_id": "00000_001981_00",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00850/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00851",
+    "source_episode_id": "00000_001981_01",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00851/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00852",
+    "source_episode_id": "00000_001981_02",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00852/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00853",
+    "source_episode_id": "00000_001981_03",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00853/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00854",
+    "source_episode_id": "00000_001981_04",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00854/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00855",
+    "source_episode_id": "00000_001981_05",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00855/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00856",
+    "source_episode_id": "00000_001981_06",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00856/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00857",
+    "source_episode_id": "00000_001981_07",
+    "scene_id": "00000_001981",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00857/episode.pt",
+    "start_rc": [
+      77,
+      18
+    ],
+    "goal_rc": [
+      74,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00858",
+    "source_episode_id": "00000_002019_00",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00858/episode.pt",
+    "start_rc": [
+      65,
+      18
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00859",
+    "source_episode_id": "00000_002019_01",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00859/episode.pt",
+    "start_rc": [
+      65,
+      18
+    ],
+    "goal_rc": [
+      42,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00860",
+    "source_episode_id": "00000_002019_02",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00860/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      60,
+      83
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00861",
+    "source_episode_id": "00000_002019_03",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00861/episode.pt",
+    "start_rc": [
+      65,
+      18
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00862",
+    "source_episode_id": "00000_002019_04",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00862/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00863",
+    "source_episode_id": "00000_002019_05",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00863/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      51,
+      83
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00864",
+    "source_episode_id": "00000_002019_06",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00864/episode.pt",
+    "start_rc": [
+      65,
+      18
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00865",
+    "source_episode_id": "00000_002019_07",
+    "scene_id": "00000_002019",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00865/episode.pt",
+    "start_rc": [
+      65,
+      18
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00866",
+    "source_episode_id": "00000_002020_00",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00866/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      34,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00867",
+    "source_episode_id": "00000_002020_01",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00867/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      50,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00868",
+    "source_episode_id": "00000_002020_02",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00868/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00869",
+    "source_episode_id": "00000_002020_03",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00869/episode.pt",
+    "start_rc": [
+      50,
+      14
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00870",
+    "source_episode_id": "00000_002020_04",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00870/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      66,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00871",
+    "source_episode_id": "00000_002020_05",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00871/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00872",
+    "source_episode_id": "00000_002020_06",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00872/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      66,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00873",
+    "source_episode_id": "00000_002020_07",
+    "scene_id": "00000_002020",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00873/episode.pt",
+    "start_rc": [
+      65,
+      15
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00874",
+    "source_episode_id": "00000_002033_00",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00874/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00875",
+    "source_episode_id": "00000_002033_01",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00875/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      26,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00876",
+    "source_episode_id": "00000_002033_02",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00876/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      58,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00877",
+    "source_episode_id": "00000_002033_03",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00877/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      34,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00878",
+    "source_episode_id": "00000_002033_04",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00878/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      58,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00879",
+    "source_episode_id": "00000_002033_05",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00879/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00880",
+    "source_episode_id": "00000_002033_06",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00880/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00881",
+    "source_episode_id": "00000_002033_07",
+    "scene_id": "00000_002033",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00881/episode.pt",
+    "start_rc": [
+      65,
+      19
+    ],
+    "goal_rc": [
+      41,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00882",
+    "source_episode_id": "00000_002034_00",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00882/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00883",
+    "source_episode_id": "00000_002034_01",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00883/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      41,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00884",
+    "source_episode_id": "00000_002034_02",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00884/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      74,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00885",
+    "source_episode_id": "00000_002034_03",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00885/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      73,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00886",
+    "source_episode_id": "00000_002034_04",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00886/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00887",
+    "source_episode_id": "00000_002034_05",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00887/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00888",
+    "source_episode_id": "00000_002034_06",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00888/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      26,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00889",
+    "source_episode_id": "00000_002034_07",
+    "scene_id": "00000_002034",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00889/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      58,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00890",
+    "source_episode_id": "00000_002035_00",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00890/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      50,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00891",
+    "source_episode_id": "00000_002035_01",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00891/episode.pt",
+    "start_rc": [
+      63,
+      15
+    ],
+    "goal_rc": [
+      42,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00892",
+    "source_episode_id": "00000_002035_02",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00892/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      34,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00893",
+    "source_episode_id": "00000_002035_03",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00893/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00894",
+    "source_episode_id": "00000_002035_04",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00894/episode.pt",
+    "start_rc": [
+      63,
+      15
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00895",
+    "source_episode_id": "00000_002035_05",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00895/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      66,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00896",
+    "source_episode_id": "00000_002035_06",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00896/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      50,
+      82
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00897",
+    "source_episode_id": "00000_002035_07",
+    "scene_id": "00000_002035",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00897/episode.pt",
+    "start_rc": [
+      63,
+      15
+    ],
+    "goal_rc": [
+      26,
+      90
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00898",
+    "source_episode_id": "00000_002036_00",
+    "scene_id": "00000_002036",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00898/episode.pt",
+    "start_rc": [
+      64,
+      19
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  },
+  {
+    "episode_id": "00899",
+    "source_episode_id": "00000_002036_01",
+    "scene_id": "00000_002036",
+    "split": "val",
+    "regime": "R3",
+    "path": "/mnt/data/adityas/GRL-SNAM/exp-rellis/data/rellis_stagewise_val1500_decision/episodes/ep_00899/episode.pt",
+    "start_rc": [
+      63,
+      15
+    ],
+    "goal_rc": [
+      74,
+      74
+    ],
+    "success": true
+  }
+]

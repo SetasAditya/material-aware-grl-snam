@@ -1,0 +1,11 @@
+corruption_probability,reference_probability,metric,paired_delta,ci_low,ci_high,bootstrap_unit,bootstrap_reps,map_source
+0.0,0.0,CAR,0.0,0.0,0.0,paired_episode,2000,ground_truth
+0.0,0.0,FAR,0.0,0.0,0.0,paired_episode,2000,ground_truth
+0.0,0.0,SR,0.0,0.0,0.0,paired_episode,2000,ground_truth
+0.0,0.0,activation_rate,0.0,0.0,0.0,paired_episode,2000,ground_truth
+0.0,0.0,noop_rate,0.0,0.0,0.0,paired_episode,2000,ground_truth
+1.0,0.0,CAR,-0.024017467248908297,-0.05246450828093075,0.003420867411653564,paired_episode,2000,predicted
+1.0,0.0,FAR,0.009118988086483287,-0.004407603401504911,0.021426491964836945,paired_episode,2000,predicted
+1.0,0.0,SR,-0.1290215320259196,-0.32637696999744076,0.04580521962189197,paired_episode,2000,predicted
+1.0,0.0,activation_rate,0.013570243092843881,0.0024467076793890873,0.024903262993561246,paired_episode,2000,predicted
+1.0,0.0,noop_rate,-0.013570243092843937,-0.02490326299356125,-0.00244670767938909,paired_episode,2000,predicted

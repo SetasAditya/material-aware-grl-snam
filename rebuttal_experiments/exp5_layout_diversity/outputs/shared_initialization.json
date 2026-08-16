@@ -1,0 +1,6 @@
+{
+  "seed": 27370,
+  "stage1_checkpoint": "/mnt/data/adityas/GRL-SNAM/checkpoints/s1/best.pt",
+  "state_sha256": "ad6a1bd6e64e32b4bb00d6a7ac666f6d4c349de0293fc817f602d5b1642eb821",
+  "parameter_count": 207254
+}

@@ -1,0 +1,46 @@
+{
+  "label": "p010",
+  "requested_fraction": 0.1,
+  "selected_scene_fraction": 0.1,
+  "selected_scene_ids": [
+    "00000_001808",
+    "00000_001863",
+    "00000_001756",
+    "00000_001733",
+    "00000_001897",
+    "00000_001707",
+    "00000_001812",
+    "00000_001740",
+    "00000_001721",
+    "00000_001723"
+  ],
+  "train": {
+    "episodes": 80,
+    "unique_scenes": 10,
+    "episodes_by_regime": {
+      "R1": 28,
+      "R2": 27,
+      "R3": 25
+    },
+    "scenes_by_regime": {
+      "R1": 5,
+      "R2": 4,
+      "R3": 4
+    }
+  },
+  "validation": {
+    "episodes": 180,
+    "unique_scenes": 28,
+    "episodes_by_regime": {
+      "R1": 60,
+      "R2": 60,
+      "R3": 60
+    },
+    "scenes_by_regime": {
+      "R1": 13,
+      "R2": 18,
+      "R3": 9
+    }
+  },
+  "tensor_policy": "No tensors copied; manifest episode paths are absolute source references."
+}

@@ -1,0 +1,736 @@
+% =============================================================
+%  Chapter 7 — Limitations, Extensions, and Future Directions
+% =============================================================
+
+\chapter{Limitations, Extensions, and Future Directions}
+\label{chap:limitations}
+
+\providecommand{\Ham}{\mathcal{H}}
+\providecommand{\Potential}{\mathcal{R}}
+\providecommand{\PhaseState}{z}
+\providecommand{\Pos}{q}
+\providecommand{\Mom}{p}
+\providecommand{\Mass}{\mathrm{M}}
+\providecommand{\J}{\mathbb{J}}
+
+% -----------------------------------------------------------------------
+\section{What the Thesis Has Established}
+\label{sec:ch7:achieved}
+% -----------------------------------------------------------------------
+
+The two stages, evaluated in Chapters~\ref{chap:grlsnam}--\ref{chap:experiments},
+establish the following as solved:
+
+\begin{itemize}
+  \item A geometry-only structured learner in phase space
+        (GRL-SNAM, Stage~1) that outperforms reactive planners and
+        deep RL baselines under matched local sensing, with
+        principled online correction through the Hamiltonian
+        coefficient space.
+  \item A material-aware risk-sensitive extension (Stage~2) that
+        reduces cumulative risk exposure by 56.4\%, eliminates
+        hard-hazard entries, and cuts oscillation $7\times$ each
+        improvement tracing directly to a specific added energy
+        term, objective, or update law.
+  \item A formal enrichment principle
+        (Theorem~\ref{thm:ch5:enrichment}) characterizing when and
+        why each structural addition is a necessary consequence of
+        the previous stage, not an arbitrary design choice.
+\end{itemize}
+
+What remains is equally important.
+This chapter identifies the principal limitations of the current
+formulation, maps the most natural next steps inside the existing
+framework, and states the broader theoretical and empirical agenda
+this work opens.
+The organizing perspective throughout is:
+
+\begin{quote}\itshape
+We establish the first two rungs of an enrichment
+ladder.
+The ladder itself and the principle governing how new rungs are
+added is the central contribution.
+The remaining rungs are now clearly identified research targets.
+\end{quote}
+
+% -----------------------------------------------------------------------
+\section{Current Limitations}
+\label{sec:ch7:limits}
+% -----------------------------------------------------------------------
+
+\subsection{Oracle Material Access}
+\label{subsec:ch7:oracle}
+
+The most immediate limitation is that Stage~2 assumes oracle access
+to the material risk field $\tilde{r}(\vec{c})$ and hazard SDF
+$\phi(\vec{c})$ (Setting~2 of the thesis scope).
+In real deployment, these must be inferred from raw sensor
+data RGB-IR imagery, multispectral cameras, LiDAR reflection
+intensity, or hyperspectral data.
+
+The structural consequence of oracle access is not merely practical
+(adding a perception module): it changes the nature of the learning
+problem.
+With oracle $\tilde{r}$, the soft-risk force $F_{\mathrm{soft}} =
+-\lambda_s\nabla\tilde{r}$ is exact at every integration step.
+With a learned belief $\hat\rho \approx \tilde{r}$, the force becomes:
+\begin{equation}
+  \hat{F}_{\mathrm{soft}}
+  = -\lambda_s\nabla\hat\rho(\vec{c};\,\omega),
+  \label{eq:ch7:approx_force}
+\end{equation}
+where $\omega$ parameterizes the perception model.
+The gradient $\nabla\hat\rho$ now depends on both the pose $\vec{c}$
+and the perception parameters $\omega$, adding a new gradient pathway
+in the rollout sensitivity recursion \eqref{eq:ch4:dp_dtheta}.
+Optimizing over $\omega$ jointly with the navigation parameters
+$\theta$ is Stage~3 of the enrichment ladder.
+
+\subsection{Simplified Observer Process}
+\label{subsec:ch7:observer}
+
+The current observer update \eqref{eq:ch4:observer} is:
+\begin{equation}
+  y_{t+1} = \Psi(y_t, \vec{q}_{t+1};\, Z^{(1)}, P_{t+1}),
+  \label{eq:ch7:observer_current}
+\end{equation}
+which is essentially a geometric context refresh: re-centre the
+obstacle extractor and risk patch at the new pose.
+This is not a proper belief-update process.
+It carries no uncertainty, maintains no memory across stages, and
+does not model the agent's incomplete knowledge of the environment.
+
+A richer observer would maintain a latent belief state $b_t$ over
+the environment, updated sequentially:
+\begin{equation}
+  b_{t+1} = \mathcal{U}(b_t, \vec{q}_{t+1}, o_{t+1}),
+  \qquad
+  \vartheta_t = f_\xi(b_t,\, \vec{g}_k - \vec{q}_t),
+  \label{eq:ch7:belief_observer}
+\end{equation}
+where $o_{t+1}$ are raw sensor observations and $\mathcal{U}$ is a
+learned or Bayesian update operator.
+The coefficient predictor $f_\xi$ would then condition on the full
+belief state $b_t$ rather than the raw local context.
+This extension is nontrivial: it requires a learned filtering process
+co-trained with the Hamiltonian dynamics, and the gradient of
+$\vartheta_t$ with respect to $b_t$ must propagate through
+$\mathcal{U}$ as well as through $f_\xi$.
+
+\subsection{Isotropic Geometry Metric}
+\label{subsec:ch7:metric}
+
+The goal attraction term in both stages uses an isotropic quadratic:
+\begin{equation}
+  D_{\mathcal{G}}(\vec{q}, \vec{g})
+  = \|\vec{c} - \vec{g}\|^2,
+  \label{eq:ch7:iso_metric}
+\end{equation}
+which treats all directions equally regardless of local geometry.
+In practice, the "effective distance" to a goal through a narrow
+corridor should weight the transverse direction more heavily than the
+longitudinal; a workspace with anisotropic obstacle density should
+correspondingly deform the attraction basin.
+
+A learned anisotropic metric would replace the fixed quadratic with:
+\begin{equation}
+  D_{\mathcal{G}}(\vec{q}, \vec{g};\,\xi)
+  = \tfrac{1}{2}(\vec{c} - \vec{g})^\top
+    \Sigma_{\vec{q}}(\vec{q};\,\xi)^{-1}
+    (\vec{c} - \vec{g}),
+  \label{eq:ch7:aniso_metric}
+\end{equation}
+where $\Sigma_{\vec{q}}(\vec{q};\,\xi) \in \mathbb{S}^2_{++}$ is a
+context-dependent positive-definite matrix predicted by $f_\xi$.
+This is an instance of Riemannian metric learning in the configuration
+space, and it would make the kinetic term $H_{\mathrm{kin}} =
+\frac{1}{2}\Mom^\top\Mass(\vec{q})^{-1}\Mom$ more geometrically
+faithful.
+The added cost is that $\Sigma_{\vec{q}}$ must remain
+positive-definite throughout training, requiring a constrained
+parameterization (e.g., Cholesky factorization) and adding a new
+gradient pathway through $\partial\Sigma_{\vec{q}}/\partial\xi$.
+
+\subsection{Empirical Coverage Without Geometric Theory}
+\label{subsec:ch7:coverage}
+
+The curriculum coverage criterion \eqref{eq:ch4:coverage} counts
+conquered start–goal pairs from a finite sample.
+This is a practical surrogate for the richer notion of
+\emph{geometric coverage}: how much of the configuration space the
+learned policy can navigate stably.
+
+A deeper coverage theory would characterize the set of start–goal
+pairs $(\vec{q}_0, \vec{g})$ for which a given Hamiltonian
+parameterization $\theta$ is stable and goal-reaching.
+Formally, define the \emph{basin of competence}:
+\begin{equation}
+  \mathcal{B}(\theta)
+  = \bigl\{\,(\vec{q}_0, \vec{g}) \in \mathcal{Q}^2
+    \;\big|\;
+    \mathcal{L}_{\mathrm{pass}}(\theta;\vec{q}_0,\vec{g})
+    \leq \epsilon_\mathrm{pass}
+    \;\wedge\;
+    |\vec{q}_T - \vec{g}| \leq \epsilon_{\mathrm{goal}}
+  \,\bigr\}.
+  \label{eq:ch7:basin}
+\end{equation}
+The curriculum's goal is to maximize the volume
+$\mathrm{vol}(\mathcal{B}(\theta))$ under the configuration-space
+measure, but the current implementation uses a finite-sample proxy.
+Connecting this to Riemannian volume estimates, persistent homology
+of the visited state set, or information-geometric arguments about
+the curvature of the energy landscape remains an open problem.
+
+\subsection{Monitoring-Based Stability, Not Formal Certificates}
+\label{subsec:ch7:stability}
+
+The passivity condition $\mathcal{L}_{\mathrm{pass}} \leq \epsilon$
+is a monitoring heuristic: it checks whether energy is non-increasing
+along sampled rollouts.
+It is not a Lyapunov certificate with a bounded basin of attraction.
+
+A formal stability certificate would require bounding the Lipschitz
+constant of $F_{\mathrm{tot}}(\PhaseState;\theta)$ over the state
+space, which in turn requires bounding the derivatives of the learned
+network $f_\xi$.
+For smooth activations and bounded coefficient spaces, such bounds
+exist in principle via spectral normalization or norm-bounding
+techniques, but they have not been integrated into the current
+training pipeline.
+
+\subsection{Force Decomposition Identifiability}
+\label{subsec:ch7:identifiability}
+
+A subtler limitation concerns whether the factored decomposition
+$H_\theta = H_{\mathrm{geom}} + H_{\mathrm{mat}}$ is identifiable
+from trajectory observations.
+
+Consider two parameter vectors $\theta \neq \theta'$ such that
+$\nabla_\Pos H_\theta(\Pos,\Mom) = \nabla_\Pos H_{\theta'}(\Pos,\Mom)$
+on all observed trajectories.
+Then the two parameterizations produce identical dynamics and cannot
+be distinguished by the training objective.
+This is a standard non-identifiability problem for energy-based models,
+but it takes on a specific form here:
+the geometry-only and material terms could trade off coefficient mass
+in ways that are invisible to the rollout loss.
+
+More precisely, if the training data consists only of trajectories
+in low-risk regions ($\tilde{r} \approx 0$), the risk heads
+$(\lambda_s, \lambda_h)$ receive no gradient signal and remain at
+zero regardless of their initialized values.
+This is addressed practically by the curriculum (which includes
+high-risk training pairs), but the theoretical condition for
+unique recovery of $(\beta, \lambda_s, \lambda_h, \gamma)$ from
+trajectory data analogous to identifiability conditions in inverse
+RL—has not been established.
+
+% -----------------------------------------------------------------------
+\section{Immediate Extensions of the Current Framework}
+\label{sec:ch7:extensions}
+% -----------------------------------------------------------------------
+
+Each of the following extensions is a direct application of the
+enrichment principle (Theorem~\ref{thm:ch5:enrichment}): adding one
+new energy term forces a new force channel, coefficient, objective
+term, gradient pathway, and update law.
+
+\subsection{Stage 3: Learned Material Belief Maps}
+\label{subsec:ch7:stage3}
+
+The most natural next extension replaces oracle $\tilde{r}$ with a
+learned belief $\hat\rho$ inferred from raw RGB-IR observations
+$Z^{(3)}$.
+The enrichment chain for this transition is:
+\begin{equation}
+  H_{\mathrm{perc}}(\Pos;\hat\rho)
+  \;\xrightarrow{(i)}\; \hat{F}_{\mathrm{soft}}
+  \;\xrightarrow{(ii)}\; (\lambda_\rho, \omega)
+  \;\xrightarrow{(iii)}\; \mathcal{L}_{\mathrm{perc}}
+  \;\xrightarrow{(iv)}\; \nabla_{(\lambda_\rho,\omega)}\mathcal{L}
+  \;\xrightarrow{(v)}\; \text{belief update law},
+  \label{eq:ch7:stage3_chain}
+\end{equation}
+where $\omega$ parameterizes the perception backbone and
+$\mathcal{L}_{\mathrm{perc}}$ includes both a navigation loss and
+a perception calibration term.
+
+Two design choices are non-trivial:
+\begin{enumerate}[(i)]
+  \item \textbf{Coupling perception training to navigation.}
+        The perception backbone must be trained to produce
+        $\hat\rho$ that is useful for the downstream force field,
+        not just accurate in a pixel-wise sense.
+        This requires backpropagating through the rollout into
+        $\nabla_\omega\mathcal{L}_{\mathrm{nav}}$.
+
+  \item \textbf{Uncertainty propagation.}
+        A probabilistic perception model
+        $\hat\rho \sim p(\rho | o, \omega)$ would allow the force
+        to be $F_{\mathrm{soft}} = -\lambda_s\mathbb{E}[\nabla\rho]$
+        with an additional CVaR term penalizing high-variance
+        force estimates in uncertain terrain.
+\end{enumerate}
+
+\subsection{Richer Observer and Sequential Belief Filtering}
+\label{subsec:ch7:filtering}
+
+Replacing \eqref{eq:ch7:observer_current} with the full
+belief-observer \eqref{eq:ch7:belief_observer} requires selecting
+a representation for $b_t$.
+Three natural choices are:
+\begin{itemize}
+  \item \textbf{Recurrent state (RNN/LSTM/Transformer).}
+        $b_t$ is a hidden state; $\mathcal{U}$ is a learned
+        transition function.
+        Gradient backpropagation through $\mathcal{U}$ is standard.
+  \item \textbf{Particle filter.}
+        $b_t$ is a set of weighted particles over environment
+        hypotheses.
+        The gradient of $f_\xi(b_t,\cdot)$ with respect to
+        $b_t$ must be approximated via reparameterization.
+  \item \textbf{Gaussian belief state.}
+        $b_t = (\mu_t, \Sigma_t)$, updated by an
+        extended or unscented Kalman filter.
+        This is the most analytically tractable but least expressive.
+\end{itemize}
+In all cases the update law at the belief timescale is a new fourth
+loop in the hierarchy $\mathcal{U}$, operating at a timescale
+between the segment loop (fast, local) and the curriculum loop
+(slow, global).
+
+\subsection{Learned Anisotropic Riemannian Metric}
+\label{subsec:ch7:riemannian}
+
+Replacing \eqref{eq:ch7:iso_metric} with
+\eqref{eq:ch7:aniso_metric} requires:
+\begin{enumerate}[(i)]
+  \item A network head in $f_\xi$ that outputs a lower-triangular
+        Cholesky factor $L(\vec{q};\xi)$ such that
+        $\Sigma_{\vec{q}} = LL^\top$.
+  \item A modified kinetic term
+        $H_{\mathrm{kin}} = \frac{1}{2}\Mom^\top
+        (L(\vec{q})L(\vec{q})^\top)^{-1}\Mom$
+        that makes the symplectic structure position-dependent
+        (a sub-Riemannian Hamiltonian).
+  \item An additional regularizer
+        $\mathcal{R}_\Sigma = w_\Sigma\|\Sigma_{\vec{q}} - I\|_F^2$
+        preventing the metric from degenerating in poorly observed
+        regions.
+\end{enumerate}
+This is a non-trivial generalization.
+A position-dependent mass matrix $\Mass(\vec{q})$ does \emph{not}
+alter the canonical symplectic structure on $T^*\mathcal{Q}$: the
+Poisson bracket $\{f,g\} = (\nabla_{\Mom} f)^\top(\nabla_{\Pos}
+g) - (\nabla_{\Pos} f)^\top(\nabla_{\Mom} g)$ remains unchanged.
+What \emph{does} change is the $\dot{p}$ equation, which gains
+additional terms involving $\partial\Mass^{-1}/\partial\Pos$:
+\[
+  \dot{p} = -\nabla_{\Pos} V(\vec{q})
+            + \tfrac{1}{2}\Mom^\top
+              \tfrac{\partial \Mass^{-1}(\vec{q})}{\partial \vec{q}}
+              \Mom,
+\]
+making the geodesic structure of trajectories curvature-dependent.
+Symplectic integrators designed for constant-mass Hamiltonians
+must be adapted (e.g., using implicit mid-point or variational
+integrators on the cotangent bundle) to correctly handle this
+additional term without energy drift.
+
+\subsection{Stronger Field-Smoothness Regularization}
+\label{subsec:ch7:sobolev}
+
+The current gradient-field regularization $\mathcal{R}_{\nabla H}$
+(§\ref{sec:ch4:regularization}) uses clearance and multi-start
+penalties as tractable surrogates.
+The principled version is the Jacobian penalty:
+\begin{equation}
+  \mathcal{R}_{\mathrm{Jac}}(\theta)
+  = w_J\,\frac{1}{T}\sum_t
+    \bigl\|\nabla_\Pos F_{\mathrm{tot}}(\vec{q}_t,\Mom_t;\theta)\bigr\|_F^2.
+  \label{eq:ch7:R_jac}
+\end{equation}
+Computing \eqref{eq:ch7:R_jac} exactly requires second-order
+differentiation through the integrator at every training step,
+which is $O(n^2)$ in the state dimension.
+A natural approximation is a Sobolev-type regularizer computed
+on a fixed evaluation grid:
+\begin{equation}
+  \mathcal{R}_{\mathrm{Sob}}(\theta)
+  = w_S\sum_{\vec{q} \in \mathcal{G}}
+    \bigl\|\nabla_\Pos F_{\mathrm{tot}}(\vec{q},\mathbf{0};\theta)\bigr\|^2,
+  \label{eq:ch7:R_sob}
+\end{equation}
+where $\mathcal{G}$ is a fixed spatial grid over the configuration
+space.
+This is $O(|\mathcal{G}| \cdot n)$ at training time and does not
+require differentiating through the integrator.
+
+% -----------------------------------------------------------------------
+\section{Broader Research Directions}
+\label{sec:ch7:broader}
+% -----------------------------------------------------------------------
+
+\subsection{Beyond 2D Navigation: Richer Configuration Spaces}
+\label{subsec:ch7:3d}
+
+Both stages operate in 2D configuration spaces ($\vec{c} \in
+\mathbb{R}^2$) with planar deformations.
+The same framework applies in principle to:
+
+\begin{itemize}
+  \item \textbf{3D deformable navigation} - aerial or underwater
+        robots with 6-DOF kinematics, where the morphology space
+        $\mathcal{Q}_o$ is significantly richer and the barrier
+        terms must account for 3D obstacle geometry.
+  \item \textbf{Manipulation} - dexterous end-effector control
+        where the configuration space is high-dimensional and
+        contact constraints are dense; the IPC-style barrier
+        terms are directly applicable.
+  \item \textbf{Legged locomotion} - whole-body Hamiltonian control
+        where ground contact, stability, and gait transitions
+        are natural energy-level phenomena.
+\end{itemize}
+
+In each case the enrichment principle predicts the required
+additions: new degrees of freedom in $\mathcal{Q}$ require new
+energy terms, new barrier functions, and new sub-policies in the
+decomposition \eqref{eq:ch3:ham}.
+
+\subsection{More Expressive Factored Energies}
+\label{subsec:ch7:richer_energy}
+
+The current factorization
+$H_\theta = H_{\mathrm{kin}} + H_{\mathrm{geom}} + H_{\mathrm{mat}}$
+is flat: all terms are additive at the same level.
+Richer factorizations are possible:
+
+\begin{itemize}
+  \item \textbf{Hierarchical energy.}
+        $H_{\mathrm{global}} + H_{\mathrm{local}}$, where the
+        global term governs broad goal-directedness and the
+        local term handles fine-grained obstacle shaping.
+        The meta-navigator $f_\xi$ could learn when to weight
+        global vs.\ local terms based on progress signals.
+  \item \textbf{Task-parameterized energy.}
+        $H_\theta(\Pos,\Mom;\tau)$ where $\tau$ is a task
+        descriptor (delivery vs.\ exploration vs.\ patrol),
+        allowing a single parameterization to support multiple
+        navigation objectives by conditioning the energy on
+        the task token.
+  \item \textbf{Compositional barriers.}
+        Rather than summing barrier terms, one could compose
+        them via a smooth max or log-sum-exp operator, which
+        would prevent a single nearby obstacle from dominating
+        the total barrier energy in dense clutter.
+\end{itemize}
+
+\subsection{Multi-Agent Coupled Hamiltonians}
+\label{subsec:ch7:multiagent}
+
+A natural extension of the Hamiltonian framework to multi-agent
+settings would define a joint energy:
+\begin{equation}
+  H_{\mathrm{joint}}(\{\PhaseState^{(i)}\}_{i=1}^N)
+  = \sum_i H_\theta^{(i)}(\PhaseState^{(i)})
+    + \sum_{i \neq j} H_{\mathrm{inter}}^{(ij)}(\Pos^{(i)}, \Pos^{(j)}),
+  \label{eq:ch7:multiagent_ham}
+\end{equation}
+where $H_{\mathrm{inter}}^{(ij)}$ encodes inter-agent coupling
+(collision avoidance, formation maintenance, social distance).
+The enrichment principle applies: adding $H_{\mathrm{inter}}$
+induces new inter-agent force channels, new shared coefficients,
+new multi-agent objectives, and new coordination update laws.
+
+A necessary but not sufficient condition for compositional passivity
+is that the interconnection be \emph{power-preserving}: the power
+flowing out of agent $i$ through the coupling port must equal the
+power flowing into agent $j$, i.e.\
+$\dot H_{\mathrm{inter}}^{(ij)} = y^{(i)\top} u^{(ij)} + y^{(j)\top} u^{(ji)}$
+with $u^{(ij)} + u^{(ji)} = 0$.
+Non-negative coupling energy $H_{\mathrm{inter}} \geq 0$ alone is
+insufficient: it prevents the coupling from being a source of energy
+extraction under zero external input, but it does not preclude the
+coupling port from absorbing energy from one agent and failing to
+supply it back to the other.
+A compositional passivity guarantee requires additionally that the
+interconnection law is skew-symmetric (zero net power exchange) and
+that each individual sub-Hamiltonian $H_\theta^{(i)}$ satisfies its
+own passivity condition independently.
+Establishing these conditions for the multi-agent navigation setting
+is an open problem.
+
+\subsection{Integration with High-Level Semantic Reasoning}
+\label{subsec:ch7:llm}
+
+Foundation-model planners
+provide semantic goal specification and task decomposition at the
+high level.
+The Hamiltonian framework is naturally complementary: the LLM
+produces a sequence of semantic goals or risk annotations that
+are encoded as energy terms $H_{\mathrm{task}}$, while the
+Hamiltonian dynamics ensures that these high-level intentions
+translate into physically stable, risk-aware continuous trajectories.
+
+The key open question is how to encode semantic goal specifications
+(e.g., "avoid the construction zone, prefer the shaded path")
+as structured energy terms with well-defined gradients and stable
+dynamics.
+Grounding language in energy-term coefficients—an analogue of
+SayCan~\citep{ahn2022saycan} that operates at the force-field
+level rather than the skill-affordance level is a promising
+direction.
+
+% -----------------------------------------------------------------------
+\section{Open Theoretical Problems}
+\label{sec:ch7:theory}
+% -----------------------------------------------------------------------
+
+Beyond the limitations enumerated in §\ref{sec:ch7:limits}, the
+this work opens several theoretical questions that are tractable
+research programs in their own right.
+
+\paragraph{T1. Formal passivity-preserving learning guarantees.}
+The current curriculum uses $\mathcal{L}_{\mathrm{pass}}$ as a
+monitoring condition.
+A stronger result would be a \emph{passivity-preserving update rule}:
+a gradient step $\theta \leftarrow \theta - \eta\nabla\mathcal{L}$
+such that $R(\theta') \succeq 0$ is guaranteed whenever
+$R(\theta) \succeq 0$.
+This would require either a constrained parameterization of $R_\theta$
+(e.g., $R_\theta = L_\theta L_\theta^\top$ for a network $L_\theta$)
+or a projection step after each gradient update.
+
+\paragraph{T2. Multi-timescale convergence rates.}
+Theorem-level convergence guarantees for the three-loop update
+hierarchy (§\ref{sec:ch4:loops}) are currently absent.
+Standard multi-timescale stochastic approximation theory provides asymptotic
+convergence under Lipschitz assumptions, but the CVaR objective
+and the curriculum re-weighting break the standard conditions.
+Establishing convergence rates for the nested loop would require
+either extending multi-timescale theory to risk-sensitive objectives
+or using a Lyapunov function argument that couples all three loops.
+
+\paragraph{T3. Basin-of-competence volume bounds.}
+Define the basin of competence $\mathcal{B}(\theta)$ as in
+\eqref{eq:ch7:basin}.
+A useful theoretical result would bound
+$\mathrm{vol}(\mathcal{B}(\theta))$ as a function of the
+Hamiltonian's Lipschitz constant, the barrier sharpness, and the
+number of training episodes.
+Such a bound would connect empirical coverage to theoretical
+guarantees on the policy's generalization region.
+
+\paragraph{T4. Identifiability of the force decomposition.}
+Let $\Theta(\mathcal{D})$ denote the set of parameter vectors
+consistent with a trajectory dataset $\mathcal{D}$:
+\begin{equation}
+  \Theta(\mathcal{D})
+  = \bigl\{\theta
+    \;\big|\;
+    \mathcal{L}(\theta;\mathcal{D}) \leq \epsilon
+  \bigr\}.
+  \label{eq:ch7:theta_compat}
+\end{equation}
+When is $\Theta(\mathcal{D})$ a singleton (up to symmetries)?
+Sufficient conditions for unique recovery of
+$(\beta, \lambda_s, \lambda_h, \gamma)$ would require:
+\begin{enumerate}[(i)]
+  \item Coverage: $\mathcal{D}$ includes trajectories in regions
+        where each force channel is active.
+  \item Excitation: the state–action pairs are persistently exciting
+        in the sense of classical system identification.
+  \item Separation: the functional forms of
+        $H_{\mathrm{geom}}$ and $H_{\mathrm{mat}}$ are
+        sufficiently different that their gradients cannot
+        cancel over all of $\mathcal{D}$.
+\end{enumerate}
+Establishing formal identifiability conditions would both guide
+dataset curation for training and provide a principled justification
+for the multi-stage curriculum.
+
+\paragraph{T5. Geometric Sobolev regularity of the learned field.}
+The smooth navigation potential requires that
+$\nabla_\Pos H_\theta$ be Lipschitz in $\Pos$.
+A tighter requirement like Sobolev regularity
+$F_{\mathrm{tot}} \in W^{1,\infty}(\mathcal{Q})$ would guarantee
+that the flow map $\Phi^{\Delta t}_H$ is well-posed for all $\Delta t$
+above a computable threshold.
+Proving this for the learned network $f_\xi$ under standard
+initialization and training conditions is an open problem that
+connects to the spectral analysis of neural operators.
+
+% -----------------------------------------------------------------------
+\section{Final Perspective}
+\label{sec:ch7:perspective}
+% -----------------------------------------------------------------------
+
+We have developed the first two stages of a continual
+Hamiltonian learning framework: a geometry-only base learner and a
+material-aware richer learner, connected by a formal enrichment
+principle.
+The experimental evidence confirms that the structured progression
+is not cosmetic: each added layer resolves a specific class of failure
+modes that the previous stage could not address.
+
+Figure~\ref{fig:ch7:agenda} illustrates the full research program
+that this work opens.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small\sffamily,
+  rung/.style args={#1}{
+    rectangle, rounded corners=5pt,
+    draw=#1!70!black, fill=#1!9,
+    line width=1.2pt,
+    minimum width=12.0cm, minimum height=1.4cm,
+    align=left, inner sep=8pt
+  },
+  num/.style args={#1}{
+    circle,
+    draw=#1!80!black,
+    fill=#1!25,
+    line width=1pt,
+    minimum size=22pt,
+    font=\bfseries\small\sffamily
+  },
+  arr/.style args={#1}{
+    -{Stealth[length=6pt]}, line width=1.4pt, color=#1
+  },
+  dashed_arr/.style={
+    -{Stealth[length=5pt]}, dashed,
+    line width=1pt, color=gray!50
+  },
+  ann/.style={font=\scriptsize\sffamily\itshape, text=gray!60!black},
+]
+
+% ── Rung 1 ────────────────────────────────────────────────────────
+\node[rung={teal}] (r1) at (0,0) {%
+  \hspace{24pt}%
+  \begin{minipage}{10.8cm}
+    \textbf{Rung 1 --- Geometry-Only Structured Learning}
+    \hfill\textit{\small Established (Ch.~\ref{chap:grlsnam})}\\[2pt]
+    Phase-space policy, local sensing, stagewise Hamiltonian shaping,
+    online geometric alignment.
+  \end{minipage}
+};
+\node[num={teal}] at ($(r1.west)+(13pt,0)$) {\textcolor{teal!80!black}{1}};
+
+% ── Rung 2 ────────────────────────────────────────────────────────
+\node[rung={orange}, below=10pt of r1] (r2) {%
+  \hspace{24pt}%
+  \begin{minipage}{10.8cm}
+    \textbf{Rung 2 --- Material-Aware Risk-Sensitive Learning}
+    \hfill\textit{\small Established (Ch.~\ref{chap:material})}\\[2pt]
+    Oracle material terms, CVaR objective, 3-loop curriculum,
+    passivity-guided advancement.
+  \end{minipage}
+};
+\node[num={orange}] at ($(r2.west)+(13pt,0)$) {\textcolor{orange!80!black}{2}};
+
+% ── Rung 3 ────────────────────────────────────────────────────────
+\node[rung={gray}, below=10pt of r2, draw=gray!70!black, fill=gray!12] (r3) {%
+  \hspace{24pt}%
+  \begin{minipage}{10.8cm}
+    \textbf{Rung 3 --- Perception-Led Material Inference}
+    \hfill\textit{\small Near-term (§\ref{subsec:ch7:stage3})}\\[2pt]
+    Learned belief $\hat\rho$; perception co-training; uncertainty
+    propagation through force field.
+  \end{minipage}
+};
+\node[num={gray}] at ($(r3.west)+(13pt,0)$) {\textcolor{gray!70!black}{3}};
+
+% ── Rung 4 ────────────────────────────────────────────────────────
+\node[rung={gray}, below=10pt of r3, draw=gray!55!black, fill=gray!8] (r4) {%
+  \hspace{24pt}%
+  \begin{minipage}{10.8cm}
+    \textbf{Rung 4 --- Anisotropic Metric and Belief-State Observer}
+    \hfill\textit{\small Medium-term (§\ref{subsec:ch7:filtering}, \ref{subsec:ch7:riemannian})}\\[2pt]
+    Learned $\Sigma_{\vec{q}}(\vec{q};\xi)$; sequential filtering;
+    formal basin-of-competence volume bounds.
+  \end{minipage}
+};
+\node[num={gray}] at ($(r4.west)+(13pt,0)$) {\textcolor{gray!65!black}{4}};
+
+% ── Rung 5 ────────────────────────────────────────────────────────
+\node[rung={gray}, below=10pt of r4, draw=gray!40!black, fill=gray!5] (r5) {%
+  \hspace{24pt}%
+  \begin{minipage}{10.8cm}
+    \textbf{Rung 5 --- Self-Improving Learner in Unknown Environments}
+    \hfill\textit{\small Long-term (§\ref{sec:ch7:broader})}\\[2pt]
+    Coupled perception, planning, and dynamics; multi-agent
+    extensions; formal convergence and identifiability guarantees.
+  \end{minipage}
+};
+\node[num={gray}] at ($(r5.west)+(13pt,0)$) {\textcolor{gray!60!black}{5}};
+
+% ── Arrows ────────────────────────────────────────────────────────
+\draw[arr={teal!60!black}]   (r1.south) -- (r2.north);
+\draw[arr={orange!60!black}] (r2.south) -- (r3.north);
+\draw[dashed_arr]            (r3.south) -- (r4.north);
+\draw[dashed_arr]            (r4.south) -- (r5.north);
+
+% ── Braces ────────────────────────────────────────────────────────
+\draw[
+  decorate,
+  decoration={brace, amplitude=7pt}, % removed mirror
+  teal!60!black, line width=1pt
+]
+  ([xshift=8pt]r1.north east) -- ([xshift=8pt]r2.south east)
+  node[midway, right=10pt, ann, text=teal!70!black]
+    {\textbf{This thesis}};
+
+\draw[
+  decorate,
+  decoration={brace, amplitude=7pt}, % removed mirror
+  gray!50, line width=0.8pt
+]
+  ([xshift=8pt]r3.north east) -- ([xshift=8pt]r5.south east)
+  node[midway, right=10pt, ann]
+    {Future work};
+
+\end{tikzpicture}
+\caption{%
+  \textbf{The full research program opened by the thesis.}
+  Rungs~1 and~2 are established by the current work.
+  Rungs~3--5 are identified as the natural continuation of the same
+  enrichment ladder, each following the same principle:
+  a new energy term forces a new force channel, coefficient,
+  objective, gradient pathway, and update law.
+  The ladder's organizing principle---not any single rung---is the
+  framework's central contribution.
+}
+\label{fig:ch7:agenda}
+\end{figure}
+
+The central message is that the enrichment principle is
+\emph{generative}: it does not merely describe the transition from
+Rung~1 to Rung~2 retrospectively—it predicts the structure of
+Rungs~3, 4, and 5 prospectively.
+A researcher wishing to add perception co-training, a belief-state
+observer, or an anisotropic metric knows exactly what new components
+are required, because the enrichment chain (Theorem~\ref{thm:ch5:enrichment})
+specifies them.
+
+This work therefore contributes not only two working navigation
+systems, but a \emph{structural language} for building richer ones.
+The open problems of §\ref{sec:ch7:theory}: identifiability,
+passivity-preserving updates, basin-of-competence bounds,
+multi-timescale convergence are the mathematical questions whose
+resolution would transform the current framework from an empirically
+validated system into a theorem-supported theory of continual
+structured learning.
+
+% \begin{quote}\itshape
+% The thesis has established the first two rungs of an enrichment
+% ladder for continual Hamiltonian navigation.
+% The ladder's organizing principle: each new energy term forces a
+% coupled chain of force, coefficient, objective, and update law is
+% the framework's central contribution.
+% The full promise of continual Hamiltonian learning lies in ascending
+% the remaining rungs: richer perception, richer geometry, and a
+% deeper theoretical understanding of when and why structured
+% phase-space dynamics learns reliably in unknown environments.
+% \end{quote}

@@ -1,0 +1,237 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2026
+
+% The authors should use one of these tracks.
+% Before accepting by the NeurIPS conference, select one of the options below.
+% 0. "default" for submission
+\usepackage[main]{neurips_2026}
+% the "default" option is equal to the "main" option, which is used for the Main Track with double-blind reviewing.
+% 1. "main" option is used for the Main Track
+%  \usepackage[main]{neurips_2026}
+% 2. "position" option is used for the Position Paper Track
+%  \usepackage[position]{neurips_2026}
+% 3. "eandd" option is used for the Evaluations & Datasets Track
+ % \usepackage[eandd]{neurips_2026}
+ % if you want to opt-in for a de-anomymized submission (not recommended, but OK):
+ %\usepackage[eandd, nonanonymous]{neurips_2026}
+% 4. "creativeai" option is used for the Creative AI Track
+%  \usepackage[creativeai]{neurips_2026}
+% 5. "sglblindworkshop" option is used for the Workshop with single-blind reviewing
+ % \usepackage[sglblindworkshop]{neurips_2026}
+% 6. "dblblindworkshop" option is used for the Workshop with double-blind reviewing
+%  \usepackage[dblblindworkshop]{neurips_2026}
+
+% After being accepted, the authors should add "final" behind the track to compile a camera-ready version.
+% 1. Main Track
+ % \usepackage[main, final]{neurips_2026}
+% 2. Position Paper Track
+%  \usepackage[position, final]{neurips_2026}
+% 3. Evaluations & Datasets Track
+ % \usepackage[eandd, final]{neurips_2026}
+% 4. Creative AI Track
+%  \usepackage[creativeai, final]{neurips_2026}
+% 5. Workshop with single-blind reviewing
+%  \usepackage[sglblindworkshop, final]{neurips_2026}
+% 6. Workshop with double-blind reviewing
+%  \usepackage[dblblindworkshop, final]{neurips_2026}
+% Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote.
+% For workshops (5., 6.), the authors should add the name of the workshop, "\workshoptitle" command is used to set the workshop title.
+% \workshoptitle{WORKSHOP TITLE}
+
+% "preprint" option is used for arXiv or other preprint submissions
+ % \usepackage[preprint]{neurips_2026}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2026}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage[table,dvipsnames]{xcolor}         % colors
+
+
+
+\usepackage{mathrsfs}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{graphicx}  % for resizing tables
+
+\usepackage{booktabs}  % for \toprule, \midrule, and \bottomrule commands
+
+\usepackage{multirow}  % for multi-row cells (used for headers and combining rows)
+\usepackage{array}     % for advanced table features like column alignment
+\usepackage{pifont}    % for symbols like \checkmark and \times
+\usepackage{caption}   % to control caption styles, especially for multi-page tables (if needed)
+\usepackage{adjustbox}
+\usepackage{subcaption}
+\usepackage{makecell}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumerate}
+\usepackage{amssymb,mathtools}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+% Preamble
+\newcommand{\full}{\(\checkmark\)}         % always in math mode
+\newcommand{\none}{\(\times\)}             % always in math mode
+\newcommand{\partially}{\(\triangle\)} 
+     
+\let\vec=\boldsymbol
+
+\usepackage{tikz}
+\usetikzlibrary{matrix,calc,positioning,fit,backgrounds,shadows.blur,arrows.meta}
+\usepackage{lipsum}
+\usetikzlibrary{matrix,calc,positioning,fit,backgrounds,shadows.blur,arrows.meta}
+\usepackage{amsmath}
+\usepackage[capitalize,noabbrev]{cleveref}
+\newcommand{\learn}{\textsuperscript{\textcolor{orange!80!black}{\scriptsize L}}}
+\newcommand{\pre}{\textsuperscript{\textcolor{blue!70!black}{\scriptsize PC}}}
+% --- Colors ---
+\definecolor{sensorcolor}{RGB}{65,105,225}
+\definecolor{framecolor}{RGB}{220,20,60}
+\definecolor{shapecolor}{RGB}{34,139,34}
+\definecolor{navcolor}{RGB}{255,140,0}
+\definecolor{band}{RGB}{246,246,246}
+\definecolor{Crimson}{rgb}{0.86, 0.08, 0.24}
+
+% --- Styles ---
+\tikzset{
+  mod/.style   ={rectangle,rounded corners=2pt,draw,very thick,align=center,
+                 minimum width=4.2cm,minimum height=2.0cm,fill=#1!14},
+  nav/.style   ={rectangle,rounded corners=2pt,draw,very thick,align=center,
+                 minimum width=14.0cm,minimum height=2.0cm,fill=#1!14},
+  io/.style    ={circle,draw,thick,inner sep=0pt,minimum size=2.8mm,fill=white},
+  qarr/.style  ={thick,dashed,-{Stealth[length=2.2mm]}},
+  rarr/.style  ={thick,-{Stealth[length=2.2mm]}},
+  chip/.style  ={rectangle,rounded corners=1pt,draw,thin,inner sep=1pt,font=\tiny\bfseries,fill=white},
+  dsicon/.style={rectangle,draw,thin,fill=white,minimum width=4.5mm,minimum height=4.5mm},
+  badge/.style ={circle,draw,thin,fill=white,minimum size=5mm,font=\tiny\bfseries},
+  tiny/.style  ={font=\scriptsize},
+  xtiny/.style ={font=\tiny}
+}
+
+% Define environments
+% \newtheorem{theorem}{Theorem}[section]     % numbered within sections
+% \newtheorem{lemma}[theorem]{Lemma}         % share numbering with theorem
+\newtheorem{definition}[theorem]{Definition}
+% \newtheorem{proposition}[theorem]{Proposition}
+% \newtheorem{corollary}[theorem]{Corollary}
+
+% \newtheorem{assumption}{Assumption}[section]
+% % Unnumbered versions
+% \newtheorem*{remark}{Remark}
+\newtheorem*{example}{Example}
+% --- thesis-consistent macros ---
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Pos}{q}
+\newcommand{\Mom}{p}
+\newcommand{\Mass}{\mathrm{M}}
+\newcommand{\cvar}[1]{\mathrm{CVaR}_{#1}}
+
+\title{Learning Material-Aware Hamiltonian Risk Fields for Safe Navigation}
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+\author{%
+Aditya Sai Ellendula$^{1}$, Yi Wang$^{2}$, Chandrajit Bajaj$^{1,2}$ \\
+$^{1}$ Department of Computer Science, University of Texas at Austin, Austin, TX 78712, USA \\
+$^{2}$ Oden Institute, University of Texas at Austin, Austin, TX 78712, USA \\
+\texttt{\{adityase,panzer.wy\}@utexas.edu, bajaj@cs.utexas.edu} \\
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\begin{abstract}
+Geometry-only navigation treats two equally clear routes as equivalent even when they differ substantially in traversal risk, such as firm ground versus wet clay. Adding a material-risk potential addresses this ambiguity, but an always-exposed risk gradient can steer toward a lower-risk direction that is not locally traversable. Material-aware navigation therefore requires controlling both when material information influences motion and how strongly it does so. We augment a port-Hamiltonian navigator with a separate material-risk force channel whose roles are deliberately decomposed into a direction given by the material-risk gradient, a context-conditioned magnitude, and a local feasibility witness that gates exposure. The witness provides evidence that a feasible lower-risk motion exists rather than a reference trajectory, and the Hamiltonian field generates the executed motion. The learned contextual coefficients are trained with a CVaR objective that emphasizes high-cost tail rollouts, while feasibility remains determined by the local witness. This separation enables direct intervention on each component. On delayed-required-escape episodes, the full method reduces premature activation from 0.950 to 0.380 and raises success from 0.480 to 0.610 with zero replans, and toggling only the gate on a fixed trained model removes 91--94\% of the soft-force exposure the ungated field would admit. On DFC2018, isolating the material channel reduces cumulative material risk from 10.340 to 10.288 without reducing success. The learned magnitude also adapts across domains without domain-specific retuning, from approximately 0.11 on RELLIS to approximately 1.81 on DFC2018. We report two limits alongside these gains. Retraining the same architecture and gate under expected cost rather than CVaR separates no outcome metric at 95\% confidence, so the selectivity is attributable to the gate rather than to the objective. The hard-hazard barrier is differentiable but is not a control-barrier certificate, so safety claims refer to empirical finite-rollout violation reductions rather than formal guarantees.
+\end{abstract}
+
+
+\input{tex/intro}
+\input{tex/related_works}
+\input{tex/method_concise}
+\input{tex/exp_concise}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Giving material risk its own additive force channel, gated by a local feasibility
+witness, gives a navigation policy a selectivity signature that can be measured
+rather than inferred from trajectories. The material response is admitted when
+a feasible lower-risk motion exists nearby and withheld otherwise. Because
+direction, strength, and exposure are separate factors, each can be intervened on
+independently, and the interventions localize the behavior to the gate. Holding
+the trained model fixed and toggling only the gate removes $91$--$94\%$ of the
+soft-force exposure the ungated field would admit, without altering the executed
+path, and against a reactive
+baseline on the delayed-required-escape benchmark the gated field cuts premature
+activation from $0.950$ to $0.380$ while raising success from $0.480$ to $0.610$
+with zero replans. The context-conditioned magnitude spans roughly a
+$17{\times}$ range between off-road and dense-semantic domains with no
+per-domain retuning. The witness is loose on path, in that the executed step
+differs from the witness ray by a median $45^\circ$, yet it transfers on the
+properties that matter, agreeing on clearance and hard contact after the escape
+opens.
+
+Two results bound these claims. The CVaR objective is not what produces the
+selectivity. Retraining the same architecture and gate under expected cost
+separates no outcome metric at $95\%$ confidence over $100$ paired episodes, so
+we report CVaR as the training rule we used rather than as a demonstrated
+contributor. And robustness to perception degradation is conservatism, not
+discrimination. As semantic labels are corrupted, activations that were correct
+on the clean map and those that were false decay almost identically
+($0.414$ vs.\ $0.446$ retained at $30\%$ corruption). The construction also
+offers empirical reductions rather than certificates, the gate is frame-wise and
+can flicker, and reactive boundary-following remains stronger on
+moving-obstacle events. The mechanism is a way to make one channel's influence
+auditable; the natural next steps are temporal hysteresis in the witness,
+calibrated perception uncertainty in the gate conditions, and testing the same
+gated channel inside other vector-field navigators.
+
+
+\paragraph{Social Impact Statement.}
+This work uses public or simulated navigation data and does not rely on private user information. Its intended benefit is more reliable autonomous navigation under terrain and traffic uncertainty. The method is not a deployment safety certificate, and real systems would require independent validation, fallback control, and monitoring.
+
+\paragraph{Acknowledgement.} This research was supported in part by a grant from the Peter O’Donnell Foundation, the Michael J Fox Foundation, Jim Holland- Backcountry Foundation and in part from a grant from the Army Research Office accomplished under Cooperative Agreement Number W911NF-19-2-0333
+
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+
+\newpage
+\appendix
+\input{tex/appendix_revised}
+
+\end{document}

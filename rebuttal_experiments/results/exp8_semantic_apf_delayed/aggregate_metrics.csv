@@ -1,0 +1,25 @@
+method,method_label,metric,n_paired,mean,ci95_low,ci95_high
+semantic_apf,Semantic APF,success,100,0.11,0.05,0.18
+semantic_apf,Semantic APF,hard_hazard_length_m,100,0.033284,0.007070999999999999,0.064497
+semantic_apf,Semantic APF,post_event_cvar_violation,100,0.9158525861362341,0.895316469209352,0.9349952643703117
+semantic_apf,Semantic APF,reaction_delay,100,3.34,2.64975,4.09
+semantic_apf,Semantic APF,route_deviation_delay,100,18.19,14.23975,22.650249999999996
+semantic_apf,Semantic APF,path_length_ratio,100,1.7382790392842782,1.6594022412872045,1.8167516557145915
+semantic_apf,Semantic APF,stuck,100,0.9,0.84,0.95
+semantic_apf,Semantic APF,pre_open_deviation_proxy,100,0.26,0.18,0.35
+route_aware_stage2,Route-aware Stage 2,success,100,0.61,0.52,0.71
+route_aware_stage2,Route-aware Stage 2,hard_hazard_length_m,100,0.059497,0.021212999999999996,0.10692299999999999
+route_aware_stage2,Route-aware Stage 2,post_event_cvar_violation,100,0.8400858992965251,0.8080579826359725,0.8717980361745853
+route_aware_stage2,Route-aware Stage 2,reaction_delay,100,2.85,2.19,3.55
+route_aware_stage2,Route-aware Stage 2,route_deviation_delay,100,13.04,9.459750000000001,17.10025
+route_aware_stage2,Route-aware Stage 2,path_length_ratio,100,1.3861960664150355,1.3159965301571153,1.461787112540002
+route_aware_stage2,Route-aware Stage 2,stuck,100,0.48,0.38,0.58
+route_aware_stage2,Route-aware Stage 2,pre_open_deviation_proxy,100,0.38,0.29,0.48
+dwa_semantic,Semantic DWA,success,100,0.48,0.38,0.58
+dwa_semantic,Semantic DWA,hard_hazard_length_m,100,0.061568,0.005,0.14934899999999998
+dwa_semantic,Semantic DWA,post_event_cvar_violation,100,0.6949817109703764,0.6443505363911846,0.7497136866937477
+dwa_semantic,Semantic DWA,reaction_delay,100,2.26,1.57,3.0402499999999963
+dwa_semantic,Semantic DWA,route_deviation_delay,100,1.96,1.27,2.73
+dwa_semantic,Semantic DWA,path_length_ratio,100,1.4987125269695776,1.4316213320842162,1.5658084478626275
+dwa_semantic,Semantic DWA,stuck,100,0.59,0.49,0.69
+dwa_semantic,Semantic DWA,pre_open_deviation_proxy,100,0.95,0.9,0.99

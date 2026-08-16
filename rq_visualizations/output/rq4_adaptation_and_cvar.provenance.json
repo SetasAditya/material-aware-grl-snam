@@ -1,0 +1,17 @@
+{
+  "figure": "rq4_adaptation_and_cvar",
+  "inputs": [
+    {
+      "path": "rebuttal_experiments/results/exp9_soft_coefficient_isolation/rollout_coefficients.csv",
+      "sha256": "1b694eee09ea8bfc3e070dda4bc801efb4fd449536d9aa023db870be3b73298a"
+    },
+    {
+      "path": "rebuttal_experiments/results/exp1_gate_ablation_100/step_traces.csv",
+      "sha256": "df3bf06dfb7bfed13b2e8dd5c4d921c7cc69b0efa23c836c4dea06d2ab8c883d"
+    },
+    {
+      "path": "results/rellis_missing_ablation_results/delayed_required_false_preact_100.csv",
+      "sha256": "8c50559d661127f6ca506030d8cc3543750ad85ced142fe29f14d8137bc7841c"
+    }
+  ]
+}

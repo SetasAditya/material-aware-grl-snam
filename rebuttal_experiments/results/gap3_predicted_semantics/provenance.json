@@ -1,0 +1,70 @@
+{
+  "experiment": "gap3_predicted_semantics",
+  "scope": "validation-only; sequence 00004 sealed",
+  "train_sequences": [
+    "00000",
+    "00001",
+    "00002"
+  ],
+  "validation_sequence": "00003",
+  "num_train_scenes": 179,
+  "num_validation_scenes": 57,
+  "num_validation_episodes": 450,
+  "feature_names": [
+    "log_point_count",
+    "mean_z",
+    "std_z",
+    "min_z",
+    "max_z",
+    "z_range",
+    "mean_intensity",
+    "std_intensity",
+    "min_intensity",
+    "max_intensity",
+    "x_center",
+    "y_center",
+    "radial_distance",
+    "sin_azimuth",
+    "cos_azimuth"
+  ],
+  "group_names": [
+    "low",
+    "grass",
+    "bush",
+    "high_soft",
+    "hard",
+    "other"
+  ],
+  "representative_labels": [
+    23,
+    3,
+    19,
+    33,
+    4,
+    0
+  ],
+  "semantic_summary": {
+    "accuracy": 0.6230373230373231,
+    "mean_iou": 0.3999517724520249
+  },
+  "config": {
+    "source_root": "/mnt/data/adityas/GRL-SNAM/exp-rellis",
+    "train_split": "/mnt/data/adityas/material-aware-grl-snam-clean/repair_experiments/splits/train_static.json",
+    "validation_split": "/mnt/data/adityas/material-aware-grl-snam-clean/repair_experiments/splits/validation_static.json",
+    "out": "/mnt/data/adityas/material-aware-grl-snam-clean/rebuttal_experiments/results/gap3_predicted_semantics",
+    "hidden": 64,
+    "epochs": 12,
+    "batch_size": 4096,
+    "learning_rate": 0.001,
+    "bootstrap_reps": 2000,
+    "seed": 27370
+  },
+  "hashes": {
+    "train_split_sha256": "3ad3164fe46c788001f7b54ab8af3537b8da2bf396a2c169b1fdf9f91b1a8011",
+    "validation_split_sha256": "ff95aeadf405d88e159c3cde55e257fd99de5051c028d06807f4ba9ca9d3ce08",
+    "bev_manifest_sha256": "744e0c92c290b8235d7395226e4e7a15c6c1ecb5be42aa1ab588ce34d2975ccf",
+    "ontology_sha256": "95d74bdd79a4b4eba7f6b0892121fd34077c716d5efe0d2cf1cf36b2c13e13fa",
+    "directional_checkpoint_sha256": "86b62a55d4149577d2dbbe0548169aa94b1e6d0f47d9e0c1d794c7d1655e575b",
+    "semantic_predictor_sha256": "0270214837b2736d6b2c3d563abccd3f7ac776faae8fdbdf5f6841f103fc2f92"
+  }
+}
