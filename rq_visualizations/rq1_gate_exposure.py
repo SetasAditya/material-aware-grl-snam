@@ -223,9 +223,9 @@ def main() -> None:
                 where="post", color=color, lw=1.7, label=arm.replace("_", " "))
     ax.axvspan(event, opening, color=COLORS["hazard"], alpha=0.10, label="blocked interval")
     ax.axvline(opening, color=COLORS["safe"], ls="--", lw=1.2)
-    ax.set(xlabel="Control step", ylabel="Soft-force exposure", ylim=(-0.12, 1.16),
+    ax.set(xlabel="Control step", ylabel="Soft-force exposure", ylim=(-0.12, 1.62),
            title="Exposure timing changes; outcome does not")
-    ax.legend(ncol=3, loc="upper left")
+    ax.legend(ncol=3, loc="upper left", framealpha=0.0, borderaxespad=0.3)
 
     ax = fig.add_subplot(gs[1, 2])
     panel_label(ax, "E")
@@ -234,11 +234,10 @@ def main() -> None:
     y = np.arange(3)
     ax.barh(y + 0.18, [1.0] * 3, 0.32, color=COLORS["muted"], label="gate off")
     ax.barh(y - 0.18, on_frac, 0.32, color=COLORS["material"], label="gate on")
-    ax.set(yticks=y, yticklabels=regimes, xlim=(0, 1.05), xlabel="Fraction of steps",
-           title="Exposure falls 91--94%")
+    ax.set(yticks=y, yticklabels=regimes, xlim=(0, 1.05), ylim=(-1.05, 2.5),
+           xlabel="Fraction of steps", title="Exposure falls 91--94%")
     ax.invert_yaxis()
-    ax.legend(loc="upper right", framealpha=0.0)
-    divergence = paired_divergence(trace)
+    ax.legend(loc="upper right", framealpha=0.0, ncol=2, borderaxespad=0.3)
 
     divergence = paired_divergence(trace)
     ax_d.text(0.35, 0.42,
