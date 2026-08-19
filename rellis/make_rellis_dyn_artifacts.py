@@ -876,7 +876,7 @@ def make_fig_b1(args: argparse.Namespace) -> None:
     gs = fig.add_gridspec(
         3,
         5,
-        width_ratios=[1.18, 1.0, 1.08, 1.0, 1.0],
+        width_ratios=[2.05, 1.0, 1.08, 1.0, 1.0],
         wspace=0.05,
         hspace=0.12,
     )
@@ -890,8 +890,9 @@ def make_fig_b1(args: argparse.Namespace) -> None:
             spine.set_visible(True)
             spine.set_linewidth(1.2)
             spine.set_edgecolor("#333333")
-        text_ax.text(0.05, 0.92, title, ha="left", va="top", fontsize=11*_fs, weight="bold")
-        text_ax.text(0.05, 0.74, note, ha="left", va="top", fontsize=8.7*_fs, linespacing=1.25)
+        text_ax.text(0.05, 0.93, title, ha="left", va="top", fontsize=8.6*_fs, weight="bold",
+                     wrap=True)
+        text_ax.text(0.05, 0.76, note, ha="left", va="top", fontsize=6.9*_fs, linespacing=1.3)
         for j, (x0, x1, y0, y1) in enumerate(crops):
             ax = fig.add_subplot(gs[i, j + 1])
             ax.imshow(img[y0:y1, x0:x1])

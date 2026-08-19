@@ -187,7 +187,7 @@ def main() -> None:
     opening = event + f(spec, "open_delay")
 
     fig = plt.figure(figsize=(FIG_W, 9.6), constrained_layout=True)
-    gs = fig.add_gridspec(2, 3, height_ratios=[1.08, 0.92])
+    gs = fig.add_gridspec(2, 3, height_ratios=[1.08, 0.92], hspace=0.30)
 
     active_post = [f(r, "step") for r in selected if f(r, "step") >= opening and f(r, "gate_decision", 0) > 0.5]
     snapshots = [
@@ -208,11 +208,11 @@ def main() -> None:
         Line2D([], [], color="#111111", lw=1.9, label="selected primitive"),
         *field_legend_handles(),
     ]
-    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.555),
+    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.515),
                ncol=4, fontsize=fs(7.5), columnspacing=1.4, handlelength=1.8)
 
     # Exposure timeline: the quantity the gate actually controls.
-    ax = fig.add_subplot(gs[1, :2])
+    ax = ax_d = fig.add_subplot(gs[1, :2])
     panel_label(ax, "D")
     for arm, color, offset in [("gate_on", COLORS["material"], 0.03), ("gate_off", COLORS["fixed"], -0.03)]:
         values = sorted(
@@ -237,12 +237,14 @@ def main() -> None:
     ax.set(yticks=y, yticklabels=regimes, xlim=(0, 1.05), xlabel="Fraction of steps",
            title="Exposure falls 91--94%")
     ax.invert_yaxis()
-    ax.legend(loc="lower right")
+    ax.legend(loc="upper right", framealpha=0.0)
     divergence = paired_divergence(trace)
-    ax.text(0.03, 0.30,
+
+    divergence = paired_divergence(trace)
+    ax_d.text(0.35, 0.42,
             "success 1.00 in both arms\n"
             f"median path difference {np.median(divergence):.4f} cells",
-            transform=ax.transAxes, fontsize=fs(7.5), weight="bold", va="bottom",
+            transform=ax_d.transAxes, fontsize=fs(7.5), weight="bold", va="center",
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "#E8F5E9",
                   "edgecolor": COLORS["safe"]})
 

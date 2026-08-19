@@ -122,7 +122,6 @@ def make_rellis_tradeoff(out: Path, summary: Path) -> None:
         ax.grid(alpha=.25)
     for ax in axes[1]: ax.set_xlabel("Reaction delay (steps)  ↓")
     for ax in axes[:, 0]: ax.set_ylabel("Episode success  ↑")
-    axes[0, 0].legend(loc="lower right", fontsize=fs(8.5))
     fig.suptitle("RELLIS-Dyn: responsiveness–completion trade-off", fontsize=fs(14), weight="bold")
     _save(fig, out, "rellis_dyn_8event_group_pareto")
 
@@ -212,12 +211,12 @@ def make_highway(out: Path, source: Path) -> None:
     img = plt.imread(source)
     xs = [(138, 1365), (1475, 2702)]
     ys = [(230, 670), (836, 1277), (1440, 1881)]
-    row_names = ["Default\ntraffic", "Open\nadjacent lane", "Blocked\nadjacent lanes"]
+    row_names = ["Default traffic", "Open adjacent lane", "Blocked adjacent lanes"]
     outcomes = [[("FAILURE: OFF-ROAD", "#B42318"), ("SUCCESS: ON-ROAD", "#16794B")],
                 [("FAILURE: COLLISION", "#B42318"), ("SUCCESS: SAFE PASS", "#16794B")],
                 [("FAILURE: OFF-ROAD", "#B42318"), ("SUCCESS: SAFE WAIT", "#16794B")]]
     trace_colors = [(31, 119, 180), (214, 39, 40)]
-    fig, axes = plt.subplots(3, 2, figsize=(W_HIGHWAY, 6.6), constrained_layout=True)
+    fig, axes = plt.subplots(3, 2, figsize=(W_HIGHWAY, 8.6), constrained_layout=True)
     for i, (y0, y1) in enumerate(ys):
         for j, (x0, x1) in enumerate(xs):
             ax = axes[i, j]
@@ -250,8 +249,7 @@ def make_highway(out: Path, source: Path) -> None:
             ax.set(xlim=(-.03, 1.03), ylim=(0, 1)); ax.set_xticks([]); ax.set_yticks([])
             for spine in ax.spines.values(): spine.set_visible(False)
             if j == 0:
-                ax.set_ylabel(row_names[i], fontsize=fs(8.5), weight="bold", rotation=90,
-                              labelpad=6, ha="center", va="center")
+                ax.set_ylabel(row_names[i], fontsize=fs(9.0), weight="bold", rotation=90, labelpad=6)
     axes[0, 0].set_title("Geometry-only", fontsize=fs(14), weight="bold", color="#2878B5")
     axes[0, 1].set_title("Material-aware", fontsize=fs(14), weight="bold", color="#D62828")
     _save(fig, out, "highway_scenario_path_panels")
