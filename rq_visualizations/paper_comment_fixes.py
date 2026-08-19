@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
 import numpy as np
 
-from common import COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, ROOT, draw_field, event_field, f, rows, setup_style
+from common import COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, ROOT, draw_field, event_field, f, fs, rows, setup_style
 
 
 EVENT_GROUP = {
@@ -31,10 +31,14 @@ EVENT_GROUP = {
 }
 
 
+W_OVERVIEW, W_TRADEOFF, W_FORCE, W_HIGHWAY = 12.2, 9.6, 10.2, 11.8
+FRAC_TRADEOFF, FRAC_FORCE = 0.88, 0.90
+
+
 def _save(fig, out: Path, stem: str) -> None:
     out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out / f"{stem}.pdf", bbox_inches="tight")
-    fig.savefig(out / f"{stem}.png", dpi=320, bbox_inches="tight")
+    fig.savefig(out / f"{stem}.pdf")
+    fig.savefig(out / f"{stem}.png", dpi=320)
     plt.close(fig)
 
 
@@ -45,21 +49,22 @@ def _box(ax, title: str, lines: list[str], color: str) -> None:
                                 edgecolor=color, linewidth=1.6,
                                 transform=ax.transAxes))
     ax.text(0.08, 0.86, title, transform=ax.transAxes, color=color,
-            fontsize=12, weight="bold", va="top")
+            fontsize=fs(11), weight="bold", va="top")
     y = 0.68
     for line in lines:
-        ax.text(0.08, y, line, transform=ax.transAxes, fontsize=10.5, va="top")
+        ax.text(0.075, y, line, transform=ax.transAxes, fontsize=fs(9.5), va="top")
         y -= 0.19
 
 
 def make_overview(out: Path, traces: Path) -> None:
+    setup_style(W_OVERVIEW)
     trace = rows(traces / "step_traces.csv")
     specs = rows(traces / "event_specs.csv")
     selected = [r for r in trace if r["arm"] == "gate_on" and f(r, "gate_decision", 0) > 0.5]
     point = selected[len(selected) // 2]
     spec = next(r for r in specs if r["episode_id"] == point["episode_id"])
 
-    fig, axes = plt.subplots(2, 3, figsize=(12.2, 6.8), constrained_layout=True)
+    fig, axes = plt.subplots(2, 3, figsize=(W_OVERVIEW, 6.8), constrained_layout=True)
     ax = axes[0, 0]
     draw_field(ax, event_field(spec, f(point, "step")))
     pos = np.array([f(point, "position_x"), f(point, "position_y")])
@@ -70,9 +75,9 @@ def make_overview(out: Path, traces: Path) -> None:
     ax.set(xlim=(max(0, pos[0]-22), min(100, pos[0]+22)),
            ylim=(min(100, pos[1]+22), max(0, pos[1]-22)))
     ax.set_xticks([]); ax.set_yticks([]); ax.set_aspect("equal")
-    ax.set_title("1  Local BEV percept (code output)", weight="bold", color="#3C69AF")
+    ax.set_title("1  Local BEV percept", weight="bold", color="#3C69AF")
     ax.text(0.03, 0.04, "risk • hard mask • goal", transform=ax.transAxes,
-            fontsize=10, bbox={"facecolor": "white", "alpha": .85, "edgecolor": "none"})
+            fontsize=fs(10), bbox={"facecolor": "white", "alpha": .85, "edgecolor": "none"})
 
     _box(axes[0, 1], "2  Feasibility witness", [
         r"sample $K$ short maneuvers", r"traversable + clearance", r"risk improvement $\Rightarrow g$"], "#3C8C50")
@@ -83,21 +88,22 @@ def make_overview(out: Path, traces: Path) -> None:
         r"$f_{\rm mat}=-\nabla\tilde r$", r"$f_{\rm haz}=-b'(\phi)\nabla\phi$",
         r"$F=f_{\rm geom}+g\lambda_sf_{\rm mat}+\lambda_hf_{\rm haz}$"], "#8050A3")
     _box(axes[1, 1], "5  Closed-loop update", [
-        r"semi-implicit $p_{t+1},q_{t+1}$", r"gate affects material exposure only",
-        r"$g=0$: geometry-only soft channel"], "#466EAA")
+        r"semi-implicit $p_{t+1},q_{t+1}$", r"gate affects material exposure",
+        r"$g=0$ recovers geometry-only"], "#466EAA")
     _box(axes[1, 2], "6  Tail-sensitive learning", [
-        r"roll out trajectory cost $J$", r"optimize empirical $\mathrm{CVaR}_\alpha(J)$",
+        r"roll out trajectory cost $J$", r"optimize $\mathrm{CVaR}_\alpha(J)$",
         r"focus updates on worst rollouts"], "#B74242")
-    fig.suptitle("Material-aware port-Hamiltonian navigation", fontsize=15, weight="bold")
+    fig.suptitle("Material-aware port-Hamiltonian navigation", fontsize=fs(13.5), weight="bold")
     _save(fig, out, "overview_pipeline")
 
 
 def make_rellis_tradeoff(out: Path, summary: Path) -> None:
+    setup_style(W_TRADEOFF, frac=FRAC_TRADEOFF)
     data = list(csv.DictReader(summary.open()))
     methods = [("dwa_semantic", "Semantic DWA", COLORS["dwa"], "o"),
                ("route_aware_stage2", "Material-aware", COLORS["material"], "s")]
     groups = list(dict.fromkeys(EVENT_GROUP.values()))
-    fig, axes = plt.subplots(2, 2, figsize=(9.6, 7.6), constrained_layout=True,
+    fig, axes = plt.subplots(2, 2, figsize=(W_TRADEOFF, 7.6), constrained_layout=True,
                              sharex=True, sharey=True)
     for label, ax in zip(groups, axes.ravel()):
         events = [e for e, g in EVENT_GROUP.items() if g == label]
@@ -106,13 +112,18 @@ def make_rellis_tradeoff(out: Path, summary: Path) -> None:
             delay = np.mean([f(r, "reaction_delay") for r in pool])
             success = np.mean([f(r, "success") for r in pool])
             ax.scatter(delay, success, s=115, marker=marker, color=color, label=name, zorder=3)
-            ax.annotate(name, (delay, success), xytext=(5, 5), textcoords="offset points", fontsize=9)
+            # place the label inboard for points near the right edge, or it
+            # runs past the axes and gets cut off at the figure boundary
+            right = delay > np.mean(ax.get_xlim()) if ax.get_xlim()[1] > ax.get_xlim()[0] else False
+            ax.annotate(name, (delay, success), xytext=(-6 if right else 6, 6),
+                        textcoords="offset points", fontsize=fs(8.5),
+                        ha="right" if right else "left")
         ax.set_title(label, weight="bold")
         ax.grid(alpha=.25)
     for ax in axes[1]: ax.set_xlabel("Reaction delay (steps)  ↓")
     for ax in axes[:, 0]: ax.set_ylabel("Episode success  ↑")
-    axes[0, 0].legend(loc="lower right")
-    fig.suptitle("RELLIS-Dyn: responsiveness–completion trade-off", fontsize=14, weight="bold")
+    axes[0, 0].legend(loc="lower right", fontsize=fs(8.5))
+    fig.suptitle("RELLIS-Dyn: responsiveness–completion trade-off", fontsize=fs(14), weight="bold")
     _save(fig, out, "rellis_dyn_8event_group_pareto")
 
 
@@ -141,12 +152,13 @@ def _bar_tops_from_image(path: Path) -> tuple[np.ndarray, np.ndarray]:
 
 
 def make_force_decomposition(out: Path, source: Path) -> None:
+    setup_style(W_FORCE, frac=FRAC_FORCE)
     soft, hard = _bar_tops_from_image(source)
     labels = ["Mud onset", "Puddle expansion", "Corridor closes", "Corridor opens",
               "Crossing obstacle", "Moving obstacle blocks", "Mud + blocked detour",
               "Delayed escape opens"]
     y = np.arange(len(labels)); h = .34
-    fig, ax = plt.subplots(figsize=(10.2, 6.0), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(W_FORCE, 6.0), constrained_layout=True)
     ax.barh(y-h/2, soft, h, color="#FDAE61", label=r"material proxy $\|\nabla\tilde r\|$")
     ax.barh(y+h/2, hard, h, color="#74ADD1", label=r"hazard proxy $w(\phi)\|\nabla\phi\|$")
     ax.set(yticks=y, yticklabels=labels, xlabel="Mean channel-proxy magnitude")
@@ -195,16 +207,17 @@ def _trace_from_panel(img: np.ndarray, bounds: tuple[int, int, int, int],
 
 
 def make_highway(out: Path, source: Path) -> None:
+    setup_style(W_HIGHWAY)
     """Large, clean redraw of the six measured traces in the original artifact."""
     img = plt.imread(source)
     xs = [(138, 1365), (1475, 2702)]
     ys = [(230, 670), (836, 1277), (1440, 1881)]
-    row_names = ["Default traffic", "Open adjacent lane", "Blocked adjacent lanes"]
+    row_names = ["Default\ntraffic", "Open\nadjacent lane", "Blocked\nadjacent lanes"]
     outcomes = [[("FAILURE: OFF-ROAD", "#B42318"), ("SUCCESS: ON-ROAD", "#16794B")],
                 [("FAILURE: COLLISION", "#B42318"), ("SUCCESS: SAFE PASS", "#16794B")],
                 [("FAILURE: OFF-ROAD", "#B42318"), ("SUCCESS: SAFE WAIT", "#16794B")]]
     trace_colors = [(31, 119, 180), (214, 39, 40)]
-    fig, axes = plt.subplots(3, 2, figsize=(11.8, 6.6), constrained_layout=True)
+    fig, axes = plt.subplots(3, 2, figsize=(W_HIGHWAY, 6.6), constrained_layout=True)
     for i, (y0, y1) in enumerate(ys):
         for j, (x0, x1) in enumerate(xs):
             ax = axes[i, j]
@@ -232,14 +245,15 @@ def make_highway(out: Path, source: Path) -> None:
             ax.scatter(xx[-1], yy[-1], s=85, facecolor=color, edgecolor="black", lw=1.6, zorder=5)
             status, badge = outcomes[i][j]
             ax.text(.98, .94, status, transform=ax.transAxes, ha="right", va="top",
-                    color="white", fontsize=11, weight="bold",
+                    color="white", fontsize=fs(11), weight="bold",
                     bbox={"boxstyle": "round,pad=.3", "facecolor": badge, "edgecolor": badge})
             ax.set(xlim=(-.03, 1.03), ylim=(0, 1)); ax.set_xticks([]); ax.set_yticks([])
             for spine in ax.spines.values(): spine.set_visible(False)
             if j == 0:
-                ax.set_ylabel(row_names[i], fontsize=11, weight="bold", rotation=90, labelpad=8)
-    axes[0, 0].set_title("Geometry-only", fontsize=14, weight="bold", color="#2878B5")
-    axes[0, 1].set_title("Material-aware", fontsize=14, weight="bold", color="#D62828")
+                ax.set_ylabel(row_names[i], fontsize=fs(8.5), weight="bold", rotation=90,
+                              labelpad=6, ha="center", va="center")
+    axes[0, 0].set_title("Geometry-only", fontsize=fs(14), weight="bold", color="#2878B5")
+    axes[0, 1].set_title("Material-aware", fontsize=fs(14), weight="bold", color="#D62828")
     _save(fig, out, "highway_scenario_path_panels")
 
 

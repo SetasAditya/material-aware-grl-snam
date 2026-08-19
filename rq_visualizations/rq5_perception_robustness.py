@@ -16,7 +16,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from common import COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, f, panel_label, rows, save_figure, setup_style
+from common import fs, COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, f, panel_label, rows, save_figure, setup_style
+
+FIG_W = 10.4   # authored width in inches; drives font sizing via setup_style
+
 
 
 def _truthy(value: str) -> bool:
@@ -57,12 +60,12 @@ def main() -> None:
     parser.add_argument("--results", type=Path, default=DEFAULT_RESULTS / "exp7_semantic_corruption")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
-    setup_style()
+    setup_style(FIG_W)
     summary_path, raw_path = args.results / "summary_metrics.csv", args.results / "raw_predictions.csv"
     summary, raw = rows(summary_path), rows(raw_path)
     p = np.array([100 * f(r, "corruption_probability") for r in summary])
 
-    fig = plt.figure(figsize=(10.4, 8.4), constrained_layout=True)
+    fig = plt.figure(figsize=(FIG_W, 9.0), constrained_layout=True)
     gs = fig.add_gridspec(2, 2)
 
     # A: the rates themselves.
@@ -82,9 +85,9 @@ def main() -> None:
     ratio = np.array([f(r, "SR") for r in summary])
     ax.plot(p, ratio, "o-", lw=2, color=COLORS["material"])
     ax.axhline(1.0, color=COLORS["risk"], ls="--", lw=1.2)
-    ax.text(p[-1], 1.03, "no discrimination", ha="right", fontsize=7.5, color=COLORS["risk"])
+    ax.text(p[-1], 1.03, "no discrimination", ha="right", fontsize=fs(7.5), color=COLORS["risk"])
     for x, y in zip(p, ratio):
-        ax.text(x, y + 0.03, f"{y:.2f}", ha="center", fontsize=8)
+        ax.text(x, y + 0.03, f"{y:.2f}", ha="center", fontsize=fs(8))
     ax.set(xlabel="Corrupted semantic labels (%)", ylabel="Selectivity ratio (CAR / FAR)",
            ylim=(0.9, 2.1),
            title="SELECTIVITY DEGRADES GRADUALLY")
@@ -103,7 +106,7 @@ def main() -> None:
     gap = abs(correct[-1] - false[-1])
     ax.annotate(f"30% gap = {gap:.3f}",
                 xy=(levels[-1], (correct[-1] + false[-1]) / 2),
-                xytext=(levels[-1] - 2, 0.72), ha="right", fontsize=10,
+                xytext=(levels[-1] - 2, 0.72), ha="right", fontsize=fs(10),
                 color=COLORS["hazard"],
                 arrowprops={"arrowstyle": "->", "color": COLORS["geometry"], "lw": 0.9})
     ax.set(xlabel="Corrupted semantic labels (%)",
@@ -111,12 +114,12 @@ def main() -> None:
            title="Matched decisions: correct and false activations decay together")
     ax.legend(loc="lower left")
     ax.text(0.98, 0.06, "FAILURE MODE: CONSERVATIVE SUPPRESSION",
-            transform=ax.transAxes, ha="right", fontsize=10, weight="bold",
+            transform=ax.transAxes, ha="right", fontsize=fs(10), weight="bold",
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "#FFF3E0",
                   "edgecolor": COLORS["fixed"]})
 
-    fig.suptitle("RQ5 — Corruption degrades selectivity gradually and conservatively",
-                 fontsize=14, weight="bold")
+    fig.suptitle("RQ5 — Corruption degrades selectivity conservatively",
+                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq5_perception_robustness", [summary_path, raw_path])
 
 

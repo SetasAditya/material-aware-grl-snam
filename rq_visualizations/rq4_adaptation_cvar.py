@@ -16,7 +16,10 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
 
-from common import COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, ROOT, SHAPE, f, grouped, panel_label, rows, save_figure, setup_style
+from common import fs, COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, ROOT, SHAPE, f, grouped, panel_label, rows, save_figure, setup_style
+
+FIG_W = 11.2   # authored width in inches; drives font sizing via setup_style
+
 
 
 def episode_paths(gate: list[dict[str, str]]) -> dict[str, list[dict[str, str]]]:
@@ -61,7 +64,7 @@ def main() -> None:
     parser.add_argument("--gate", type=Path, default=DEFAULT_RESULTS / "exp1_gate_ablation_100")
     parser.add_argument("--objective-summary", type=Path, default=ROOT / "results" / "rellis_missing_ablation_results" / "delayed_required_false_preact_100.csv")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    args = parser.parse_args(); setup_style()
+    args = parser.parse_args(); setup_style(FIG_W)
     coeff_path, gate_path = args.exp9 / "rollout_coefficients.csv", args.gate / "step_traces.csv"
     coeff, gate, objective = rows(coeff_path), rows(gate_path), rows(args.objective_summary)
     distributions = [
@@ -71,7 +74,7 @@ def main() -> None:
     ]
     distributions = [x[np.isfinite(x)] for x in distributions]
 
-    fig, axes = plt.subplots(1, 2, figsize=(11.2, 4.8), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(FIG_W, 5.6), constrained_layout=True)
     ax = axes[0]; panel_label(ax, "A")
     parts = ax.violinplot(distributions, showmedians=True, widths=.72)
     for body, color in zip(parts["bodies"], [COLORS["zero"], COLORS["material_light"], COLORS["material"]]): body.set_facecolor(color); body.set_alpha(.85)
@@ -82,7 +85,7 @@ def main() -> None:
                         f"DFC2018\nmean {means[2]:.3f}"],
            ylabel="$\\lambda_s$", title="Context-dependent force scale")
     ax.text(.04, .94, "~30x cross-domain range", transform=ax.transAxes,
-            va="top", fontsize=11, weight="bold",
+            va="top", fontsize=fs(11), weight="bold",
             bbox={"boxstyle": "round,pad=.3", "facecolor": "white",
                   "edgecolor": COLORS["material"]})
 
@@ -100,18 +103,18 @@ def main() -> None:
     ax.barh(y, 100-success, left=success, color=COLORS["risk"], height=.52, label="failure")
     for yi, value in zip(y, success):
         ax.text(value/2, yi, f"{value:.0f} SUCCESS", color="white", ha="center",
-                va="center", fontsize=11, weight="bold")
+                va="center", fontsize=fs(11), weight="bold")
         ax.text(value+(100-value)/2, yi, f"{100-value:.0f} FAILURE", color="white",
-                ha="center", va="center", fontsize=10, weight="bold")
+                ha="center", va="center", fontsize=fs(10), weight="bold")
     ax.set(yticks=y, yticklabels=labels, xlim=(0,100), xlabel="Episodes (%)",
            title="Outcome on 100 paired episodes")
     ax.invert_yaxis()
     ax.text(.5, .50, "NO SIGNIFICANT DIFFERENCE (95% CI)", transform=ax.transAxes,
-            ha="center", fontsize=11, weight="bold",
+            ha="center", fontsize=fs(11), weight="bold",
             bbox={"boxstyle": "round,pad=.3", "facecolor": "#FFF3E0",
                   "edgecolor": COLORS["fixed"]})
-    fig.suptitle("RQ4 — Context adapts force scale; CVaR does not improve success here",
-                 fontsize=14, weight="bold")
+    fig.suptitle("RQ4 — Context adapts force scale; CVaR does not",
+                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq4_adaptation_and_cvar", [coeff_path, gate_path, args.objective_summary])
 
 

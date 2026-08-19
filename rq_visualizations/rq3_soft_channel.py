@@ -8,17 +8,20 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from common import COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, f, grouped, panel_label, rows, save_figure, setup_style
+from common import fs, COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, f, grouped, panel_label, rows, save_figure, setup_style
+
+FIG_W = 10.8   # authored width in inches; drives font sizing via setup_style
+
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--results", type=Path, default=DEFAULT_RESULTS / "exp9_soft_coefficient_isolation")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    args = parser.parse_args(); setup_style()
+    args = parser.parse_args(); setup_style(FIG_W)
     metrics_path, coeff_path = args.results / "per_episode_metrics.csv", args.results / "rollout_coefficients.csv"
     metrics, coeffs = rows(metrics_path), rows(coeff_path)
-    fig, axes = plt.subplots(2, 2, figsize=(10.8, 8.2), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(FIG_W, 8.6), constrained_layout=True)
     datasets = ["DFC2018", "RELLIS-3D"]
     for col, dataset in enumerate(datasets):
         ax = axes[0, col]; panel_label(ax, "A" if col == 0 else "B")
@@ -51,13 +54,13 @@ def main() -> None:
         for bar, delta in zip(bars, deltas_from_zero):
             va = "bottom" if delta >= 0 else "top"
             ax.text(bar.get_x()+bar.get_width()/2, delta, f"{delta:+.3f}",
-                    ha="center", va=va, fontsize=10, weight="bold")
+                    ha="center", va=va, fontsize=fs(10), weight="bold")
         ax.text(.03, .04, f"SUCCESS = 1.00 in every arm\nSoft-off mean = {baseline:.3f}",
-                transform=ax.transAxes, fontsize=9, weight="bold",
+                transform=ax.transAxes, fontsize=fs(9), weight="bold",
                 bbox={"boxstyle": "round,pad=0.3", "facecolor": "#E8F5E9",
                       "edgecolor": COLORS["safe"]})
-    fig.suptitle("RQ3 — The isolated soft channel changes risk only where the field is informative",
-                 fontsize=14, weight="bold")
+    fig.suptitle("RQ3 — The soft channel acts only where the field informs",
+                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq3_isolated_soft_channel", [metrics_path, coeff_path])
 
 

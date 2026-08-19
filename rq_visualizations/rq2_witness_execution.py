@@ -15,6 +15,7 @@ from matplotlib.lines import Line2D
 import numpy as np
 
 from common import (
+    fs,
     COLORS,
     DEFAULT_OUTPUT,
     DEFAULT_RESULTS,
@@ -27,6 +28,8 @@ from common import (
     save_figure,
     setup_style,
 )
+
+FIG_W = 10.2   # authored width in inches; drives font sizing via setup_style
 
 
 def witness_pairs(trace: list[dict[str, str]]) -> tuple[np.ndarray, np.ndarray]:
@@ -103,7 +106,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--episode", default=None)
     args = parser.parse_args()
-    setup_style()
+    setup_style(FIG_W)
 
     source = args.results / "witness_execution_by_regime_phase.csv"
     trace_path = args.traces / "step_traces.csv"
@@ -129,19 +132,19 @@ def main() -> None:
         key=lambda r: f(r, "step"),
     )
 
-    fig = plt.figure(figsize=(10.2, 8.0), constrained_layout=True)
+    fig = plt.figure(figsize=(FIG_W, 8.8), constrained_layout=True)
     gs = fig.add_gridspec(2, 2)
 
     ax = fig.add_subplot(gs[0, 0])
     panel_label(ax, "A")
     field_step = draw_geometry(ax, spec, selected)
-    ax.set_title(f"Logged geometry, episode {episode}\n(gate-positive steps; field at step {int(field_step)})", fontsize=9)
+    ax.set_title(f"Logged geometry, episode {episode}\n(gate-positive steps; field at step {int(field_step)})", fontsize=fs(9))
     ax.legend(handles=[
         Line2D([], [], color=COLORS["material"], lw=2.0, label="executed path"),
         Line2D([], [], color="#0F6B3D", lw=1.3, ls=":", label="witness ray"),
         Line2D([], [], color="#111111", lw=1.4, label="executed step"),
         *field_legend_handles(),
-    ], loc="upper center", bbox_to_anchor=(0.5, -0.02), fontsize=7, ncol=2)
+    ], loc="upper center", bbox_to_anchor=(0.5, -0.02), fontsize=fs(7), ncol=2)
 
     ax = fig.add_subplot(gs[0, 1])
     panel_label(ax, "B")
@@ -153,7 +156,7 @@ def main() -> None:
     median = float(np.median(angles))
     ax.axvline(median, color=COLORS["risk"], ls="--", lw=1.3)
     ax.text(median + 4, 0.92, f"median {median:.0f}°", transform=ax.get_xaxis_transform(),
-            fontsize=8, color=COLORS["risk"])
+            fontsize=fs(8), color=COLORS["risk"])
     ax.set(xlabel="Angle between witness ray\nand executed step (deg)", ylabel="Gate-positive steps",
            xlim=(0, 180), xticks=[0, 45, 90, 135, 180],
            title=f"Paths diverge in direction\n(n={len(angles)} decisions)")
@@ -167,7 +170,7 @@ def main() -> None:
     bars = ax.bar(names, values, color=[COLORS["material_light"], COLORS["safe"], COLORS["material_light"]])
     ax.axhline(0.5, color=COLORS["geometry"], ls="--", lw=1)
     for bar, value in zip(bars, values):
-        ax.text(bar.get_x() + bar.get_width() / 2, value + 0.025, f"{value:.3f}", ha="center", fontsize=8)
+        ax.text(bar.get_x() + bar.get_width() / 2, value + 0.025, f"{value:.3f}", ha="center", fontsize=fs(8))
     ax.set(ylim=(0, 1), ylabel="Agreement",
            title=f"Partial property agreement\n(n={overall['n_gate_positive']} decisions)")
 
@@ -178,15 +181,15 @@ def main() -> None:
     bars = ax.bar(["Clearance\nagreement", "Hard-contact\nagreement"], [clearance, contact_agree],
                   color=[COLORS["safe"], COLORS["safe"]])
     for bar, value in zip(bars, [clearance, contact_agree]):
-        ax.text(bar.get_x() + bar.get_width() / 2, value + 0.025, f"{value:.3f}", ha="center", fontsize=8)
+        ax.text(bar.get_x() + bar.get_width() / 2, value + 0.025, f"{value:.3f}", ha="center", fontsize=fs(8))
     ax.set(ylim=(0, 1), ylabel="Agreement", title="Least-confounded\npost-opening phase")
 
     ax.text(0.03, 0.04, "WITNESS $\u2260$ EXECUTED PATH",
-            transform=ax.transAxes, fontsize=10, weight="bold",
+            transform=ax.transAxes, fontsize=fs(10), weight="bold",
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "#FFF3E0",
                   "edgecolor": COLORS["fixed"]})
-    fig.suptitle("RQ2 — The primitive is a feasibility witness, not a tracked reference",
-                 fontsize=14, weight="bold")
+    fig.suptitle("RQ2 — A feasibility witness, not a tracked path",
+                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq2_witness_execution", [source, trace_path, spec_path])
 
 

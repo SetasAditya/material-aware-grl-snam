@@ -591,6 +591,26 @@ def _cum_stale_trace(path: Sequence[Tuple[int, int]], step_maps: Sequence[Mappin
     return vals
 
 
+TEXT_WIDTH_IN = 5.5   # NeurIPS \textwidth
+TARGET_PT = 7.5       # point size we want the figure text to have on the page
+
+
+def _style_for_width(fig_width_in: float, frac: float = 1.0) -> float:
+    """Size fonts so they land near TARGET_PT after LaTeX scales the figure."""
+    scale = (TEXT_WIDTH_IN * frac) / float(fig_width_in)
+    base = TARGET_PT / scale
+    plt.rcParams.update({
+        "font.size": base,
+        "axes.titlesize": base * 1.05,
+        "axes.labelsize": base,
+        "xtick.labelsize": base * 0.9,
+        "ytick.labelsize": base * 0.9,
+        "legend.fontsize": base * 0.9,
+        "figure.titlesize": base * 1.15,
+    })
+    return base / 10.0   # factor for hand-placed sizes tuned against 10 pt
+
+
 def make_figure4(args: argparse.Namespace) -> None:
     # The automatic scorer selects an episode in which neither method routes
     # into the corridor that opens, which does not illustrate the claim. Allow
@@ -611,7 +631,8 @@ def make_figure4(args: argparse.Namespace) -> None:
     post = apply_dynamic_event(base_maps, spec, spec.event_step + 5, resolution=0.5)
     opened = pre["hard_mask"].astype(bool) & ~post["hard_mask"].astype(bool)
 
-    fig = plt.figure(figsize=(15.5, 6.6), constrained_layout=True)
+    _fs = _style_for_width(11.0)
+    fig = plt.figure(figsize=(11.0, 6.4), constrained_layout=True)
     gs = fig.add_gridspec(2, 4, height_ratios=[3.0, 1.15])
     risk_image = None
     for j, (t, title) in enumerate(zip(times, titles)):
@@ -686,9 +707,8 @@ def make_figure4(args: argparse.Namespace) -> None:
     )
     ax.legend(ncol=4, fontsize=8, loc="lower right")
     fig.suptitle(
-        f"RELLIS-Dyn corridor opens (representative episode {eid}): "
-        "the material-aware field enters the corridor as it becomes feasible",
-        fontsize=13,
+        f"RELLIS-Dyn corridor opens, episode {eid}: the field enters as it becomes feasible",
+        fontsize=plt.rcParams["figure.titlesize"],
     )
     _save_figure(fig, args, "rellis_dyn_corridor_opens_timeline")
 
@@ -838,9 +858,9 @@ def make_fig_b1(args: argparse.Namespace) -> None:
     ]
     col_titles = [
         "Semantic BEV",
-        "Soft risk + hard hazards",
-        "Stage 1 vs. risk route",
-        "Route-aware Stage 2 force",
+        "Soft risk +\nhard hazards",
+        "Stage 1 vs.\nrisk route",
+        "Route-aware\nStage 2 force",
     ]
     # Crop the four source panels from each original qualitative figure and
     # rebuild them into a reader-facing story instead of repeating wide panels.
@@ -851,7 +871,8 @@ def make_fig_b1(args: argparse.Namespace) -> None:
         (1672, 2415, 92, 833),
         (2446, 3186, 92, 833),
     ]
-    fig = plt.figure(figsize=(13.2, 8.6), constrained_layout=True)
+    _fs = _style_for_width(9.4)
+    fig = plt.figure(figsize=(9.4, 8.0), constrained_layout=True)
     gs = fig.add_gridspec(
         3,
         5,
@@ -869,8 +890,8 @@ def make_fig_b1(args: argparse.Namespace) -> None:
             spine.set_visible(True)
             spine.set_linewidth(1.2)
             spine.set_edgecolor("#333333")
-        text_ax.text(0.05, 0.92, title, ha="left", va="top", fontsize=11, weight="bold")
-        text_ax.text(0.05, 0.74, note, ha="left", va="top", fontsize=8.7, linespacing=1.25)
+        text_ax.text(0.05, 0.92, title, ha="left", va="top", fontsize=11*_fs, weight="bold")
+        text_ax.text(0.05, 0.74, note, ha="left", va="top", fontsize=8.7*_fs, linespacing=1.25)
         for j, (x0, x1, y0, y1) in enumerate(crops):
             ax = fig.add_subplot(gs[i, j + 1])
             ax.imshow(img[y0:y1, x0:x1])
@@ -881,7 +902,7 @@ def make_fig_b1(args: argparse.Namespace) -> None:
                 spine.set_linewidth(0.8)
                 spine.set_edgecolor("#444444")
             if i == 0:
-                ax.set_title(col_titles[j], fontsize=10, pad=5)
+                ax.set_title(col_titles[j], fontsize=8.5*_fs, pad=4)
     fig.suptitle(
         "RELLIS static regimes: activation, suppression, and scaffold preservation",
         fontsize=13,

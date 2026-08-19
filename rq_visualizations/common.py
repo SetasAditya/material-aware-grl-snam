@@ -42,25 +42,63 @@ COLORS = {
 }
 
 
-def setup_style() -> None:
+# NeurIPS single-column text width, in inches. A figure authored FIG_W inches
+# wide and drawn at `frac * TEXT_WIDTH_IN` is scaled by LaTeX, and every glyph
+# in it shrinks by the same factor. Authoring at 9 pt on a 12 in canvas puts
+# roughly 4 pt type on the page, which is what reviewers flagged as illegible.
+TEXT_WIDTH_IN = 5.5
+
+# Point size we want the body text of a figure to have once it is on the page.
+TARGET_PT = 7.5
+
+# Baseline the hand-placed ``fontsize=`` values in the RQ scripts were tuned
+# against. ``fs()`` rescales them with the base font so the hierarchy is kept.
+_LEGACY_BASE_PT = 11.0
+_FONT_SCALE = 1.0
+
+
+def setup_style(fig_width_in: float = TEXT_WIDTH_IN, *, frac: float = 1.0,
+                target_pt: float = TARGET_PT) -> float:
+    """Style the figure so its text lands at `target_pt` after LaTeX scaling.
+
+    Returns the scale factor, so callers can size hand-placed annotations in
+    the same units instead of guessing.
+    """
+    scale = (TEXT_WIDTH_IN * frac) / float(fig_width_in)
+    base = target_pt / scale
+    global _FONT_SCALE
+    _FONT_SCALE = base / _LEGACY_BASE_PT
     mpl.rcParams.update(
         {
             "font.family": "DejaVu Sans",
-            "font.size": 11,
-            "axes.titlesize": 12,
-            "axes.labelsize": 11,
-            "xtick.labelsize": 10,
-            "ytick.labelsize": 10,
-            "legend.fontsize": 10,
+            "font.size": base,
+            "axes.titlesize": base * 1.06,
+            "axes.labelsize": base,
+            "xtick.labelsize": base * 0.92,
+            "ytick.labelsize": base * 0.92,
+            "legend.fontsize": base * 0.92,
+            "figure.titlesize": base * 1.16,
             "axes.spines.top": False,
             "axes.spines.right": False,
             "legend.frameon": False,
+            "lines.linewidth": 2.0,
             "figure.dpi": 140,
             "savefig.dpi": 300,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
         }
     )
+    return scale
+
+
+def fs(pt: float) -> float:
+    """Scale a hand-placed point size by the same factor as the base font."""
+    return pt * _FONT_SCALE
+
+
+def rendered_pt(fig_width_in: float, pt: float, *, frac: float = 1.0) -> float:
+    """Point size `pt` will appear at on the page for a figure of this width."""
+    return pt * (TEXT_WIDTH_IN * frac) / float(fig_width_in)
 
 
 def rows(path: Path) -> list[dict[str, str]]:
@@ -195,8 +233,12 @@ def field_legend_handles() -> list:
 
 def save_figure(fig: mpl.figure.Figure, output_dir: Path, stem: str, inputs: Iterable[Path]) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_dir / f"{stem}.pdf", bbox_inches="tight")
-    fig.savefig(output_dir / f"{stem}.png", bbox_inches="tight")
+    # No bbox_inches="tight": constrained_layout already packs the content
+    # inside figsize, and cropping afterwards changes the on-page scale factor,
+    # which is what the font sizing in setup_style is calibrated against. It
+    # also clipped axis labels in the previous revision.
+    fig.savefig(output_dir / f"{stem}.pdf")
+    fig.savefig(output_dir / f"{stem}.png")
     provenance = {
         "figure": stem,
         "inputs": [

@@ -17,6 +17,7 @@ from matplotlib.lines import Line2D
 import numpy as np
 
 from common import (
+    fs,
     COLORS,
     DEFAULT_OUTPUT,
     DEFAULT_RESULTS,
@@ -32,6 +33,8 @@ from common import (
     setup_style,
     SHAPE,
 )
+
+FIG_W = 12.2   # authored width in inches; drives font sizing via setup_style
 
 
 def choose_episode(trace: list[dict[str, str]]) -> str:
@@ -123,7 +126,7 @@ def draw_snapshot(ax, spec, trace, step, title, window):
                        lw=1.8, zorder=9)
             ax.annotate(
                 f"closure forms behind robot\n(passed at step {int(f(last, 'step'))})",
-                xy=mark, xytext=(0.5, 0.06), textcoords="axes fraction", fontsize=7,
+                xy=mark, xytext=(0.5, 0.06), textcoords="axes fraction", fontsize=fs(7),
                 color="#6B5500", ha="center", va="bottom",
                 bbox={"boxstyle": "round,pad=0.28", "facecolor": "#FFF8E1",
                       "edgecolor": "#E0B400", "linewidth": 0.7},
@@ -133,10 +136,10 @@ def draw_snapshot(ax, spec, trace, step, title, window):
     gate = int(f(point, "gate_decision", 0) > 0.5)
     feasible = int(f(point, "feasible_primitive_count", 0))
     ax.text(0.04, 0.97, f"gate = {gate}", transform=ax.transAxes, va="top", weight="bold",
-            fontsize=9, color=COLORS["safe"] if gate else COLORS["risk"])
+            fontsize=fs(9), color=COLORS["safe"] if gate else COLORS["risk"])
     ax.text(0.04, 0.89, f"feasible primitives = {feasible}", transform=ax.transAxes, va="top",
-            fontsize=8, color=COLORS["hazard"])
-    ax.set_title(f"{title}\nstep {int(f(point, 'step'))}", fontsize=9)
+            fontsize=fs(8), color=COLORS["hazard"])
+    ax.set_title(f"{title}\nstep {int(f(point, 'step'))}", fontsize=fs(9))
 
     x0, x1, y0, y1 = window
     ax.set_aspect("equal")
@@ -170,7 +173,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--episode", default=None, help="Override the storyboard episode")
     args = parser.parse_args()
-    setup_style()
+    setup_style(FIG_W)
 
     trace_path, spec_path = args.results / "step_traces.csv", args.results / "event_specs.csv"
     trace, specs = rows(trace_path), rows(spec_path)
@@ -183,14 +186,14 @@ def main() -> None:
     event = f(spec, "event_step")
     opening = event + f(spec, "open_delay")
 
-    fig = plt.figure(figsize=(12.2, 8.2), constrained_layout=True)
+    fig = plt.figure(figsize=(FIG_W, 9.6), constrained_layout=True)
     gs = fig.add_gridspec(2, 3, height_ratios=[1.08, 0.92])
 
     active_post = [f(r, "step") for r in selected if f(r, "step") >= opening and f(r, "gate_decision", 0) > 0.5]
     snapshots = [
         (max(0, event - 6), "Nominal route"),
-        (event + 2, "Escape visible but blocked"),
-        (active_post[0] if active_post else opening, "Escape feasible: gate activates"),
+        (event + 2, "Escape visible\nbut blocked"),
+        (active_post[0] if active_post else opening, "Escape feasible\ngate activates"),
     ]
     window = storyboard_window(spec, selected)
     for index, (step, title) in enumerate(snapshots):
@@ -205,8 +208,8 @@ def main() -> None:
         Line2D([], [], color="#111111", lw=1.9, label="selected primitive"),
         *field_legend_handles(),
     ]
-    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.51),
-               ncol=4, fontsize=9)
+    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.555),
+               ncol=4, fontsize=fs(7.5), columnspacing=1.4, handlelength=1.8)
 
     # Exposure timeline: the quantity the gate actually controls.
     ax = fig.add_subplot(gs[1, :2])
@@ -221,7 +224,7 @@ def main() -> None:
     ax.axvspan(event, opening, color=COLORS["hazard"], alpha=0.10, label="blocked interval")
     ax.axvline(opening, color=COLORS["safe"], ls="--", lw=1.2)
     ax.set(xlabel="Control step", ylabel="Soft-force exposure", ylim=(-0.12, 1.16),
-           title="Gate changes exposure timing; navigation outcome is unchanged")
+           title="Exposure timing changes; outcome does not")
     ax.legend(ncol=3, loc="upper left")
 
     ax = fig.add_subplot(gs[1, 2])
@@ -232,19 +235,19 @@ def main() -> None:
     ax.barh(y + 0.18, [1.0] * 3, 0.32, color=COLORS["muted"], label="gate off")
     ax.barh(y - 0.18, on_frac, 0.32, color=COLORS["material"], label="gate on")
     ax.set(yticks=y, yticklabels=regimes, xlim=(0, 1.05), xlabel="Fraction of steps",
-           title="Exposure falls by 91--94%")
+           title="Exposure falls 91--94%")
     ax.invert_yaxis()
     ax.legend(loc="lower right")
     divergence = paired_divergence(trace)
-    ax.text(0.03, 0.03,
-            "SUCCESS: 1.00 in both arms\n"
-            f"Median path difference: {np.median(divergence):.4f} cells",
-            transform=ax.transAxes, fontsize=9, weight="bold", va="bottom",
+    ax.text(0.03, 0.30,
+            "success 1.00 in both arms\n"
+            f"median path difference {np.median(divergence):.4f} cells",
+            transform=ax.transAxes, fontsize=fs(7.5), weight="bold", va="bottom",
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "#E8F5E9",
                   "edgecolor": COLORS["safe"]})
 
-    fig.suptitle("RQ1 — The witness gate suppresses unnecessary soft-force exposure",
-                 fontsize=14, weight="bold")
+    fig.suptitle("RQ1 — The gate suppresses soft-force exposure",
+                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq1_gate_exposure", [trace_path, spec_path])
 
 
