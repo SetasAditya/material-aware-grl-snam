@@ -71,54 +71,46 @@ def main() -> None:
     ]
     distributions = [x[np.isfinite(x)] for x in distributions]
 
-    fig, axes = plt.subplots(2, 2, figsize=(10.8, 8.4), constrained_layout=True)
-    ax = axes[0, 0]; panel_label(ax, "A")
+    fig, axes = plt.subplots(1, 2, figsize=(11.2, 4.8), constrained_layout=True)
+    ax = axes[0]; panel_label(ax, "A")
     parts = ax.violinplot(distributions, showmedians=True, widths=.72)
     for body, color in zip(parts["bodies"], [COLORS["zero"], COLORS["material_light"], COLORS["material"]]): body.set_facecolor(color); body.set_alpha(.85)
-    ax.set(xticks=[1,2,3], xticklabels=["Delayed\nescape", "RELLIS R1", "DFC2018"], ylabel="$\\lambda_s$", title="Recovered coefficient distributions")
-    for i, values in enumerate(distributions, 1): ax.text(i, np.percentile(values, 96), f"mean {values.mean():.3f}", ha="center", fontsize=8)
+    means = [values.mean() for values in distributions]
+    ax.set(xticks=[1,2,3],
+           xticklabels=[f"Delayed escape\nmean {means[0]:.3f}",
+                        f"RELLIS R1\nmean {means[1]:.3f}",
+                        f"DFC2018\nmean {means[2]:.3f}"],
+           ylabel="$\\lambda_s$", title="Context-dependent force scale")
+    ax.text(.04, .94, "~30x cross-domain range", transform=ax.transAxes,
+            va="top", fontsize=11, weight="bold",
+            bbox={"boxstyle": "round,pad=.3", "facecolor": "white",
+                  "edgecolor": COLORS["material"]})
 
-    ax = axes[0, 1]; panel_label(ax, "B")
-    threshold, tail_mean = draw_tail(ax, gate)
-    all_exposure = np.array([risk_exposure(p) for p in episode_paths(gate).values()])
-    ax.legend(handles=[
-        Line2D([], [], color=COLORS["risk"], lw=1.5, label=f"worst decile (CVaR$_{{90}}$ = {tail_mean:.1f})"),
-        Line2D([], [], color=COLORS["material_light"], lw=0.8, label=f"remaining (mean = {all_exposure.mean():.1f})"),
-    ], loc="lower center", fontsize=9)
-    ax.set_title("Worst-risk rollout tail\n100 rollouts across 13 scenes")
-
-    ax = axes[1, 0]; panel_label(ax, "C")
+    ax = axes[1]; panel_label(ax, "B")
     methods = {"stage2_expected_cost": "Expected cost", "route_aware_stage2": "CVaR"}
     selected = {
         key: next(r for r in objective if r["subset"] == "all" and r["method"] == key)
         for key in methods
     }
-    metrics = ["success", "stuck", "violation_cvar"]
-    labels = ["Success ↑", "Stuck ↓", "Violation CVaR ↓"]
-    x = np.arange(3); width=.35
-    for j, (method, label) in enumerate(methods.items()):
-        means = [f(selected[method], m) for m in metrics]
-        ax.bar(x + (j-.5)*width, means, width, label=label, color=COLORS["expected"] if j==0 else COLORS["material"])
-    ax.set(xticks=x, xticklabels=labels, ylim=(0,1.12),
-           title="Expected-risk vs CVaR training")
-    ax.legend()
-
-    ax = axes[1, 1]; panel_label(ax, "D")
-    labels = ["False pre-activation", "Suppression", "Success", "Violation CVaR"]
     expected_row, cvar_row = selected["stage2_expected_cost"], selected["route_aware_stage2"]
-    expected = [f(expected_row,"false_pre_activation_rate"), f(expected_row,"suppression_rate"), f(expected_row,"success"), f(expected_row,"violation_cvar")]
-    cvar = [f(cvar_row,"false_pre_activation_rate"), f(cvar_row,"suppression_rate"), f(cvar_row,"success"), f(cvar_row,"violation_cvar")]
-    y=np.arange(4)
-    for yi, a, b in zip(y, expected, cvar):
-        ax.plot([a,b],[yi,yi], color=COLORS["muted"], lw=3); ax.scatter(a,yi,color=COLORS["expected"],s=35); ax.scatter(b,yi,color=COLORS["material"],s=35)
-    ax.set(yticks=y, yticklabels=labels, xlim=(0,1), xlabel="Rate / CVaR",
-           title="NO SIGNIFICANT DIFFERENCE (95% CI)")
+    labels = ["Expected-risk", "CVaR"]
+    success = np.array([f(expected_row, "success"), f(cvar_row, "success")]) * 100
+    y = np.arange(2)
+    ax.barh(y, success, color=COLORS["safe"], height=.52, label="success")
+    ax.barh(y, 100-success, left=success, color=COLORS["risk"], height=.52, label="failure")
+    for yi, value in zip(y, success):
+        ax.text(value/2, yi, f"{value:.0f} SUCCESS", color="white", ha="center",
+                va="center", fontsize=11, weight="bold")
+        ax.text(value+(100-value)/2, yi, f"{100-value:.0f} FAILURE", color="white",
+                ha="center", va="center", fontsize=10, weight="bold")
+    ax.set(yticks=y, yticklabels=labels, xlim=(0,100), xlabel="Episodes (%)",
+           title="Outcome on 100 paired episodes")
     ax.invert_yaxis()
-    ax.text(0.97, 0.04, "Neither arm is a failure",
-            transform=ax.transAxes, ha="right", fontsize=10, weight="bold",
-            bbox={"boxstyle": "round,pad=0.3", "facecolor": "#FFF3E0",
+    ax.text(.5, .50, "NO SIGNIFICANT DIFFERENCE (95% CI)", transform=ax.transAxes,
+            ha="center", fontsize=11, weight="bold",
+            bbox={"boxstyle": "round,pad=.3", "facecolor": "#FFF3E0",
                   "edgecolor": COLORS["fixed"]})
-    fig.suptitle("RQ4 — Context adapts force scale; the isolated CVaR effect is small",
+    fig.suptitle("RQ4 — Context adapts force scale; CVaR does not improve success here",
                  fontsize=14, weight="bold")
     save_figure(fig, args.output, "rq4_adaptation_and_cvar", [coeff_path, gate_path, args.objective_summary])
 

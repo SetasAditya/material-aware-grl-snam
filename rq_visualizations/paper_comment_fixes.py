@@ -13,7 +13,7 @@ import csv
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
 import numpy as np
 
 from common import COLORS, DEFAULT_OUTPUT, DEFAULT_RESULTS, ROOT, draw_field, event_field, f, rows, setup_style
@@ -158,32 +158,88 @@ def make_force_decomposition(out: Path, source: Path) -> None:
     _save(fig, out, "rellis_dyn_force_decomposition")
 
 
+def _trace_from_panel(img: np.ndarray, bounds: tuple[int, int, int, int],
+                      rgb: tuple[int, int, int]) -> tuple[np.ndarray, np.ndarray, tuple[float, float]]:
+    """Recover the plotted trace and road edges from the original raster panel."""
+    x0, x1, y0, y1 = bounds
+    panel = img[y0:y1, x0:x1, :3]
+    if panel.dtype != np.uint8:
+        panel = (panel * 255).round().astype(np.uint8)
+    distance = np.linalg.norm(panel.astype(float) - np.asarray(rgb), axis=2)
+    mask = distance < 35
+    mask[:25] = False; mask[-25:] = False; mask[:, :25] = False; mask[:, -25:] = False
+    xs, medians = [], []
+    for x in np.where(mask.sum(0) > 0)[0]:
+        yy = np.where(mask[:, x])[0]
+        if len(yy):
+            xs.append(x); medians.append(float(np.median(yy)))
+    xs = np.asarray(xs, float); medians = np.asarray(medians, float)
+    order = np.argsort(xs); xs, medians = xs[order], medians[order]
+    # One point per x coordinate; median filtering removes arrowheads and markers.
+    if len(medians) > 9:
+        from scipy.ndimage import median_filter
+        medians = median_filter(medians, size=9, mode="nearest")
+    # Preserve the longitudinal extent shown by the original shared panel
+    # scale; normalizing each trace independently would make an early collision
+    # look like a full-length rollout.
+    xx = xs / panel.shape[1]
+    yy = 1.0 - medians / panel.shape[0]
+
+    dark = panel.mean(2) < 55
+    row_strength = dark[:, 30:-30].mean(1)
+    candidate = np.where(row_strength > .35)[0]
+    groups = np.split(candidate, np.where(np.diff(candidate) > 1)[0] + 1) if len(candidate) else []
+    edges = [float(np.mean(g)) for g in groups if len(g)]
+    road = (1.0 - max(edges) / panel.shape[0], 1.0 - min(edges) / panel.shape[0])
+    return xx, yy, road
+
+
 def make_highway(out: Path, source: Path) -> None:
+    """Large, clean redraw of the six measured traces in the original artifact."""
     img = plt.imread(source)
-    # Data-panel bounds in the original 2719x2056 artifact. Titles and the
-    # footer are deliberately excluded; only the recorded trajectory panels remain.
     xs = [(138, 1365), (1475, 2702)]
     ys = [(230, 670), (836, 1277), (1440, 1881)]
     row_names = ["Default traffic", "Open adjacent lane", "Blocked adjacent lanes"]
-    outcomes = [[("OFF-ROAD", "#B42318"), ("SUCCESS", "#16794B")],
-                [("COLLISION", "#B42318"), ("SUCCESS", "#16794B")],
-                [("OFF-ROAD", "#B42318"), ("SUCCESS", "#16794B")]]
-    fig, axes = plt.subplots(3, 2, figsize=(12.2, 8.0), constrained_layout=True)
+    outcomes = [[("FAILURE: OFF-ROAD", "#B42318"), ("SUCCESS: ON-ROAD", "#16794B")],
+                [("FAILURE: COLLISION", "#B42318"), ("SUCCESS: SAFE PASS", "#16794B")],
+                [("FAILURE: OFF-ROAD", "#B42318"), ("SUCCESS: SAFE WAIT", "#16794B")]]
+    trace_colors = [(31, 119, 180), (214, 39, 40)]
+    fig, axes = plt.subplots(3, 2, figsize=(11.8, 6.6), constrained_layout=True)
     for i, (y0, y1) in enumerate(ys):
         for j, (x0, x1) in enumerate(xs):
             ax = axes[i, j]
-            ax.imshow(img[y0:y1, x0:x1]); ax.set_axis_off()
-            status, color = outcomes[i][j]
-            ax.text(.98, .96, status, transform=ax.transAxes, ha="right", va="top",
-                    color="white", fontsize=12, weight="bold",
-                    bbox={"boxstyle": "round,pad=.3", "facecolor": color, "edgecolor": color})
+            xx, yy, road = _trace_from_panel(img, (x0, x1, y0, y1), trace_colors[j])
+            ax.axhspan(0, road[0], color="#FCE8E8", zorder=0)
+            ax.axhspan(road[1], 1, color="#FCE8E8", zorder=0)
+            ax.axhspan(road[0], road[1], color="#F7F8F8", zorder=0)
+            for lane in np.linspace(road[0], road[1], 5)[1:-1]:
+                ax.axhline(lane, color="#A5A5A5", lw=1.1, ls=(0, (5, 5)), zorder=1)
+            ax.axhline(road[0], color="black", lw=1.4); ax.axhline(road[1], color="black", lw=1.4)
+            # Minimal traffic context: leader plus adjacent-lane traffic/blockers.
+            lane_centres = np.linspace(road[0], road[1], 5)[:-1] + (road[1]-road[0])/8
+            cars = [(0.42, lane_centres[-1]), (0.68, lane_centres[1])]
+            if i >= 1:
+                cars.append((0.19, yy[0]))  # slow leader
+            if i == 2:
+                cars.extend([(0.22, lane_centres[0]), (0.22, lane_centres[2])])
+            for cx, cy in cars:
+                ax.add_patch(Rectangle((cx-.025, cy-.035), .05, .07,
+                                       facecolor="#C9C9C9", edgecolor="#555555", lw=.9, zorder=2))
+            color = "#2878B5" if j == 0 else "#D62828"
+            ax.plot(xx, yy, color="white", lw=7, solid_capstyle="round", zorder=3)
+            ax.plot(xx, yy, color=color, lw=4.2, solid_capstyle="round", zorder=4)
+            ax.scatter(xx[0], yy[0], s=75, facecolor="white", edgecolor="black", lw=1.6, zorder=5)
+            ax.scatter(xx[-1], yy[-1], s=85, facecolor=color, edgecolor="black", lw=1.6, zorder=5)
+            status, badge = outcomes[i][j]
+            ax.text(.98, .94, status, transform=ax.transAxes, ha="right", va="top",
+                    color="white", fontsize=11, weight="bold",
+                    bbox={"boxstyle": "round,pad=.3", "facecolor": badge, "edgecolor": badge})
+            ax.set(xlim=(-.03, 1.03), ylim=(0, 1)); ax.set_xticks([]); ax.set_yticks([])
+            for spine in ax.spines.values(): spine.set_visible(False)
             if j == 0:
-                ax.text(-.02, .5, row_names[i], transform=ax.transAxes, ha="right", va="center",
-                        rotation=90, fontsize=11, weight="bold")
-    axes[0, 0].text(.5, 1.03, "Geometry-only", transform=axes[0, 0].transAxes,
-                    ha="center", fontsize=13, weight="bold", color="#2878B5")
-    axes[0, 1].text(.5, 1.03, "Material-aware", transform=axes[0, 1].transAxes,
-                    ha="center", fontsize=13, weight="bold", color="#D62828")
+                ax.set_ylabel(row_names[i], fontsize=11, weight="bold", rotation=90, labelpad=8)
+    axes[0, 0].set_title("Geometry-only", fontsize=14, weight="bold", color="#2878B5")
+    axes[0, 1].set_title("Material-aware", fontsize=14, weight="bold", color="#D62828")
     _save(fig, out, "highway_scenario_path_panels")
 
 
