@@ -62,21 +62,22 @@ def main() -> None:
     summary, raw = rows(summary_path), rows(raw_path)
     p = np.array([100 * f(r, "corruption_probability") for r in summary])
 
-    fig, axes = plt.subplots(1, 3, figsize=(13.2, 4.2), constrained_layout=True)
+    fig = plt.figure(figsize=(10.4, 8.4), constrained_layout=True)
+    gs = fig.add_gridspec(2, 2)
 
     # A: the rates themselves.
-    ax = axes[0]
+    ax = fig.add_subplot(gs[0, 0])
     panel_label(ax, "A")
     for key, label, color in [("CAR", "Correct activation (CAR)", COLORS["material"]),
                               ("FAR", "False activation (FAR)", COLORS["risk"]),
                               ("activation_rate", "Overall activation", COLORS["safe"])]:
         ax.plot(p, [f(r, key) for r in summary], "o-", lw=2, label=label, color=color)
     ax.set(xlabel="Corrupted semantic labels (%)", ylabel="Rate", ylim=(0, 0.8),
-           title="Both correct and false activation fall\nas semantics degrade")
-    ax.legend(fontsize=8, loc="upper right")
+           title="Activation falls as semantics degrade")
+    ax.legend(loc="upper right")
 
     # B: does discrimination survive? CAR/FAR is the selectivity ratio.
-    ax = axes[1]
+    ax = fig.add_subplot(gs[0, 1])
     panel_label(ax, "B")
     ratio = np.array([f(r, "SR") for r in summary])
     ax.plot(p, ratio, "o-", lw=2, color=COLORS["material"])
@@ -86,10 +87,10 @@ def main() -> None:
         ax.text(x, y + 0.03, f"{y:.2f}", ha="center", fontsize=8)
     ax.set(xlabel="Corrupted semantic labels (%)", ylabel="Selectivity ratio (CAR / FAR)",
            ylim=(0.9, 2.1),
-           title="Discrimination degrades but\ndoes not collapse")
+           title="SELECTIVITY DEGRADES GRADUALLY")
 
     # C: matched decision fate -- the failure mode itself.
-    ax = axes[2]
+    ax = fig.add_subplot(gs[1, :])
     panel_label(ax, "C")
     levels, fate = matched_fate(raw)
     correct, n_correct = fate["correct"]
@@ -100,17 +101,22 @@ def main() -> None:
             label=f"was false when clean (n={n_false:,})")
     ax.fill_between(levels, correct, false, color=COLORS["muted"], alpha=0.55, zorder=0)
     gap = abs(correct[-1] - false[-1])
-    ax.annotate(f"gap at 30% corruption: {gap:.3f}",
+    ax.annotate(f"30% gap = {gap:.3f}",
                 xy=(levels[-1], (correct[-1] + false[-1]) / 2),
-                xytext=(levels[-1] - 2, 0.72), ha="right", fontsize=8,
+                xytext=(levels[-1] - 2, 0.72), ha="right", fontsize=10,
                 color=COLORS["hazard"],
                 arrowprops={"arrowstyle": "->", "color": COLORS["geometry"], "lw": 0.9})
     ax.set(xlabel="Corrupted semantic labels (%)",
            ylabel="Fraction still activating", ylim=(0, 1.05),
-           title="Suppression is indiscriminate:\nmatched decisions decay together")
-    ax.legend(fontsize=8, loc="lower left")
+           title="Matched decisions: correct and false activations decay together")
+    ax.legend(loc="lower left")
+    ax.text(0.98, 0.06, "FAILURE MODE: CONSERVATIVE SUPPRESSION",
+            transform=ax.transAxes, ha="right", fontsize=10, weight="bold",
+            bbox={"boxstyle": "round,pad=0.35", "facecolor": "#FFF3E0",
+                  "edgecolor": COLORS["fixed"]})
 
-    fig.suptitle("RQ5 — Corruption makes the controller conservative, not selectively safer", weight="bold")
+    fig.suptitle("RQ5 — Corruption degrades selectivity gradually and conservatively",
+                 fontsize=14, weight="bold")
     save_figure(fig, args.output, "rq5_perception_robustness", [summary_path, raw_path])
 
 

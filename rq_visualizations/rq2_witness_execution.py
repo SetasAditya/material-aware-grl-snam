@@ -129,8 +129,8 @@ def main() -> None:
         key=lambda r: f(r, "step"),
     )
 
-    fig = plt.figure(figsize=(13.0, 4.3), constrained_layout=True)
-    gs = fig.add_gridspec(1, 4, width_ratios=[1.15, 0.95, 1.0, 1.0])
+    fig = plt.figure(figsize=(10.2, 8.0), constrained_layout=True)
+    gs = fig.add_gridspec(2, 2)
 
     ax = fig.add_subplot(gs[0, 0])
     panel_label(ax, "A")
@@ -158,7 +158,7 @@ def main() -> None:
            xlim=(0, 180), xticks=[0, 45, 90, 135, 180],
            title=f"Paths diverge in direction\n(n={len(angles)} decisions)")
 
-    ax = fig.add_subplot(gs[0, 2])
+    ax = fig.add_subplot(gs[1, 0])
     panel_label(ax, "C")
     names = ["Direction\ncosine", "Clearance\nagreement", "Risk-sign\nagreement"]
     values = [float(overall["median_directional_cosine"]),
@@ -169,9 +169,9 @@ def main() -> None:
     for bar, value in zip(bars, values):
         ax.text(bar.get_x() + bar.get_width() / 2, value + 0.025, f"{value:.3f}", ha="center", fontsize=8)
     ax.set(ylim=(0, 1), ylabel="Agreement",
-           title=f"...but safety properties hold\n(n={overall['n_gate_positive']})")
+           title=f"Partial property agreement\n(n={overall['n_gate_positive']} decisions)")
 
-    ax = fig.add_subplot(gs[0, 3])
+    ax = fig.add_subplot(gs[1, 1])
     panel_label(ax, "D")
     clearance = float(post["clearance_agreement_rate"])
     contact_agree = 1.0 - float(post["hard_contact_disagreement_rate"])
@@ -181,7 +181,12 @@ def main() -> None:
         ax.text(bar.get_x() + bar.get_width() / 2, value + 0.025, f"{value:.3f}", ha="center", fontsize=8)
     ax.set(ylim=(0, 1), ylabel="Agreement", title="Least-confounded\npost-opening phase")
 
-    fig.suptitle("RQ2 — Loose path correspondence can retain feasibility properties", weight="bold")
+    ax.text(0.03, 0.04, "WITNESS $\u2260$ EXECUTED PATH",
+            transform=ax.transAxes, fontsize=10, weight="bold",
+            bbox={"boxstyle": "round,pad=0.35", "facecolor": "#FFF3E0",
+                  "edgecolor": COLORS["fixed"]})
+    fig.suptitle("RQ2 — The primitive is a feasibility witness, not a tracked reference",
+                 fontsize=14, weight="bold")
     save_figure(fig, args.output, "rq2_witness_execution", [source, trace_path, spec_path])
 
 

@@ -46,9 +46,12 @@ def setup_style() -> None:
     mpl.rcParams.update(
         {
             "font.family": "DejaVu Sans",
-            "font.size": 9,
-            "axes.titlesize": 10,
-            "axes.labelsize": 9,
+            "font.size": 11,
+            "axes.titlesize": 12,
+            "axes.labelsize": 11,
+            "xtick.labelsize": 10,
+            "ytick.labelsize": 10,
+            "legend.fontsize": 10,
             "axes.spines.top": False,
             "axes.spines.right": False,
             "legend.frameon": False,
@@ -214,7 +217,8 @@ def sha256(path: Path) -> str:
 
 
 def panel_label(ax: mpl.axes.Axes, label: str) -> None:
-    ax.text(-0.08, 1.04, label, transform=ax.transAxes, weight="bold", va="bottom")
+    ax.text(-0.07, 1.03, label, transform=ax.transAxes, fontsize=13,
+            weight="bold", va="bottom")
 
 
 def arrow(ax: mpl.axes.Axes, start: np.ndarray, delta: np.ndarray, color: str, label: str | None = None) -> None:
@@ -232,4 +236,3 @@ def finish_axis(ax: mpl.axes.Axes, *, grid: bool = False) -> None:
     if grid:
         ax.grid(axis="y", color="#E6E8EB", lw=0.7, zorder=0)
     ax.set_axisbelow(True)
-

@@ -183,16 +183,14 @@ def main() -> None:
     event = f(spec, "event_step")
     opening = event + f(spec, "open_delay")
 
-    fig = plt.figure(figsize=(12.4, 7.4), constrained_layout=True)
-    gs = fig.add_gridspec(2, 4, height_ratios=[1.25, 0.75])
+    fig = plt.figure(figsize=(12.2, 8.2), constrained_layout=True)
+    gs = fig.add_gridspec(2, 3, height_ratios=[1.08, 0.92])
 
     active_post = [f(r, "step") for r in selected if f(r, "step") >= opening and f(r, "gate_decision", 0) > 0.5]
-    committed = active_post[3] if len(active_post) > 3 else (active_post[-1] if active_post else opening + 6)
     snapshots = [
         (max(0, event - 6), "Nominal route"),
-        (event + 2, "Barrier closes\nescape visible, infeasible"),
-        (active_post[0] if active_post else opening, "Escape opens\ngate activates"),
-        (committed, "Committed to escape"),
+        (event + 2, "Escape visible but blocked"),
+        (active_post[0] if active_post else opening, "Escape feasible: gate activates"),
     ]
     window = storyboard_window(spec, selected)
     for index, (step, title) in enumerate(snapshots):
@@ -207,11 +205,12 @@ def main() -> None:
         Line2D([], [], color="#111111", lw=1.9, label="selected primitive"),
         *field_legend_handles(),
     ]
-    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.452), ncol=7, fontsize=8)
+    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 0.51),
+               ncol=4, fontsize=9)
 
     # Exposure timeline: the quantity the gate actually controls.
     ax = fig.add_subplot(gs[1, :2])
-    panel_label(ax, "E")
+    panel_label(ax, "D")
     for arm, color, offset in [("gate_on", COLORS["material"], 0.03), ("gate_off", COLORS["fixed"], -0.03)]:
         values = sorted(
             [r for r in trace if r["episode_id"] == episode and r["arm"] == arm],
@@ -222,34 +221,30 @@ def main() -> None:
     ax.axvspan(event, opening, color=COLORS["hazard"], alpha=0.10, label="blocked interval")
     ax.axvline(opening, color=COLORS["safe"], ls="--", lw=1.2)
     ax.set(xlabel="Control step", ylabel="Soft-force exposure", ylim=(-0.12, 1.16),
-           title=f"Episode {episode}: exposure is gated to the feasible window")
-    ax.legend(ncol=3, loc="upper left", fontsize=8)
+           title="Gate changes exposure timing; navigation outcome is unchanged")
+    ax.legend(ncol=3, loc="upper left")
 
-    # The paths themselves are unchanged -- state that directly.
     ax = fig.add_subplot(gs[1, 2])
-    panel_label(ax, "F")
-    divergence = paired_divergence(trace)
-    ax.hist(divergence, bins=np.logspace(-5, 0.5, 22), color=COLORS["material"])
-    ax.axvline(1.0, color=COLORS["risk"], ls="--", lw=1.2)
-    ax.text(1.05, 0.72, "one cell", transform=ax.get_xaxis_transform(), fontsize=7.5, color=COLORS["risk"])
-    ax.set_xscale("log")
-    ax.set(xlabel="Max gate-on vs gate-off\npath divergence (cells)", ylabel="Episodes",
-           title=f"Executed paths coincide\n({len(divergence)} episodes)")
-
-    ax = fig.add_subplot(gs[1, 3])
-    panel_label(ax, "G")
+    panel_label(ax, "E")
     regimes = ["R1", "R2", "R3"]
     on_frac = [0.094, 0.061, 0.076]
     y = np.arange(3)
     ax.barh(y + 0.18, [1.0] * 3, 0.32, color=COLORS["muted"], label="gate off")
     ax.barh(y - 0.18, on_frac, 0.32, color=COLORS["material"], label="gate on")
     ax.set(yticks=y, yticklabels=regimes, xlim=(0, 1.05), xlabel="Fraction of steps",
-           title="Paired exposure\nintervention")
+           title="Exposure falls by 91--94%")
     ax.invert_yaxis()
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="lower right")
+    divergence = paired_divergence(trace)
+    ax.text(0.03, 0.03,
+            "SUCCESS: 1.00 in both arms\n"
+            f"Median path difference: {np.median(divergence):.4f} cells",
+            transform=ax.transAxes, fontsize=9, weight="bold", va="bottom",
+            bbox={"boxstyle": "round,pad=0.35", "facecolor": "#E8F5E9",
+                  "edgecolor": COLORS["safe"]})
 
-    fig.suptitle("RQ1 — The feasibility witness controls when material risk is exposed, not where the robot goes",
-                 weight="bold")
+    fig.suptitle("RQ1 — The witness gate suppresses unnecessary soft-force exposure",
+                 fontsize=14, weight="bold")
     save_figure(fig, args.output, "rq1_gate_exposure", [trace_path, spec_path])
 
 

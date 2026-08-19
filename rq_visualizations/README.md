@@ -35,8 +35,8 @@ Two limits are deliberate and are stated on the figures:
 - **The gate does not move the robot.** Across all 100 episodes of
   `exp1_gate_ablation_100`, the maximum gate-on vs gate-off path divergence is
   0.33 cells (median 0.0002), so no paired spatial comparison exists to draw.
-  The gate modulates soft-force *exposure*, not route. RQ1 panel F reports this
-  divergence distribution directly instead of implying a route change.
+  The gate modulates soft-force *exposure*, not route. RQ1 reports that outcome
+  explicitly beside the regime-level exposure intervention.
 
 RQ4 panel B is also spatial: it overlays all 100 logged gate-on rollouts in the
 shared BEV frame and highlights the worst-decile episodes by path-integrated
@@ -55,9 +55,9 @@ all four corruption levels, which is the more direct evidence for that claim.
 
 Individual scripts:
 
-- `rq1_gate_exposure.py`: four-phase delayed-escape storyboard over the
-  reconstructed event field, exposure timeline, paired path-divergence
-  distribution, and paired exposure intervention.
+- `rq1_gate_exposure.py`: three-phase delayed-escape storyboard over the
+  reconstructed event field, exposure timeline, and paired exposure
+  intervention with the unchanged success/path outcome stated explicitly.
 - `rq2_witness_execution.py`: logged witness rays vs executed steps on the
   field, the witness/execution angle distribution over all gate-positive
   decisions, and measured agreement of direction, clearance, contact, and risk
@@ -74,6 +74,17 @@ Individual scripts:
   when clean and those that were false when clean decay almost identically
   (0.414 vs 0.446 retained at 30% corruption), which is the evidence that the
   failure mode is conservative rather than selective.
+
+`paper_comment_fixes.py` also produces the revised method overview,
+responsiveness--completion tradeoff, force-channel layout, and full-width
+highway comparison used in the manuscript. The force/highway repairs preserve
+the original plotted measurements while changing their layout, so pass the
+directory containing the original manuscript figures:
+
+```bash
+python rq_visualizations/paper_comment_fixes.py \
+  --overleaf-figures /path/to/overleaf/figures
+```
 
 The scripts accept command-line overrides for their input and output paths;
 run any script with `--help` for details.

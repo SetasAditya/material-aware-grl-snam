@@ -18,7 +18,7 @@ def main() -> None:
     args = parser.parse_args(); setup_style()
     metrics_path, coeff_path = args.results / "per_episode_metrics.csv", args.results / "rollout_coefficients.csv"
     metrics, coeffs = rows(metrics_path), rows(coeff_path)
-    fig, axes = plt.subplots(2, 2, figsize=(10.8, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(10.8, 8.2), constrained_layout=True)
     datasets = ["DFC2018", "RELLIS-3D"]
     for col, dataset in enumerate(datasets):
         ax = axes[0, col]; panel_label(ax, "A" if col == 0 else "B")
@@ -30,7 +30,8 @@ def main() -> None:
         ax.axvline(0, color=COLORS["geometry"], lw=1)
         ax.hist(deltas, bins=18, color=COLORS["material"], alpha=.8)
         ax.axvline(np.mean(deltas), color=COLORS["risk"], lw=1.8, label=f"mean {np.mean(deltas):+.4f}")
-        ax.set(title=f"{dataset}: learned minus soft-off", xlabel="Paired cumulative-risk difference", ylabel="Episodes")
+        outcome = "MEASURABLE REDUCTION" if dataset == "DFC2018" else "NO DETECTABLE EFFECT"
+        ax.set(title=f"{dataset}: {outcome}", xlabel="Learned minus soft-off cumulative risk", ylabel="Episodes")
         ax.legend()
 
         ax = axes[1, col]; panel_label(ax, "C" if col == 0 else "D")
@@ -39,13 +40,24 @@ def main() -> None:
             values[arm] = np.array([f(r, "risk_exposure") for r in metrics if r["dataset"] == dataset and r["arm"] == arm])
         means = [values[a].mean() for a in values]
         colors = [COLORS["zero"], COLORS["material"], COLORS["fixed"]]
-        bars = ax.bar(range(3), means, color=colors, alpha=.9)
+        deltas_from_zero = np.asarray(means) - means[0]
+        bars = ax.bar(range(3), deltas_from_zero, color=colors, alpha=.9)
         baseline = means[0]
-        ax.set_ylim(min(means) - max(.01, abs(max(means)-min(means))*2), max(means) + max(.01, abs(max(means)-min(means))*2))
-        ax.set(xticks=range(3), xticklabels=["$\\lambda_s=0$", "learned", "fixed 1.5"], ylabel="Cumulative soft risk", title="Magnified mean scale; same checkpoint and episodes")
-        for bar, mean in zip(bars, means): ax.text(bar.get_x()+bar.get_width()/2, mean, f"{mean:.3f}", ha="center", va="bottom", fontsize=8)
-        ax.text(.02, .04, f"Success = 1.000 in all arms\nZero baseline = {baseline:.3f}", transform=ax.transAxes, fontsize=8)
-    fig.suptitle("RQ3 — Isolating the soft coefficient on its own behavioral axis", weight="bold")
+        span = max(0.004, np.max(np.abs(deltas_from_zero)) * 1.45)
+        ax.set_ylim(-span, span)
+        ax.axhline(0, color=COLORS["geometry"], lw=1)
+        ax.set(xticks=range(3), xticklabels=["$\\lambda_s=0$", "learned", "fixed 1.5"],
+               ylabel="Change from soft-off", title="One-factor intervention")
+        for bar, delta in zip(bars, deltas_from_zero):
+            va = "bottom" if delta >= 0 else "top"
+            ax.text(bar.get_x()+bar.get_width()/2, delta, f"{delta:+.3f}",
+                    ha="center", va=va, fontsize=10, weight="bold")
+        ax.text(.03, .04, f"SUCCESS = 1.00 in every arm\nSoft-off mean = {baseline:.3f}",
+                transform=ax.transAxes, fontsize=9, weight="bold",
+                bbox={"boxstyle": "round,pad=0.3", "facecolor": "#E8F5E9",
+                      "edgecolor": COLORS["safe"]})
+    fig.suptitle("RQ3 — The isolated soft channel changes risk only where the field is informative",
+                 fontsize=14, weight="bold")
     save_figure(fig, args.output, "rq3_isolated_soft_channel", [metrics_path, coeff_path])
 
 
