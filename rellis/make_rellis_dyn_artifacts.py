@@ -706,10 +706,6 @@ def make_figure4(args: argparse.Namespace) -> None:
         fontsize=9,
     )
     ax.legend(ncol=4, fontsize=8, loc="lower right")
-    fig.suptitle(
-        f"RELLIS-Dyn corridor opens, episode {eid}: the field enters as it becomes feasible",
-        fontsize=plt.rcParams["figure.titlesize"],
-    )
     _save_figure(fig, args, "rellis_dyn_corridor_opens_timeline")
 
 
@@ -904,11 +900,6 @@ def make_fig_b1(args: argparse.Namespace) -> None:
                 spine.set_edgecolor("#444444")
             if i == 0:
                 ax.set_title(col_titles[j], fontsize=8.5*_fs, pad=4)
-    fig.suptitle(
-        "RELLIS static regimes: activation, suppression, and scaffold preservation",
-        fontsize=13,
-        weight="bold",
-    )
     _save_figure(fig, args, "rellis_static_r1r2r3_grid")
 
 

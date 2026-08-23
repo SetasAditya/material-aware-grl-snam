@@ -118,8 +118,6 @@ def main() -> None:
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "#FFF3E0",
                   "edgecolor": COLORS["fixed"]})
 
-    fig.suptitle("RQ5 — Corruption degrades selectivity conservatively",
-                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq5_perception_robustness", [summary_path, raw_path])
 
 

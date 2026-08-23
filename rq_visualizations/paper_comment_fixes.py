@@ -93,7 +93,6 @@ def make_overview(out: Path, traces: Path) -> None:
     _box(axes[1, 2], "6  Tail-sensitive learning", [
         r"roll out trajectory cost $J$", r"optimize $\mathrm{CVaR}_\alpha(J)$",
         r"focus updates on worst rollouts"], "#B74242")
-    fig.suptitle("Material-aware port-Hamiltonian navigation", fontsize=fs(13.5), weight="bold")
     _save(fig, out, "overview_pipeline")
 
 
@@ -122,7 +121,6 @@ def make_rellis_tradeoff(out: Path, summary: Path) -> None:
         ax.grid(alpha=.25)
     for ax in axes[1]: ax.set_xlabel("Reaction delay (steps)  ↓")
     for ax in axes[:, 0]: ax.set_ylabel("Episode success  ↑")
-    fig.suptitle("RELLIS-Dyn: responsiveness–completion trade-off", fontsize=fs(14), weight="bold")
     _save(fig, out, "rellis_dyn_8event_group_pareto")
 
 
@@ -165,7 +163,6 @@ def make_force_decomposition(out: Path, source: Path) -> None:
     handles, legend_labels = ax.get_legend_handles_labels()
     ax.legend(handles, legend_labels, loc="upper center", bbox_to_anchor=(0.5, -0.10),
               ncol=2)
-    ax.set_title("RELLIS-Dyn force channels respond to distinct field structure", weight="bold")
     _save(fig, out, "rellis_dyn_force_decomposition")
 
 

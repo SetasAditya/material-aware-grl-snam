@@ -247,8 +247,6 @@ def main() -> None:
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "#E8F5E9",
                   "edgecolor": COLORS["safe"]})
 
-    fig.suptitle("RQ1 — The gate suppresses soft-force exposure",
-                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq1_gate_exposure", [trace_path, spec_path])
 
 

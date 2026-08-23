@@ -188,8 +188,6 @@ def main() -> None:
             transform=ax.transAxes, fontsize=fs(10), weight="bold",
             bbox={"boxstyle": "round,pad=0.35", "facecolor": "#FFF3E0",
                   "edgecolor": COLORS["fixed"]})
-    fig.suptitle("RQ2 — A feasibility witness, not a tracked path",
-                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq2_witness_execution", [source, trace_path, spec_path])
 
 

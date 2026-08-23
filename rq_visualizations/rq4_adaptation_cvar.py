@@ -113,8 +113,6 @@ def main() -> None:
             ha="center", fontsize=fs(11), weight="bold",
             bbox={"boxstyle": "round,pad=.3", "facecolor": "#FFF3E0",
                   "edgecolor": COLORS["fixed"]})
-    fig.suptitle("RQ4 — Context adapts force scale; CVaR does not",
-                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq4_adaptation_and_cvar", [coeff_path, gate_path, args.objective_summary])
 
 

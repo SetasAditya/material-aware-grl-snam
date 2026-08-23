@@ -59,8 +59,6 @@ def main() -> None:
                 transform=ax.transAxes, fontsize=fs(9), weight="bold",
                 bbox={"boxstyle": "round,pad=0.3", "facecolor": "#E8F5E9",
                       "edgecolor": COLORS["safe"]})
-    fig.suptitle("RQ3 — The soft channel acts only where the field informs",
-                 fontsize=fs(14), weight="bold")
     save_figure(fig, args.output, "rq3_isolated_soft_channel", [metrics_path, coeff_path])
 
 
