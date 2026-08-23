@@ -261,7 +261,14 @@ def main() -> None:
     make_rellis_tradeoff(args.output,
         DEFAULT_RESULTS / "exp8_semantic_apf_delayed" / "historical_8event_preliminary.csv")
     make_force_decomposition(args.output, args.overleaf_figures / "rellis_dyn_force_decomposition.png")
-    make_highway(args.output, args.overleaf_figures / "highway_scenario_path_panels.png")
+    # The highway redraw is deliberately NOT run. It keeps only the
+    # trajectories and the outcome badges, dropping the axes and units, the
+    # callouts for the leader, the open lane and the blocked escape, the
+    # per-panel step and progress readouts, and the footer explaining the
+    # markers. Those labels carry most of the figure's meaning, so the paper
+    # ships the original annotated image instead. make_highway is kept below
+    # for reference; re-enable it only if the labels are restored first.
+    # make_highway(args.output, args.overleaf_figures / "highway_scenario_path_panels.png")
 
 
 if __name__ == "__main__":
